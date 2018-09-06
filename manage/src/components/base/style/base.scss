@@ -1,0 +1,66 @@
+@import './login.scss';
+// 最外层
+.wrap {
+    display: flex;
+    min-height: 100vh;
+    .nav {
+        width: 200px;
+        flex: none;
+        min-height: 100vh;
+        overflow-y: auto;
+        background: #001529;
+        padding-top: 60px;
+        font-size: 24px;
+        color: #fff;
+    }
+    .content {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        min-width: 600px;
+        background: #f0f2f5;
+        .header {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            background: #fff;
+            font-size: 18px;
+            padding-right: 50px;
+            box-shadow: 0 2px 4px rgba(0, 21, 41, .08);
+            .repassword,
+            .logout {
+                cursor: pointer;
+                &:hover {
+                    color: #108ee9;
+                }
+            }
+            .repassword {
+                color: rgba(0, 0, 0, 0.65);
+                margin-right: 10px;
+            }
+        }
+        .component {
+            flex: 1; // background: #f6f8fa;
+            padding: 20px;
+            .ant-table-thead>tr>th {
+                padding: 15px 10px;
+            }
+            .ant-table-tbody>tr>td {
+                padding: 15px 8px;
+            }
+            .card {
+                background: #fff;
+                padding: 10px;
+            }
+        }
+        .footer {
+            height: 50px;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ECEFF4;
+        }
+    }
+}

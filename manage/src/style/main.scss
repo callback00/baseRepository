@@ -1,0 +1,11 @@
+.searchForm {
+    padding: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin-bottom: 25px;
+}
+
+@import '../components/base/style/Base.scss';
+@import '../components/base/style/Login.scss';
+
+@import '../components/auditerManage/style/Auditer.scss';

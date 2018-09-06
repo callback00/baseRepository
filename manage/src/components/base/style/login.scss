@@ -1,0 +1,113 @@
+
+#app-mount{
+    height: 100%;
+}
+.login_main{
+    background: white;
+    padding: 0;
+    height: 100vh;
+    background-image: url(/manage/images/fy02.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+
+    .login_box{
+        background: white;
+        width: 400px;
+        height: 250px;
+        border-radius: 5px;
+        position:relative;
+        margin: 0 auto;
+        top: 25%;
+
+        .front{
+            width: 100%;
+            position:absolute;
+        }
+        .back{
+            width: 100%;
+            position:absolute;
+        }
+
+        .title{
+            height: 36px;
+            font-family: '黑体';
+            font-size: 20px;
+            color: #fff;
+            background-color: #4990E2;
+            text-align: center;
+            line-height: 36px;
+        }
+        .login_input{
+            margin: 20px auto;
+            height: auto;
+            background-color: #fff;
+            border-radius: 3px;
+            padding-left:17px;
+            padding-right: 12px;
+            .login_phone{
+                display: flex;
+                justify-content:flex-start;
+                height: 48px;
+                border-bottom: solid 1px #e5e5e5;
+
+                .text{
+                    font-family: '黑体';
+                    font-size: 17px;
+                    color: #000;
+                    width:60px;
+                    line-height: 48px;
+                }
+                .value{
+                    border: none;
+                    font-family: '黑体';
+                    font-size: 17px;
+                    color: #b2b2b2;
+                    width:150px;
+                    outline: none;
+                    
+                }
+            }
+
+            .login_code{
+                display: flex;
+                justify-content:flex-start;
+                height: 48px;
+                border-bottom: solid 1px #e5e5e5;
+                
+                .text{
+                    font-family: '黑体';
+                    font-size: 17px;
+                    color: #000;
+                    width:60px;
+                    line-height: 48px;
+                }
+                .value{
+                    border: none;
+                    font-family: '黑体';
+                    font-size: 17px;
+                    color: #b2b2b2;
+                    outline: none;
+                }
+                
+            }
+        }
+        .btn_ok{
+            
+            height: 40px;
+            color: #fff;
+            font-family: '黑体';
+            font-size: 18px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 5px;
+            margin: 20px 30px 0;
+            
+        }
+        .btn_ok_enable{
+            background-color: #4990E2;
+            cursor: pointer;
+        }
+
+    }
+}
+

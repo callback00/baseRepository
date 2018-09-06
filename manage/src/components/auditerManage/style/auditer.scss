@@ -1,0 +1,49 @@
+.auditer-manage-wrapper {
+    display: flex;
+    .auditer-header {
+        height: 60px;
+        width: 100%;
+        padding: 10px;
+        box-shadow: 0 2px 0 rgba(0, 21, 41, .08);
+        position: relative;
+        button {
+            margin-left: 10px
+        }
+    }
+    .auditer-manage-wrapper-left {
+        flex: 2.5;
+        .add {
+            border: none !important;
+        }
+        .delete {
+            border: none !important;
+        }
+        .add:hover,
+        .add:focus {
+            border-color: #66CC99 !important;
+        }
+        .delete:hover,
+        .delete:focus {
+            border-color: #FF6666 !important;
+        }
+    }
+    .auditer-manage-wrapper-right {
+        flex: 3;
+        margin-left: 20px;
+        .auditer-header {
+            text-align: center;
+            line-height: 33px;
+            font-size: 16px;
+            color: #0099CC;
+            .add {
+                border: none !important;
+                position: absolute;
+                right: 10px;
+            }
+            .add:hover,
+            .add:focus {
+                border-color: #66CC99 !important;
+            }
+        }
+    }
+}
