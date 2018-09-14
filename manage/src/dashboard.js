@@ -14,7 +14,9 @@ import Useradd from './components/user/userAdd'
 import Userinfo from './components/user/userInfo'
 import Userlist from './components/user/userList'
 
-import Nav from './components/base/nav' // 导航组件
+import MenuHome from './components/system/menu/menuHome'
+
+import Nav from './home/nav' // 导航组件
 import Login from './components/base/login' // 登录页
 import Repassword from './components/base/rePassword' // 重置密码
 import auth from './utils/auth' // 登录验证方法
@@ -63,10 +65,10 @@ class Dashboard extends React.Component {
   rootPath() {
 
     //获取权限
-    const list = auth.getPath()
-    if (!list) {
-      return '/login'
-    }
+    // const list = auth.getPath()
+    // if (!list) {
+    //   return '/login'
+    // }
 
     return '/dashboard/baseReport/memberReport'
   }
@@ -127,6 +129,8 @@ class Dashboard extends React.Component {
                         <Route path="/dashboard/user/add" component={Useradd} />
                         <Route path="/dashboard/user/info/:id" component={Userinfo} />
                         <Route path="/dashboard/user/list" component={Userlist} />
+
+                        <Route path="/dashboard/menu/menuHome" component={MenuHome} />
 
                         <Route path="/dashboard/baseReport/memberReport" component={MemberReport} />
                         <Route path="/dashboard/baseReport/auditLogReport" component={AuditLogReport} />

@@ -193,11 +193,14 @@ class Page extends React.Component {
                 </div>
 
                 <div className="card">
+                    <p>查询结果</p>
                     <Table
                         columns={columns}
                         dataSource={dataSource}
                         bordered
                         loading={this.state.loading}
+                        size="small"
+                        style={{minHeight:'150px'}}
                     />
                 </div>
             </div>

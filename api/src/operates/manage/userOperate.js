@@ -11,18 +11,18 @@ const User = require('../../models/userModel')
 
 const conn = dbConn.getConn()
 
-User.hasMany(Rulemap, { as: 'rulemaps', foreignKey: 'userid' })
+User.hasMany(Rulemap, { as: 'rulemaps', foreignKey: 'userId' })
 
 module.exports = {
   /**
    * 注册前校验
    */
-  userExist: (loginname, callback) => {
+  userExist: (loginName, callback) => {
     User.findOne({
       where: {
-        loginname
+        loginName
       },
-      attributes: ['userid', 'displayname']
+      attributes: ['userId', 'displayName']
     }).then((success) => {
       if (success !== null) {
         return callback(null, success)
@@ -49,7 +49,7 @@ module.exports = {
       User.create(data, {
         transaction: tran
       }).then((success) => {
-        const userid = success.userid
+        const userId = success.userId
         success.password = ''
 
         const list = []
@@ -59,7 +59,7 @@ module.exports = {
             // 什么也不做
           } else {
             list.push({
-              userid,
+              userId,
               ruleid,
             })
           }
@@ -88,7 +88,7 @@ module.exports = {
   /**
    * 更新用户信息
    */
-  updateUser: (userid, data, adds, deletes, callback) => {
+  updateUser: (userId, data, adds, deletes, callback) => {
     conn.transaction({
       autocommit: false
     }).then((tran) => {
@@ -102,7 +102,7 @@ module.exports = {
 
           User.update(data, {
             where: {
-              userid
+              userId
             },
             transaction: tran
           }).then(() => {
@@ -125,7 +125,7 @@ module.exports = {
               // 什么也不做
             } else {
               list.push({
-                userid,
+                userId,
                 ruleid,
               })
             }
@@ -148,7 +148,7 @@ module.exports = {
 
           Rulemap.destroy({
             where: {
-              userid,
+              userId,
               ruleid: {
                 $in: deletes
               }
@@ -179,14 +179,14 @@ module.exports = {
   /**
    * 删除用户
    */
-  deleteUser: (userid, callback) => {
-    if (userid === '0' || userid === 0) {
+  deleteUser: (userId, callback) => {
+    if (userId === '0' || userId === 0) {
       return callback('不能删除该用户')
     }
 
     User.destroy({
       where: {
-        userid
+        userId
       }
     }).then(() => {
       return callback(null, 'success')
@@ -200,12 +200,12 @@ module.exports = {
   /**
    * 获取用户信息
    */
-  getUserInfo: (userid, callback) => {
+  getUserInfo: (userId, callback) => {
     User.findOne({
       where: {
-        userid
+        userId
       },
-      attributes: ['userid', 'displayname', 'loginname', 'telphone'],
+      attributes: ['userId', 'displayName', 'loginName', 'telphone'],
       include: [{
         model: Rulemap,
         as: 'rulemaps',
@@ -228,8 +228,8 @@ module.exports = {
     const offset = pageindex * pagesize
 
     User.findAll({
-      attributes: ['userid', 'displayname', 'loginname', 'telphone'],
-      order: 'userid DESC',
+      attributes: ['userId', 'displayName', 'loginName', 'telphone'],
+      order: 'userId DESC',
       offset,
       limit: pagesize
     }).then((success) => {
@@ -276,8 +276,8 @@ module.exports = {
           role: '2',
         }]
       },
-      attributes: ['userid', 'displayname'],
-      order: 'userid',
+      attributes: ['userId', 'displayName'],
+      order: 'userId',
       offset,
       limit: pagesize
     }).then((success) => {

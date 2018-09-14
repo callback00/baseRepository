@@ -18,15 +18,15 @@ export default {
     tools.put('/user/update', callback, data)
   },
 
-  deleteUser(userid, callback) {
+  deleteUser(userId, callback) {
     tools.del('/user/delete', callback, {
-      userid
+      userId
     })
   },
 
-  getUserInfo(userid, callback) {
+  getUserInfo(userId, callback) {
     tools.post('/user/info', callback, {
-      userid
+      userId
     })
   },
 

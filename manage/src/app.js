@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import Dashboard from './Dashboard'
+import Dashboard from './home/dashboard'
 
 const render = (Component) => {
   ReactDOM.render(<Component />, document.getElementById('app-mount'))

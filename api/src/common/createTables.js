@@ -1,6 +1,8 @@
 const User = require('../models/userModel')
 const Rule = require('../models/ruleModel')
 const RuleMap = require('../models/rulemapModel')
+const Menu = require('../models/system/menuModel')
+const Sys_Menu_Permission = require('../models/system/sys_menu_permission')
 const Member = require('../models/memberModel')
 const WorkArea = require('../models/workAreaModel')
 const WorkAreaAuditer = require('../models/workAreaAuditerModel')
@@ -25,6 +27,20 @@ RuleMap.sync({ force: true }).then(() => {
   console.log(`----- 创建 RuleMap 表成功 -----`)
 }).catch((err) => {
   console.error(`----- RuleMap 表创建失败: ${err} -----`)
+})
+
+// ---------- 创建 栏目权限 表 ----------
+Sys_Menu_Permission.sync({ force: true }).then(() => {
+  console.log(`----- 创建 Sys_Menu_Permission 表成功 -----`)
+}).catch((err) => {
+  console.error(`----- Sys_Menu_Permission 表创建失败: ${err} -----`)
+})
+
+// ---------- 创建 导航栏目 表 ----------
+Menu.sync({ force: true }).then(() => {
+  console.log(`----- 创建 Menu 表成功 -----`)
+}).catch((err) => {
+  console.error(`----- Menu 表创建失败: ${err} -----`)
 })
 
 // ---------- 创建 Member 表 ----------

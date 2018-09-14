@@ -44,8 +44,8 @@ class Userinfo extends React.Component {
     })
   }
 
-  getUserInfo(userid) {
-    userjs.getUserInfo(userid, (json) => {
+  getUserInfo(userId) {
+    userjs.getUserInfo(userId, (json) => {
       if (json.success) {
         // console.log('----- success -----' + json.success)
         const data = json.success
@@ -98,7 +98,7 @@ class Userinfo extends React.Component {
         return
       }
 
-      values.userid = this.state.data.userid
+      values.userId = this.state.data.userId
 
       values.adds = []
       values.deletes = []
@@ -124,7 +124,7 @@ class Userinfo extends React.Component {
         if (json.success) {
           // console.log('----- success -----' + json.success)
           notification.success({
-            message: `修改用户 ${values.displayname} 成功!`,
+            message: `修改用户 ${values.displayName} 成功!`,
             description: '新权限在用户重新登录后生效！'
           })
         } else {
@@ -169,19 +169,19 @@ class Userinfo extends React.Component {
         <Item
           {...formItemLayout}
           label="登录名">
-          <Input disabled value={this.state.data.loginname} placeholder="登录名" />
+          <Input disabled value={this.state.data.loginName} placeholder="登录名" />
         </Item>
 
         <Item
           {...formItemLayout}
           label="昵称"
           hasFeedback>
-          {getFieldDecorator('displayname', {
+          {getFieldDecorator('displayName', {
             rules: [
               { required: true, message: '请填写昵称' },
               { max: 50, message: '不能超过50字' },
             ],
-            initialValue: this.state.data.displayname
+            initialValue: this.state.data.displayName
           })(
             <Input placeholder="昵称" />
           )}

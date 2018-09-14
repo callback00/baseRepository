@@ -21,7 +21,7 @@ module.exports = {
         vendor: ['react', 'react-dom', 'react-router-dom'],
         css: [
             'webpack-hot-middleware/client',
-            '../../manage/src/style/main.scss'
+            '../../manage/src/scssAutoLoad.js'
         ],
         components: [
             'webpack-hot-middleware/client',

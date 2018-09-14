@@ -14,7 +14,7 @@ module.exports = [
         entry: {
             vendor: ['react', 'react-dom', 'react-router-dom'],
             css: [
-                '../../manage/src/style/main.scss'
+                '../../manage/src/scssAutoLoad.js'
             ],
             components: [
                 '../../manage/src/app.js'
@@ -82,7 +82,7 @@ module.exports = [
             ),
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': JSON.stringify('production'),
-                'API_SERVER_ROOT': JSON.stringify('http://mxlot.com:8010/api'),
+                'API_SERVER_ROOT': JSON.stringify('http://localhost:8081/api'),
                 __DEVELOPMENT__: false
             })
         ]

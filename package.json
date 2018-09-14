@@ -55,6 +55,7 @@
     "lodash.assign": "^4.2.0",
     "lodash.concat": "^4.5.0",
     "lodash.debounce": "^4.0.8",
+    "lodash.difference": "^4.5.0",
     "lodash.findindex": "^4.6.0",
     "lodash.round": "^4.0.4",
     "lodash.trim": "^4.5.1",

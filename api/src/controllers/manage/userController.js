@@ -11,8 +11,8 @@ module.exports = {
    */
   createUser: (req, res) => {
     const data = {
-      displayname: trim(req.body.displayname),
-      loginname: trim(req.body.loginname),
+      displayName: trim(req.body.displayName),
+      loginName: trim(req.body.loginName),
       password: trim(req.body.password),
       telphone: trim(req.body.telphone) || null,
     }
@@ -26,7 +26,7 @@ module.exports = {
     const _adds = trim(req.body.adds)
     const adds = _adds ? JSON.parse(_adds) : null
 
-    userOperate.userExist(data.loginname, (err1, user) => {
+    userOperate.userExist(data.loginName, (err1, user) => {
       res.type = 'json'
 
       if ((err1 === null) && (user !== null)) {
@@ -51,10 +51,10 @@ module.exports = {
    * 更新用户信息
    */
   updateUser: (req, res) => {
-    const userid = trim(req.body.userid)
+    const userId = trim(req.body.userId)
     const password = trim(req.body.password)
     const data = {
-      displayname: trim(req.body.displayname),
+      displayName: trim(req.body.displayName),
       telphone: trim(req.body.telphone) || null,
     }
 
@@ -74,14 +74,14 @@ module.exports = {
     const _deletes = trim(req.body.deletes)
     const deletes = _adds ? JSON.parse(_deletes) : null
 
-    userOperate.updateUser(userid, data, adds, deletes, (error, success) => {
+    userOperate.updateUser(userId, data, adds, deletes, (error, success) => {
       res.type = 'json'
 
       if (error) {
         res.status(200).json({ error })
       } else {
         res.status(200).json({ success })
-        redisUtility.deleteUser(userid)
+        redisUtility.deleteUser(userId)
         redisUtility.reset(req.sessionID)
       }
     })
@@ -92,16 +92,16 @@ module.exports = {
    * 删除用户
    */
   deleteUser: (req, res) => {
-    const userid = trim(req.body.userid)
+    const userId = trim(req.body.userId)
 
-    userOperate.deleteUser(userid, (error, success) => {
+    userOperate.deleteUser(userId, (error, success) => {
       res.type = 'json'
 
       if (error) {
         res.status(200).json({ error })
       } else {
         res.status(200).json({ success })
-        redisUtility.deleteUser(userid)
+        redisUtility.deleteUser(userId)
         redisUtility.reset(req.sessionID)
       }
     })
@@ -112,9 +112,9 @@ module.exports = {
    * 获取用户信息
    */
   getUserInfo: (req, res) => {
-    const userid = trim(req.body.userid)
+    const userId = trim(req.body.userId)
 
-    userOperate.getUserInfo(userid, (error, success) => {
+    userOperate.getUserInfo(userId, (error, success) => {
       res.type = 'json'
 
       if (error) {

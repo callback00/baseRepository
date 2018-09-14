@@ -7,13 +7,13 @@ import tools from './tools'
 
 export default {
   // 跟后台服务器校验登录情况
-  login(loginname, password, callback) {
+  login(loginName, password, callback) {
     const md5password = tools.md5password(password)
 
     request
       .post(`${API_SERVER_ROOT}/login`)
       .send({
-        loginname,
+        loginName,
         password: md5password
       })
       .set('Accept', 'application/json')
@@ -105,7 +105,7 @@ export default {
     if (tokenString && tokenString.length > 0) {
       const token = jwt(tokenString)
       if (token) {
-        return token.displayname
+        return token.displayName
       }
     }
 

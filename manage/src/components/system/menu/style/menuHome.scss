@@ -1,0 +1,19 @@
+.menuHome {
+    .coustom-select-active {
+        &:hover {
+            td {
+                background: none !important;
+            }
+        }
+    }
+    .ant-table-body {
+        table {
+            padding: 0 !important;
+        }
+    }
+    .ant-table-thead {
+        th {
+            background: #f5f7f9 !important;
+        }
+    }
+}

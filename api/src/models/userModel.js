@@ -4,10 +4,10 @@ const conn = dbConn.getConn()
 
 // 系统用户表,用于存储后台操作人员的账号
 const User = conn.define('sys_user', {
-  userid: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
+  userId: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
 
-  loginname: { type: sequelize.STRING, allowNull: false, comment: '登录名' },
-  displayname: { type: sequelize.STRING, allowNull: false, comment: '昵称' },
+  loginName: { type: sequelize.STRING, allowNull: false, comment: '登录名' },
+  displayName: { type: sequelize.STRING, allowNull: false, comment: '昵称' },
   password: { type: sequelize.STRING, defaultValue: null, comment: '密码' },
   telphone: { type: sequelize.STRING, defaultValue: null, comment: '电话' },
   avatar: { type: sequelize.STRING, defaultValue: null, comment: '个人头像url' },

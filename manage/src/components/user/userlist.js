@@ -3,6 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { message, notification, Popconfirm, Table } from 'antd'
 
+import UserPermissionModal from './userPermissionModal'
 import userjs from '../../utils/user'
 
 class Userlist extends React.Component {
@@ -14,7 +15,10 @@ class Userlist extends React.Component {
         showQuickJumper: true,
         showSizeChanger: true
       },
-      loading: false
+      loading: false,
+
+      permissionModalKey: 0,
+      permissionModalVisible: false,
     }
   }
 
@@ -34,19 +38,41 @@ class Userlist extends React.Component {
     })
   }
 
+  permissionModalShow(user) {
+    const permissionModalKey = this.state.permissionModalKey + 1;
+    this.setState({
+      permissionModalVisible: true,
+      permissionModalKey,
+      userId: user.userId,
+      loginName: user.loginName,
+    });
+  }
+
+  handlePermissionOk() {
+    this.setState({
+      permissionModalVisible: false
+    });
+  }
+
+  handlePermissionCancel() {
+    this.setState({
+      permissionModalVisible: false
+    });
+  }
+
   deleteBtnClick(index) {
     const datas = this.state.datas
     const data = datas[index]
 
     this.setState({ loading: true })
 
-    userjs.deleteUser(data.userid, (json) => {
+    userjs.deleteUser(data.userId, (json) => {
       if (json.success) {
         datas.splice(index, 1)
         this.setState({ datas })
 
         notification.success({
-          message: `删除用户 ${data.displayname} 成功!`,
+          message: `删除用户 ${data.displayName} 成功!`,
           description: null
         })
       } else {
@@ -72,21 +98,23 @@ class Userlist extends React.Component {
       key: 'index'
     }, {
       title: '用户名',
-      dataIndex: 'displayname',
-      key: 'displayname',
+      dataIndex: 'displayName',
+      key: 'displayName',
     }, {
       title: '登录账号',
-      dataIndex: 'loginname',
-      key: 'loginname',
+      dataIndex: 'loginName',
+      key: 'loginName',
     }, {
       title: '操作',
       key: 'operation',
       render: (text, record) => {
         return (
           <span>
-            <Link to={`/dashboard/user/info/${record.userid}`}>查看</Link>
+            <Link to={`/dashboard/user/info/${record.userId}`}>查看</Link>
             &nbsp;&nbsp;&nbsp;
-            <Popconfirm onConfirm={ this.deleteBtnClick.bind(this, record.key) } title="确定要删除此条记录吗？">
+            <a onClick={this.permissionModalShow.bind(this, record)} >权限</a>
+            &nbsp;&nbsp;&nbsp;
+            <Popconfirm onConfirm={this.deleteBtnClick.bind(this, record.key)} title="确定要删除此条记录吗？">
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -95,11 +123,26 @@ class Userlist extends React.Component {
     }]
 
     return (
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        loading={this.state.loading}
-        pagination={this.state.pagination} />
+      <div>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          loading={this.state.loading}
+          pagination={this.state.pagination}
+        />
+
+        <div>
+          <UserPermissionModal
+            visible={this.state.permissionModalVisible}
+            userId={this.state.userId}
+            key={this.state.permissionModalKey}
+            modalKey={this.state.permissionModalKey}
+            loginName={this.state.loginName}
+            onOk={this.handlePermissionOk.bind(this)}
+            onCancel={this.handlePermissionCancel.bind(this)}
+          />
+        </div>
+      </div>
     )
   }
 }

@@ -89,7 +89,7 @@ class Useradd extends React.Component {
         if (json.success) {
           // console.log('----- success -----' + json.success)
           notification.success({
-            message: `新建用户 ${values.displayname} 成功!`,
+            message: `新建用户 ${values.displayName} 成功!`,
             description: null
           })
 
@@ -139,7 +139,7 @@ class Useradd extends React.Component {
           {...formItemLayout}
           label="登录名"
           hasFeedback>
-          {getFieldDecorator('loginname', {
+          {getFieldDecorator('loginName', {
             rules: [
               { required: true, message: '请填写登录名' },
               { max: 50, message: '不能超过50字' },
@@ -153,7 +153,7 @@ class Useradd extends React.Component {
           {...formItemLayout}
           label="昵称"
           hasFeedback>
-          {getFieldDecorator('displayname', {
+          {getFieldDecorator('displayName', {
             rules: [
               { required: true, message: '请填写昵称' },
               { max: 50, message: '不能超过50字' },

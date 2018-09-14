@@ -7,11 +7,11 @@ module.exports = {
   /**
    * 用户登录
    */
-  login: (req, res) => {
-    const loginname = trim(req.body.loginname)
+  login_Old: (req, res) => {
+    const loginName = trim(req.body.loginName)
     const password = trim(req.body.password)
 
-    loginOperate.login(loginname, password, (error, user) => {
+    loginOperate.login(loginName, password, (error, user) => {
       res.type = 'json'
 
       if (error && error === 'incorrect') {
@@ -35,9 +35,9 @@ module.exports = {
         const expiresIn = '7d'
 
         const payload = {
-          displayname: user.displayname,
+          displayName: user.displayName,
           reveal: reveals,
-          authorization: user.userid
+          authorization: user.userId
         }
 
         const success = jwt.sign(payload, config.secret, {
@@ -47,9 +47,9 @@ module.exports = {
 
         if (config.auth) {
 
-          redisUtility.setUser(user.userid, {
-            userid: user.userid,
-            displayname: user.displayname,
+          redisUtility.setUser(user.userId, {
+            userId: user.userId,
+            displayName: user.displayName,
             telphone: user.telphone,
             role: user.role,
             permission: permissions
@@ -62,6 +62,53 @@ module.exports = {
     }) // end loginOperate.login
   }, // end this.login
 
+  login: (req, res) => {
+    const loginName = trim(req.body.loginName)
+    const password = trim(req.body.password)
+
+    loginOperate.login(loginName, password, (error, user) => {
+      res.type = 'json'
+
+      if (error && error === 'incorrect') {
+        res.status(200).json({ error: '用户名或密码错误!' })
+      } else if (error) {
+        res.status(200).json({ error })
+      } else if (user !== null) {
+        let menuPermissions = []
+
+        // 这里应该写的是api权限，页面的路由权限不在此处记录。
+        if (user.Menus && user.Menus.length > 0) {
+          user.Menus.forEach((menu) => {
+            menuPermissions.push(menu.id)
+          })
+        }
+
+        const expiresIn = '7d'
+
+        const payload = {
+          displayName: user.displayName,
+          authorization: user.userId
+        }
+
+        const success = jwt.sign(payload, config.secret, {
+          algorithm: 'HS512',
+          expiresIn
+        })
+
+        if (config.auth) {
+
+          redisUtility.setUser(user.userId, {
+            userId: user.userId,
+            displayName: user.displayName,
+            telphone: user.telphone,
+            menuPermissions: menuPermissions
+          })
+        }
+
+        res.status(200).json({ success })
+      } // end if user is not null
+    }) // end loginOperate.login
+  }, // end this.login
 
   /**
    * 修改用户密码
@@ -69,15 +116,15 @@ module.exports = {
   updatePassword: (req, res) => {
     const expire = trim(req.body.expire)
     const password = trim(req.body.password)
-    const userid = req.userid
+    const userId = req.userId
 
-    loginOperate.updatePassword(userid, expire, password, (error, success) => {
+    loginOperate.updatePassword(userId, expire, password, (error, success) => {
 
       if (error) {
         res.status(200).json({ error })
       } else {
         res.status(200).json({ success })
-        redisUtility.deleteUser(userid)
+        redisUtility.deleteUser(userId)
       }
     })
   },

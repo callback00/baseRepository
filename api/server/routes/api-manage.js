@@ -5,6 +5,8 @@ const file = require('../../src/common/file');
 
 const loginController = require('../../src/controllers/manage/loginController')
 const userController = require('../../src/controllers/manage/userController')
+const menuController = require('../../src/controllers/manage/system/menuController')
+const menuPermissionController = require('../../src/controllers/manage/system/menuPermissionController')
 // const tempFileController = require('../../src/controllers/file/tempFileController')
 
 const memberController = require('../../src/controllers/manage/memberController')
@@ -39,7 +41,7 @@ module.exports = (router, app, config) => {
     const getUserid = (req, res, next) => {
         redisUtility.getUser(req.sessionID, (current) => {
             if (current) {
-                req.userid = current.userid
+                req.userId = current.userId
             }
 
             next()
@@ -97,12 +99,24 @@ module.exports = (router, app, config) => {
         .post('/password', weakCheck, getUserid, loginController.updatePassword)
 
     router
-        .put('/user/create', strongCheck, userController.createUser)
-        .put('/user/update', strongCheck, userController.updateUser)
-        .delete('/user/delete', strongCheck, userController.deleteUser)
-        .post('/user/info', strongCheck, userController.getUserInfo)
-        .post('/user/list', strongCheck, userController.getUserList)
-        .post('/user/rule', strongCheck, userController.getRuleList)
+        .put('/user/create', weakCheck, userController.createUser)
+        .put('/user/update', weakCheck, userController.updateUser)
+        .delete('/user/delete', weakCheck, userController.deleteUser)
+        .post('/user/info', weakCheck, userController.getUserInfo)
+        .post('/user/list', weakCheck, userController.getUserList)
+        .post('/user/rule', weakCheck, userController.getRuleList)
+
+    router
+        .get('/menu/getMenuTree', weakCheck, menuController.getMenuTree)
+        .post('/menu/menuCreate', weakCheck, menuController.menuCreate)
+        .post('/menu/menuEdit', weakCheck, menuController.menuEdit)
+        .delete('/menu/menuDelete', weakCheck, menuController.menuDelete)
+        .post('/menu/getMenuById', weakCheck, menuController.getMenuById)
+
+    router
+        .post('/menuPermission/getMenuPermissionTree', weakCheck, getUser, menuPermissionController.getMenuPermissionTree)
+        .post('/menuPermission/permissionSave', weakCheck, menuPermissionController.permissionSave)
+        .post('/menuPermission/getCurrentMenuPermission', weakCheck, getUser, menuPermissionController.getCurrentMenuPermission)
 
     router
         .post('/member/getMemberList', weakCheck, memberController.getMemberList)
