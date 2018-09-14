@@ -6,7 +6,7 @@ import { message, notification, Popconfirm, Table } from 'antd'
 import UserPermissionModal from './userPermissionModal'
 import userjs from '../../utils/user'
 
-class Userlist extends React.Component {
+class UserList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -147,4 +147,4 @@ class Userlist extends React.Component {
   }
 }
 
-export default Userlist
+export default UserList

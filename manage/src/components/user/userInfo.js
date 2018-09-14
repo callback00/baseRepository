@@ -6,7 +6,7 @@ import userjs from '../../utils/user'
 
 const { create, Item } = Form
 
-class Userinfo extends React.Component {
+class UserInfo extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -218,8 +218,8 @@ class Userinfo extends React.Component {
           {...formItemLayout}
           label="显示密码">
           <Checkbox
-            checked={ !this.state.secure }
-            onChange={ this.checkboxSecure } />
+            checked={!this.state.secure}
+            onChange={this.checkboxSecure} />
         </Item>
 
         <Item
@@ -229,7 +229,7 @@ class Userinfo extends React.Component {
           <span className="ant-checkbox-vertical">
             <Checkbox
               checked={count === this.state.rulelist.length}
-              onChange={ this.checkAll }
+              onChange={this.checkAll}
               value="0" /> <a>全选</a>
           </span>
 
@@ -240,12 +240,12 @@ class Userinfo extends React.Component {
         <Item wrapperCol={{ offset: 3 }}>
           <Button
             loading={this.state.loading}
-            onClick={ this.saveBtnClick }
+            onClick={this.saveBtnClick}
             type="primary">
             <Icon type="save" />确定
           </Button>
           &nbsp;&nbsp;&nbsp;
-          <Button type="ghost" onClick={ this.resetBtnClick }>
+          <Button type="ghost" onClick={this.resetBtnClick}>
             <Icon type="reload" />重置
           </Button>
         </Item>
@@ -254,6 +254,6 @@ class Userinfo extends React.Component {
   }
 }
 
-Userinfo = create()(Userinfo)
+UserInfo = create()(UserInfo)
 
-export default Userinfo
+export default UserInfo

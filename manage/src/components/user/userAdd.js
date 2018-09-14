@@ -5,7 +5,7 @@ import userjs from '../../utils/user'
 
 const { create, Item } = Form
 
-class Useradd extends React.Component {
+class UserAdd extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -230,6 +230,6 @@ class Useradd extends React.Component {
   }
 }
 
-Useradd = create()(Useradd)
+UserAdd = create()(UserAdd)
 
-export default Useradd
+export default UserAdd
