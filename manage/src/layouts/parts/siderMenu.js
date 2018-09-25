@@ -1,21 +1,24 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import { Menu, Icon, message } from 'antd'
+import { Menu, Icon } from 'antd'
 
-import auth from '../utils/auth'
-import tools from '../utils/tools'
+import systemMenu from '../../utils/systemMenu'
 
 const { SubMenu } = Menu
 
-class Nav extends Component {
+class SiderMenu extends Component {
     constructor(props) {
         super(props)
         this.state = {
             menuTreeList: [],
 
             defaultSelectedKeys: [],
-            defaultOpenKeys: []
+            defaultOpenKeys: [],
+
+            selectedKeys: []
         }
+
+        this.systemMenu = systemMenu.getDefaultMenu()
 
     }
 
@@ -33,6 +36,11 @@ class Nav extends Component {
                 }
             }
         };
+    }
+
+    onSelect(selectedKeys, info) {
+        console.log('onSelect', info);
+        this.setState({ selectedKeys });
     }
 
     renderMenu(menuTreeList) {
@@ -63,10 +71,14 @@ class Nav extends Component {
         const { pathname } = this.props.location;
 
         const menuTreeList = this.props.menuTreeList;
-        const selectMenu = this.getSelectedMenu(menuTreeList, pathname);
+        const list = [...menuTreeList, ...this.systemMenu]
+        const selectMenu = this.getSelectedMenu(list, pathname);
+
         const defaultSelectedKeys = selectMenu ? [`${selectMenu.id}`] : [];
         const defaultOpenKeys = selectMenu ? selectMenu.treeId : [];
+        const selectedKeys = this.state.selectedKeys.length > 0 ? this.state.selectedKeys : defaultSelectedKeys
 
+        console.log('defaultOpenKeys', defaultOpenKeys)
         return (
             <Menu
                 mode="inline"
@@ -75,12 +87,14 @@ class Nav extends Component {
                 defaultSelectedKeys={defaultSelectedKeys}
                 defaultOpenKeys={defaultOpenKeys}
             >
-                {this.renderMenu(menuTreeList)}
+                {this.renderMenu(list)}
             </Menu>
         )
     }
 }
 
-const NavWithRouter = withRouter(Nav)
+// export default SiderMenu
 
-export default NavWithRouter
+const SiderMenuWithRouter = withRouter(SiderMenu)
+
+export default SiderMenuWithRouter

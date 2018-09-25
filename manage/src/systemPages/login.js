@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
+
+import auth from '../utils/auth' // 登录验证方法
 // import { Input, Icon, Button } from 'antd'
 
 class Login extends Component {
@@ -39,7 +42,14 @@ class Login extends Component {
       return
     }
 
-    this.props.login(id, password)
+    auth.login(id, password, (json) => {
+      if (json.success) {
+        this.props.logInCallback(this.props.history);
+      } else {
+        message.error(json.error)
+      }
+    })
+
   }
 
   render() {
@@ -67,4 +77,5 @@ class Login extends Component {
   }
 }
 
-export default Login
+const LoginWithRouter = withRouter(Login)
+export default LoginWithRouter

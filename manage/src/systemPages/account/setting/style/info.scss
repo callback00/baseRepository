@@ -1,0 +1,30 @@
+.account-setting {
+    display: block;
+    padding: 20px 0;
+    background: white;
+}
+
+.account-setting.sider {
+    display: flex;
+    .account-setting-content {
+        flex: 2;
+        .account-setting-content-title {
+            margin-top: 0;
+        }
+    }
+}
+
+.account-setting-menu {
+    width: 225px;
+}
+
+.account-setting-content {
+    padding: 5px 40px;
+    .account-setting-content-title {
+        margin-top: 20px;
+        color: rgba(0, 0, 0, .85);
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 28px;
+    }
+}

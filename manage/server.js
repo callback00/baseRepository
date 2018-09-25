@@ -41,9 +41,9 @@ if (env === 'development') {
 
 const router = express.Router()
 
-router.get('/', function(req, res) {
-  res.redirect('/manage/login')
-})
+// router.get('/', function(req, res) {
+//   res.redirect('/manage/login')
+// })
 
 app.use(router)
 

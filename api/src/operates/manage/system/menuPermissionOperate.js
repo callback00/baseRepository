@@ -22,21 +22,6 @@ function buildTree(nodeList, menuList) {
             return item.parentId === node.id;
         });
 
-        // // 将有权限的菜单栏标志为true
-        // children.forEach(item => {
-        //     if (item.isLeaf) {
-        //         const permission = permissionList.filter(function (power) {
-        //             return item.id === power.menuId;
-        //         })
-
-        //         if (permission.length > 0) {
-        //             item.permissionFlag = true;
-        //         } else {
-        //             item.permissionFlag = false;
-        //         }
-        //     }
-        // })
-
         if (children.length > 0) {
             node.children = children;
             buildTree(children, menuList)
@@ -168,12 +153,16 @@ module.exports = {
 
         const parentIds = parentIdList.join(',');
         const selectIds = union(parentIdList, leafMenuIdList).join(',');
-        const menuList = await conn.query(
-            `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from menus where deletedAt is null and id in (${selectIds}) order by sort asc,createdAt asc
-            `, { type: sequelize.QueryTypes.SELECT }
-        ).then((result) => {
-            return result;
-        })
+
+        let menuList = []
+        if (selectIds) {
+            menuList = await conn.query(
+                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from menus where deletedAt is null and id in (${selectIds}) order by sort asc,createdAt asc
+                `, { type: sequelize.QueryTypes.SELECT }
+            ).then((result) => {
+                return result;
+            })
+        }
 
         const result = buildTree([{ id: 0, name: '导航栏目' }], menuList).sort((a, b) => a.sort - b.sort);
         const menuPermissionList = permissionList;
