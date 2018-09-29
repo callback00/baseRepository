@@ -74,12 +74,12 @@ module.exports = {
       } else if (error) {
         res.status(200).json({ error })
       } else if (user !== null) {
-        let menuPermissions = []
+        let apiPermissions = []
 
         // 这里应该写的是api权限，页面的路由权限不在此处记录。
-        if (user.Menus && user.Menus.length > 0) {
-          user.Menus.forEach((menu) => {
-            menuPermissions.push(menu.id)
+        if (user.Apis && user.Apis.length > 0) {
+          user.Apis.forEach((apiItem) => {
+            apiPermissions.push(apiItem.url)
           })
         }
 
@@ -99,9 +99,10 @@ module.exports = {
 
           redisUtility.setUser(user.userId, {
             userId: user.userId,
+            loginName,
             displayName: user.displayName,
             telphone: user.telphone,
-            menuPermissions: menuPermissions
+            apiPermissions: apiPermissions
           })
         }
 

@@ -31,8 +31,10 @@ export default {
       .set('Accept', 'application/json')
       .end((err, res) => {
         if (res.statusCode === 200) {
-          assign(addto, res.body) 
+          assign(addto, res.body)
           callback(addto)
+        } else if (res.statusCode === 401) {
+          callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
         }
@@ -50,8 +52,10 @@ export default {
       .set('Accept', 'application/json')
       .end((err, res) => {
         if (res.statusCode === 200) {
-          assign(addto, res.body) 
+          assign(addto, res.body)
           callback(addto)
+        } else if (res.statusCode === 401) {
+          callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
         }
@@ -69,8 +73,10 @@ export default {
       .set('Accept', 'application/json')
       .end((err, res) => {
         if (res.statusCode === 200) {
-          assign(addto, res.body) 
+          assign(addto, res.body)
           callback(addto)
+        } else if (res.statusCode === 401) {
+          callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
         }
@@ -98,8 +104,10 @@ export default {
       // .set('Content-Type', 'multipart/form-data')
       .end((err, res) => {
         if (res.statusCode === 200) {
-          assign(addto, res.body) 
+          assign(addto, res.body)
           callback(addto)
+        } else if (res.statusCode === 401) {
+          callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
         }
@@ -117,8 +125,10 @@ export default {
       .set('Accept', 'application/json')
       .end((err, res) => {
         if (res.statusCode === 200) {
-          assign(addto, res.body) 
+          assign(addto, res.body)
           callback(addto)
+        } else if (res.statusCode === 401) {
+          callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
         }

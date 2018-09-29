@@ -95,7 +95,6 @@ class Info extends Component {
             if (window.innerWidth < 768 && offsetWidth > 400) {
                 mode = 'horizontal';
             }
-            console.log(mode)
             this.setState({
                 mode,
             });
@@ -111,7 +110,6 @@ class Info extends Component {
             layoutMode = ''
         }
 
-        // const MenuContent = this.state.selectMenu ? this.state.selectMenu.component : null;
         const MenuContent = this.state.selectMenu.component
         return (
 
@@ -130,10 +128,7 @@ class Info extends Component {
                     <div className="account-setting-content-title">
                         {this.getRightTitle()}
                     </div>
-                    {
-                        // MenuContent ? <MenuContent /> : null
-                        <MenuContent />
-                    }
+                    <MenuContent history={this.props.history} />
                 </div>
             </div>
         );
@@ -143,5 +138,3 @@ class Info extends Component {
 const InfoWithRouter = withRouter(Info)
 
 export default InfoWithRouter
-
-// export default Info

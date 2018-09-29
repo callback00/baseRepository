@@ -10,38 +10,18 @@ class UserInfo extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      rulelist: [],
       data: {},
-      rules: {},
       secure: true,
       loading: false
     }
-
-    this.checkboxChange = this.checkboxChange.bind(this)
-    this.checkboxSecure = this.checkboxSecure.bind(this)
-    this.checkAll = this.checkAll.bind(this)
 
     this.saveBtnClick = this.saveBtnClick.bind(this)
     this.resetBtnClick = this.resetBtnClick.bind(this)
   }
 
   componentWillMount() {
-    this.getRuleList()
-
     const { id } = this.props.match.params
-    this.getUserInfo(id)
-  }
-
-  getRuleList() {
-    userjs.getRuleList((json) => {
-      if (json.success) {
-        // console.log('----- success -----' + json.success)
-        this.setState({ rulelist: json.success })
-      } else {
-        message.warning(json.error)
-        // console.log('----- error -----' + json.error)
-      }
-    })
+    this.getUserInfo(id);
   }
 
   getUserInfo(userId) {
@@ -49,39 +29,12 @@ class UserInfo extends React.Component {
       if (json.success) {
         // console.log('----- success -----' + json.success)
         const data = json.success
-        const rules = {}
-        if (data.rulemaps) {
-          data.rulemaps.forEach((rm) => {
-            rules[rm.ruleid] = true
-          })
-        }
-
-        this.setState({ data, rules })
+        this.setState({ data })
       } else {
         message.warning(json.error)
         // console.log('----- error -----' + json.error)
       }
     })
-  }
-
-  checkboxChange(event) {
-    const rules = this.state.rules
-    rules[event.target.value] = event.target.checked
-
-    this.setState({ rules })
-  }
-
-  checkboxSecure(event) {
-    this.setState({ secure: !event.target.checked })
-  }
-
-  checkAll(event) {
-    const rules = {}
-    this.state.rulelist.forEach((data) => {
-      rules[data.ruleid] = event.target.checked
-    })
-
-    this.setState({ rules })
   }
 
   resetBtnClick() {
@@ -99,24 +52,6 @@ class UserInfo extends React.Component {
       }
 
       values.userId = this.state.data.userId
-
-      values.adds = []
-      values.deletes = []
-      const rulemaps = this.state.data.rulemaps
-      for (const _ruleid in this.state.rules) {
-        const ruleid = Number(_ruleid)
-        if (this.state.rules[ruleid]) {
-          const index = findIndex(rulemaps, { ruleid })
-          if (index === -1) {
-            values.adds.push(ruleid)
-          }
-        } else {
-          const index = findIndex(rulemaps, { ruleid })
-          if (index > -1) {
-            values.deletes.push(ruleid)
-          }
-        }
-      }
 
       this.setState({ loading: true })
 
@@ -139,21 +74,6 @@ class UserInfo extends React.Component {
 
   render() {
     let count = 0
-    const checkboxs = this.state.rulelist.map((rule) => {
-      const checked = this.state.rules[rule.ruleid]
-      if (checked) {
-        count++
-      }
-
-      return (
-        <span key={rule.ruleid} className="ant-checkbox-vertical">
-          <Checkbox
-            checked={checked}
-            onChange={this.checkboxChange.bind(this)}
-            value={rule.ruleid} /> {rule.rulename}
-        </span>
-      )
-    })
 
     const { getFieldDecorator } = this.props.form
     const formItemLayout = {
@@ -220,21 +140,6 @@ class UserInfo extends React.Component {
           <Checkbox
             checked={!this.state.secure}
             onChange={this.checkboxSecure} />
-        </Item>
-
-        <Item
-          {...formItemLayout}
-          label="权限">
-
-          <span className="ant-checkbox-vertical">
-            <Checkbox
-              checked={count === this.state.rulelist.length}
-              onChange={this.checkAll}
-              value="0" /> <a>全选</a>
-          </span>
-
-          {checkboxs}
-
         </Item>
 
         <Item wrapperCol={{ offset: 3 }}>

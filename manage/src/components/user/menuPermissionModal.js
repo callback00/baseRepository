@@ -71,7 +71,6 @@ class Page extends React.Component {
     }
 
     onExpand(expandedKeys) {
-        console.log('onExpand', expandedKeys);
         // if not set autoExpandParent to false, if children expanded, parent can not collapse.
         // or, you can remove all expanded children keys.
         this.setState({
@@ -81,12 +80,10 @@ class Page extends React.Component {
     }
 
     onCheck(checkedKeys, e) {
-        console.log('onCheck', e);
         this.setState({ checkedKeys });
     }
 
     onSelect(selectedKeys, info) {
-        console.log('onSelect', info);
         this.setState({ selectedKeys });
     }
 
@@ -124,7 +121,7 @@ class Page extends React.Component {
     render() {
         return (
             <Modal
-                title={`编辑权限 (当前用户：${this.props.loginName})`}
+                title={`编辑菜单权限 (当前用户：${this.props.loginName})`}
                 visible={this.props.visible}
                 key={this.props.modalKey}
                 // onOk={this.handleOk.bind(this)}

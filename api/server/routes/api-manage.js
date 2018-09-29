@@ -7,6 +7,8 @@ const loginController = require('../../src/controllers/manage/loginController')
 const userController = require('../../src/controllers/manage/userController')
 const menuController = require('../../src/controllers/manage/system/menuController')
 const menuPermissionController = require('../../src/controllers/manage/system/menuPermissionController')
+const apiController = require('../../src/controllers/manage/system/apiController')
+const apiPermissionController = require('../../src/controllers/manage/system/apiPermissionController')
 // const tempFileController = require('../../src/controllers/file/tempFileController')
 
 const memberController = require('../../src/controllers/manage/memberController')
@@ -16,131 +18,172 @@ const wxHomeInfoController = require('../../src/controllers/manage/wxHomeInfoCon
 
 const multipart = require('connect-multiparty')
 
+const Api = require('../../src/models/system/apiModel')
+
 module.exports = (router, app, config) => {
 
     // 需自己创建临时文件夹
-    file.mkdir(['tempFile'])
+    file.mkdir(['tempFile']);
     // 设置临时文件夹目录，multipart组件会自动将上传的文件存储在临时文件夹中，所以当文件转移到正式文件夹后记得删除临时文件夹的内容
-    const multipartMiddleware = multipart({ uploadDir: path.resolve(config.rootPath, '../file/tempFile') })
+    const multipartMiddleware = multipart({ uploadDir: path.resolve(config.rootPath, '../file/tempFile') });
+
+    // 获取需要校验权限的api
+    let apiList = [];
+    Api.findAll({ where: { isLeaf: 1 } }).then((success) => {
+        apiList = [...success];
+    });
 
     const loginExpired = (res) => {
         res.type = 'json';
         res.status(401).json({ error: '用户登录已过期，请重新登录!' });
     };
 
-    // 自定义 弱权限校验 中间件，只校验是否登录
-    const weakCheck = (req, res, next) => {
-        if (req.sessionID) {
-            next()
-        } else {
-            loginExpired(res)
-        }
-    }
-
     // 自定义 获取操作用户userid 中间件
     const getUserid = (req, res, next) => {
         redisUtility.getUser(req.sessionID, (current) => {
             if (current) {
-                req.userId = current.userId
+                req.userId = current.userId;
             }
 
-            next()
-        })
-    }
+            next();
+        });
+    };
 
-    // 自定义 强权限校验 中间件,校验权限
+    // 自定义 弱权限校验 中间件，只校验是否登录
+    const weakCheck = (req, res, next) => {
+        if (req.sessionID) {
+            next();
+        } else {
+            loginExpired(res);
+        }
+    };
+
+    // 权限校验中间件，对于维护在api表中的路由进行用户权限校验，未维护在api表中的路由直接通过
     const strongCheck = (req, res, next) => {
-        // 判断用户是否有权限访问的公用逻辑
-        if (config.auth) {
+        redisUtility.getUser(req.sessionID, (user) => {
+            if (user) {
+                // 超级管理员无需api权限校验
+                if (user.loginName === 'admin') {
+                    next();
+                    return
+                } else {
+                    // 为防止权限校验有bug，保留文本配置的功能，稳定后可去掉该判断
+                    if (config.auth) {
+                        // 判断当前url是否在需校验的列表里
+                        const isCheckPermission = apiList.some((data) => {
+                            return req.originalUrl.match(`/api${data.url}`) !== null;
+                        })
 
-            redisUtility.getUser(req.sessionID, (current) => {
-                if (current && current.permission) {
-                    // console.log(current.permission)
-                    const isLogin = current.permission.some((data) => {
-                        return req.originalUrl.match(data) !== null
-                    })
+                        // 如需校验api则校验用户api权限，否则next
+                        if (isCheckPermission) {
+                            if (user.apiPermissions) {
+                                const isGoNext = user.apiPermissions.some((data) => {
+                                    return req.originalUrl.match(`/api${data}`) !== null;
+                                })
 
-                    if (isLogin) {
-                        next()
-                        return
+                                if (isGoNext) {
+                                    next();
+                                    return;
+                                } else {
+                                    res.type = 'json';
+                                    res.status(401).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
+                                }
+                            }
+                        } else {
+                            next();
+                            return;
+                        }
+                    } else {
+                        next();
+                        return;
                     }
                 }
-
-                res.type = 'json'
-                res.status(200).json({ auth: '登录失效!', error: '用户没有权限执行此操作!' })
-            })
-
-        } else {
-            next()
-        }
+            } else {
+                res.type = 'json';
+                res.status(401).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
+            }
+        })
     }
 
     // 自定义 获取操作用户user 中间件
     const getUser = (req, res, next) => {
-        redisUtility.getUser(req.sessionID, (current) => {
-            if (current) {
-                req.user = current;
+        redisUtility.getUser(req.sessionID, (user) => {
+            if (user) {
+                req.user = user;
             }
             next();
-        })
-    }
+        });
+    };
 
     // 单独处理登出请求，无需权限控制，直接销毁对应的登录内容
     router.use('/logout', (req, res) => {
-        res.status(200).end()
+        res.status(200).end();
         if (config.auth) {
-            redisUtility.deleteUser(req.sessionID)
+            redisUtility.deleteUser(req.sessionID);
         }
-    })
+    });
 
     // 后台 API
     router
         .post('/login', loginController.login)
-        .post('/password', weakCheck, getUserid, loginController.updatePassword)
+        .post('/password', strongCheck, getUserid, loginController.updatePassword)
+        .put('/updateMyInfo', strongCheck, getUserid, userController.updateMyInfo)
+        .get('/getMyInfo', strongCheck, getUserid, userController.getMyInfo)
 
     router
-        .put('/user/create', weakCheck, userController.createUser)
-        .put('/user/update', weakCheck, userController.updateUser)
-        .delete('/user/delete', weakCheck, userController.deleteUser)
-        .post('/user/info', weakCheck, userController.getUserInfo)
-        .post('/user/list', weakCheck, userController.getUserList)
-        .post('/user/rule', weakCheck, userController.getRuleList)
+        .put('/user/create', strongCheck, userController.createUser)
+        .put('/user/update', strongCheck, userController.updateUser)
+        .delete('/user/delete', strongCheck, userController.deleteUser)
+        .post('/user/info', strongCheck, userController.getUserInfo)
+        .post('/user/list', strongCheck, userController.getUserList)
 
     router
-        .get('/menu/getMenuTree', weakCheck, menuController.getMenuTree)
-        .post('/menu/menuCreate', weakCheck, menuController.menuCreate)
-        .post('/menu/menuEdit', weakCheck, menuController.menuEdit)
-        .delete('/menu/menuDelete', weakCheck, menuController.menuDelete)
-        .post('/menu/getMenuById', weakCheck, menuController.getMenuById)
+        .get('/menu/getMenuTree', strongCheck, menuController.getMenuTree)
+        .post('/menu/menuCreate', strongCheck, menuController.menuCreate)
+        .post('/menu/menuEdit', strongCheck, menuController.menuEdit)
+        .delete('/menu/menuDelete', strongCheck, menuController.menuDelete)
+        .post('/menu/getMenuById', strongCheck, menuController.getMenuById)
 
     router
-        .post('/menuPermission/getMenuPermissionTree', weakCheck, getUser, menuPermissionController.getMenuPermissionTree)
-        .post('/menuPermission/permissionSave', weakCheck, menuPermissionController.permissionSave)
-        .post('/menuPermission/getCurrentMenuPermission', weakCheck, getUser, menuPermissionController.getCurrentMenuPermission)
+        .get('/apiManage/getApiTree', strongCheck, apiController.getApiTree)
+        .post('/apiManage/apiCreate', strongCheck, apiController.apiCreate)
+        .post('/apiManage/apiEdit', strongCheck, apiController.apiEdit)
+        .delete('/apiManage/apiDelete', strongCheck, apiController.apiDelete)
+        .post('/apiManage/getApiById', strongCheck, apiController.getApiById)
 
     router
-        .post('/member/getMemberList', weakCheck, memberController.getMemberList)
+        .post('/menuPermission/getMenuPermissionTree', strongCheck, getUser, menuPermissionController.getMenuPermissionTree)
+        .post('/menuPermission/permissionSave', strongCheck, menuPermissionController.permissionSave)
+        .post('/menuPermission/getCurrentMenuPermission', strongCheck, getUser, menuPermissionController.getCurrentMenuPermission)
+
+    router
+        .post('/apiPermission/getApiPermissionTree', strongCheck, getUser, apiPermissionController.getApiPermissionTree)
+        .post('/apiPermission/permissionSave', strongCheck, apiPermissionController.permissionSave)
+        .post('/apiPermission/getCurrentapiPermission', strongCheck, getUser, apiPermissionController.getCurrentApiPermission)
+
+    router
+        .post('/member/getMemberList', strongCheck, memberController.getMemberList)
 
     // router
     //     .post('/tempFile/baseUpload', multipartMiddleware, weakCheck, tempFileController.baseUpload)
 
     router
-        .get('/workAreaAuditer/getWorkAreaTree', weakCheck, workAreaAuditerController.getWorkAreaTree)
-        .post('/workAreaAuditer/getWorkAreaById', weakCheck, workAreaAuditerController.getWorkAreaById)
-        .post('/workAreaAuditer/workAreaCreate', weakCheck, workAreaAuditerController.workAreaCreate)
-        .post('/workAreaAuditer/workAreaEdit', weakCheck, workAreaAuditerController.workAreaEdit)
-        .delete('/workAreaAuditer/workAreaDelete', weakCheck, workAreaAuditerController.workAreaDelete)
+        .get('/workAreaAuditer/getWorkAreaTree', strongCheck, workAreaAuditerController.getWorkAreaTree)
+        .post('/workAreaAuditer/getWorkAreaById', strongCheck, workAreaAuditerController.getWorkAreaById)
+        .post('/workAreaAuditer/workAreaCreate', strongCheck, workAreaAuditerController.workAreaCreate)
+        .post('/workAreaAuditer/workAreaEdit', strongCheck, workAreaAuditerController.workAreaEdit)
+        .delete('/workAreaAuditer/workAreaDelete', strongCheck, workAreaAuditerController.workAreaDelete)
 
     router
-        .post('/workAreaAuditer/getAuditerListByAreaId', weakCheck, workAreaAuditerController.getAuditerListByAreaId)
-        .post('/workAreaAuditer/getAuditerById', weakCheck, workAreaAuditerController.getAuditerById)
-        .post('/workAreaAuditer/workAreaAuditerCreate', weakCheck, workAreaAuditerController.workAreaAuditerCreate)
-        .post('/workAreaAuditer/workAreaAuditerEdit', weakCheck, workAreaAuditerController.workAreaAuditerEdit)
-        .delete('/workAreaAuditer/workAreaAuditerDelete', weakCheck, workAreaAuditerController.workAreaAuditerDelete)
+        .post('/workAreaAuditer/getAuditerListByAreaId', strongCheck, workAreaAuditerController.getAuditerListByAreaId)
+        .post('/workAreaAuditer/getAuditerById', strongCheck, workAreaAuditerController.getAuditerById)
+        .post('/workAreaAuditer/workAreaAuditerCreate', strongCheck, workAreaAuditerController.workAreaAuditerCreate)
+        .post('/workAreaAuditer/workAreaAuditerEdit', strongCheck, workAreaAuditerController.workAreaAuditerEdit)
+        .delete('/workAreaAuditer/workAreaAuditerDelete', strongCheck, workAreaAuditerController.workAreaAuditerDelete)
 
     router
-        .post('/auditLog/getAuditLogList', weakCheck, auditLogController.getAuditLogList)
+        .post('/auditLog/getAuditLogList', strongCheck, auditLogController.getAuditLogList)
 
     router
-        .post('/wxHomeInfo/createScenic', weakCheck, wxHomeInfoController.createScenic)
+        .post('/wxHomeInfo/createScenic', strongCheck, wxHomeInfoController.createScenic)
 }

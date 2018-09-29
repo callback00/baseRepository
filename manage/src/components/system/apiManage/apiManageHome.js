@@ -1,9 +1,8 @@
-import assign from 'lodash.assign'
 import React from 'react'
-import { Table, Button, message, Modal } from 'antd'
+import { Table, Button, message, Modal, Alert } from 'antd'
 
 import tools from '../../../utils/tools'
-import MenuModal from './menuModal'
+import ApiManageModal from './apiManageModal'
 
 message.config({
     top: 200,
@@ -35,16 +34,17 @@ class Page extends React.Component {
             loading: true
         });
 
-        tools.get('/menu/getMenuTree', (json) => {
+        tools.get('/apiManage/getApiTree', (json) => {
             if (json.success) {
                 this.setState({ data: json.success, loading: false });
             } else {
+                message.error(json.error);
                 this.setState({ loading: false });
             }
         })
     }
 
-    showMenuModalHandle(option) {
+    showApiModalHandle(option) {
 
         if (option === 'edit' && !this.state.selectNode) {
             message.error('请选择要编辑的导航栏目');
@@ -84,7 +84,7 @@ class Page extends React.Component {
     }
 
     handelDelete() {
-        tools.del('/menu/menuDelete', (json) => {
+        tools.del('/apiManage/apiDelete', (json) => {
             if (json.success) {
                 message.success(json.success);
                 this.getTreeData();
@@ -125,8 +125,8 @@ class Page extends React.Component {
     renderTableHeader() {
         return (
             <div>
-                <button onClick={this.showMenuModalHandle.bind(this, 'create')}>新增</button>
-                <button style={{ marginLeft: '20px' }} onClick={this.showMenuModalHandle.bind(this, 'edit')}>编辑</button>
+                <button onClick={this.showApiModalHandle.bind(this, 'create')}>新增</button>
+                <button style={{ marginLeft: '20px' }} onClick={this.showApiModalHandle.bind(this, 'edit')}>编辑</button>
                 <button style={{ marginLeft: '20px' }} onClick={this.deleteConfirm.bind(this)}>删除</button>
             </div>
         )
@@ -163,22 +163,32 @@ class Page extends React.Component {
         const dataSource = this.state.data
 
         const columns = [{
-            title: '栏目名称',
+            title: 'api权限名称',
             dataIndex: 'name',
             key: 'name',
         }, {
             title: '路由链接',
-            dataIndex: 'menuLink',
-            key: 'menuLink',
-        }, {
-            title: '图标',
-            dataIndex: 'icon',
-            key: 'icon',
+            dataIndex: 'url',
+            key: 'url',
         }];
 
         return (
-            <div className="menuHome">
-                <div className="card">
+            <div className="apiManageHome">
+
+                <Alert
+                    message="操作建议"
+                    description={
+                        <div>
+                            <p>1、api权限的层级设置最好能与menu的相对应，api权限是相对于界面的。</p>
+                            <p>2、此处不需要维护所有的api，只需维护需要验证权限的api</p>
+                            <p>3、后台api需加上权限校验中间件，中间件根据此表的内容判断路由是否需要权限校验</p>
+                        </div>
+                    }
+                    type="info"
+                    showIcon
+                />
+
+                <div style={{ marginTop: '15px' }} className="card">
                     <Table
                         rowKey="id"
                         title={this.renderTableHeader.bind(this)}
@@ -195,7 +205,7 @@ class Page extends React.Component {
                     />
                 </div>
 
-                <MenuModal
+                <ApiManageModal
                     visible={this.state.visible}
                     id={this.state.selectNode ? this.state.selectNode.id : 0}
                     option={this.state.option}

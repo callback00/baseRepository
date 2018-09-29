@@ -14,7 +14,7 @@ import BusinessContent from './parts/businessContent'
 import Footer from './parts/footer'
 
 import tools from '../utils/tools'
-import systemRoute from '../utils/systemRoute'
+import systemRoute from '../../config/systemRoute.config'
 
 const { Sider } = Layout;
 
@@ -26,8 +26,6 @@ class BasicLayout extends React.Component {
             menuPermissionList: [],
             getPermissionFlag: false
         }
-
-        this.systemDefaultRoutes = systemRoute.getDefaultRoute();
     }
 
     componentWillMount() {
@@ -47,9 +45,6 @@ class BasicLayout extends React.Component {
                 // console.log(context.keys());//获取正则js目录下文件，转化成数组形势输出
 
                 // 注意此时context的路径已经在src下，输出的文件名 ./components/xx/xx.js 其中xx与components下的文件结构有关
-                const filename = "./components/baseReport/memberReport.js";
-                // console.log(context(filename));
-
                 menuPermissionList.forEach(menu => {
                     const filename = './components' + menu.comPath;
                     menu.component = context(filename).default
@@ -75,7 +70,7 @@ class BasicLayout extends React.Component {
         })
 
         // 系统默认带有的路由
-        const defaultRoute = this.systemDefaultRoutes.map(item => {
+        const defaultRoute = systemRoute.map(item => {
             return (
                 <Route key={item.key} path={item.menuLink} component={item.component} />
             )

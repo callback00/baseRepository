@@ -13,7 +13,7 @@ const User = conn.define('sys_user', {
   avatar: { type: sequelize.STRING, defaultValue: null, comment: '个人头像url' },
 
   gender: { type: sequelize.ENUM, values: ['0', '1'], defaultValue: '1', comment: '0.女 1.男' },
-  remarks: { type: sequelize.STRING, defaultValue: null, comment: '备注' },
+  remark: { type: sequelize.STRING, defaultValue: null, comment: '备注' },
   status: { type: sequelize.ENUM, values: ['0', '1'], defaultValue: '1', comment: '账号状态: 0.锁定 1.正常' },
   role: { type: sequelize.ENUM, values: ['0', '1', '2'], defaultValue: '1', comment: '角色: 0.管理员 1.立案庭 2.审判庭' },
 }, {

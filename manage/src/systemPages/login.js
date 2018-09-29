@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { message } from 'antd'
 import { withRouter } from 'react-router-dom'
 
 import auth from '../utils/auth' // 登录验证方法

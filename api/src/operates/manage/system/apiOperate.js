@@ -1,7 +1,7 @@
 const sequelize = require('sequelize')
 const logger = require('../../../common/logger')
-const Menu = require('../../../models/system/menuModel')
-const Sys_Menu_Permission = require('../../../models/system/sys_menu_permission')
+const Api = require('../../../models/system/apiModel')
+const Sys_Api_Permission = require('../../../models/system/sys_api_permission')
 
 const dbConn = require('../../../common/dbConn')
 const conn = dbConn.getConn()
@@ -25,54 +25,51 @@ function buildTree(nodeList, data) {
 }
 
 module.exports = {
-    getMenuTree: async (callback) => {
+    getApiTree: async (callback) => {
 
         try {
             const data = await conn.query(
-                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from menus where deletedAt is null order by sort asc,createdAt asc
+                `select  id, name, url, parentId, treeId, isLeaf, sort, remark from sys_apis where deletedAt is null order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;
             })
 
-            const result = buildTree([{ id: 0, name: '导航栏目' }], data).sort((a, b) => a.sort - b.sort);
+            const result = buildTree([{ id: 0, name: '后台api管理' }], data).sort((a, b) => a.sort - b.sort);
+
             if (result[0].children) {
                 return callback(null, result[0].children);
             } else {
                 return callback(null, []);
             }
         } catch (error) {
-            logger.error(`----- menuOperate getMenuTree error = ${error} -----`);
+            logger.error(`----- apiOperate getApiTree error = ${error} -----`);
             callback('请求已被服务器拒绝');
         }
     },
 
-    getMenuById: async (id, callback) => {
+    getApiById: async (id, callback) => {
 
         try {
-            const menu = await Menu.findOne({
+            const api = await Api.findOne({
                 where: { id },
             }).then((item) => {
                 return item;
             });
 
-            return callback(null, menu);
+            return callback(null, api);
         } catch (error) {
-            logger.error(`----- menuOperate getMenuById error = ${error} -----`);
+            logger.error(`----- apiOperate getApiById error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
     },
 
-    menuCreate: async (name, menuLink, comPath, icon, parentId, sort, menuType, menuTypeDesc, callback) => {
+    apiCreate: async (name, url, parentId, sort, callback) => {
 
         let data = {
             name,
-            menuLink,
-            comPath,
-            icon,
-            sort,
-            menuType,
-            menuTypeDesc
+            url,
+            sort
         };
 
         if (parentId === '0' || parentId === 0) {
@@ -81,17 +78,17 @@ module.exports = {
             data.isLeaf = true;
 
             try {
-                const result = await Menu.create(data).then((result) => {
+                const result = await Api.create(data).then((result) => {
                     return result;
                 })
 
                 return callback(null, '创建成功。');
             } catch (error) {
-                logger.error(`----- menuOperate menuCreate first try catch error = ${error} -----`);
+                logger.error(`----- apiOperate apiCreate first try catch error = ${error} -----`);
                 return callback('请求已被服务器拒绝');
             }
         } else {
-            let parentNode = await Menu.findOne({ where: { id: parentId } }).then((parentNode) => {
+            let parentNode = await Api.findOne({ where: { id: parentId } }).then((parentNode) => {
                 return parentNode;
             });
 
@@ -112,11 +109,11 @@ module.exports = {
             })
 
             try {
-                const createResult = await Menu.create(data, { transaction: trans }).then((result) => {
+                const createResult = await Api.create(data, { transaction: trans }).then((result) => {
                     return result;
                 })
 
-                const updateResult = await Menu.update(
+                const updateResult = await Api.update(
                     {
                         isLeaf: false
                     },
@@ -134,23 +131,19 @@ module.exports = {
             } catch (error) {
                 trans.rollback();
 
-                logger.error(`----- menuOperate menuCreate second try catch error = ${error} -----`);
+                logger.error(`----- apiOperate apiCreate second try catch error = ${error} -----`);
                 return callback('请求已被服务器拒绝');
             }
         }
     },
 
-    menuEdit: async (id, name, menuLink, comPath, icon, sort, menuType, menuTypeDesc, callback) => {
+    apiEdit: async (id, name, url, sort, callback) => {
         try {
-            const result = await Menu.update(
+            const result = await Api.update(
                 {
                     name,
-                    menuLink,
-                    comPath,
-                    icon,
+                    url,
                     sort,
-                    menuType,
-                    menuTypeDesc
                 },
                 {
                     where: { id },
@@ -159,33 +152,31 @@ module.exports = {
                 return result;
             })
 
-            await Sys_Menu_Permission.update(
+            await Sys_Api_Permission.update(
                 {
-                    menuName: name,
-                    menuType,
-                    menuTypeDesc
+                    apiName: name,
                 },
                 {
-                    where: { menuId: id },
+                    where: { apiId: id },
                 }
             )
 
             return callback(null, '更新成功');
         } catch (error) {
-            logger.error(`----- menuOperate menuEdit error = ${error} -----`);
+            logger.error(`----- apiOperate apiEdit error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
     },
 
-    menuDelete: async (id, callback) => {
+    apiDelete: async (id, callback) => {
 
-        const deleteMenu = await Menu.findOne({
+        const deleteApi = await Api.findOne({
             where: {
                 id
             }
         });
 
-        const parentId = deleteMenu.parentId;
+        const parentId = deleteApi.parentId;
 
         const trans = await conn.transaction({
             autocommit: false
@@ -194,7 +185,7 @@ module.exports = {
         })
 
         try {
-            await Menu.destroy({
+            await Api.destroy({
                 where: {
                     id
                 },
@@ -202,16 +193,16 @@ module.exports = {
                 force: true // 真删除标记
             })
 
-            await Sys_Menu_Permission.destroy({
+            await Sys_Api_Permission.destroy({
                 where: {
-                    menuId: id
+                    apiId: id
                 },
                 transaction: trans,
                 force: true // 真删除标记
             })
 
             // 必须包含在事务中，如果不包含在事务中可以查询到删除的菜单，因为事务没提交，还没真正提交，包含在事务内则查询不到
-            const children = await Menu.findAll({
+            const children = await Api.findAll({
                 where: { parentId },
                 transaction: trans,
             }).then((result) => {
@@ -219,7 +210,7 @@ module.exports = {
             })
 
             if (children.length < 1) {
-                await Menu.update(
+                await Api.update(
                     { isLeaf: true },
                     {
                         where: {
@@ -236,8 +227,8 @@ module.exports = {
         } catch (error) {
             trans.rollback();
 
-            logger.error(`----- menuOperate menuDelete try catch error = ${error} -----`);
+            logger.error(`----- apiOperate apiDelete try catch error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
-    }
+    },
 }

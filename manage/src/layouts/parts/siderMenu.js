@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Menu, Icon } from 'antd'
 
-import systemMenu from '../../utils/systemMenu'
+import systemMenu from '../../../config/systemMenu.config'
 
 const { SubMenu } = Menu
 
@@ -14,11 +14,7 @@ class SiderMenu extends Component {
 
             defaultSelectedKeys: [],
             defaultOpenKeys: [],
-
-            selectedKeys: []
         }
-
-        this.systemMenu = systemMenu.getDefaultMenu()
 
     }
 
@@ -38,11 +34,6 @@ class SiderMenu extends Component {
         };
     }
 
-    onSelect(selectedKeys, info) {
-        console.log('onSelect', info);
-        this.setState({ selectedKeys });
-    }
-
     renderMenu(menuTreeList) {
         const renderMenu = this.renderMenu.bind(this);
         const menus = menuTreeList.map((menu) => {
@@ -55,11 +46,16 @@ class SiderMenu extends Component {
                     </SubMenu>
                 )
             } else {
-                return (
-                    <Menu.Item key={`${menu.id}`}>
-                        <Link to={{ pathname: menu.menuLink }}>{menu.icon ? <Icon type={menu.icon} /> : ''}{menu.name}</Link>
-                    </Menu.Item>
-                )
+                // 过滤掉页面路由
+                if (parseInt(menu.menuType) === 1) {
+                    return (
+                        <Menu.Item key={`${menu.id}`}>
+                            <Link to={{ pathname: menu.menuLink }}>{menu.icon ? <Icon type={menu.icon} /> : ''}{menu.name}</Link>
+                        </Menu.Item>
+                    )
+                } else {
+                    return null
+                }
             }
         });
 
@@ -68,17 +64,16 @@ class SiderMenu extends Component {
 
     render() {
 
+        // 注意，在这里是无法通过this.props.match获取到参数的，要获取/:xxx的参数只能在本组件内调用才能获取到。
         const { pathname } = this.props.location;
 
         const menuTreeList = this.props.menuTreeList;
-        const list = [...menuTreeList, ...this.systemMenu]
+        const list = [...menuTreeList, ...systemMenu]
         const selectMenu = this.getSelectedMenu(list, pathname);
 
         const defaultSelectedKeys = selectMenu ? [`${selectMenu.id}`] : [];
         const defaultOpenKeys = selectMenu ? selectMenu.treeId : [];
-        const selectedKeys = this.state.selectedKeys.length > 0 ? this.state.selectedKeys : defaultSelectedKeys
 
-        console.log('defaultOpenKeys', defaultOpenKeys)
         return (
             <Menu
                 mode="inline"

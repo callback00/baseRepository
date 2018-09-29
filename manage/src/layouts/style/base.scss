@@ -20,16 +20,14 @@
     font-size: 18px;
     padding-right: 50px;
     box-shadow: 0 2px 4px rgba(0, 21, 41, .08);
-    .repassword,
-    .logout {
-        cursor: pointer;
-        &:hover {
-            color: #108ee9;
+    .right-content {
+        display: flex;
+        .user-info {
+            cursor: pointer;
         }
-    }
-    .repassword {
-        color: rgba(0, 0, 0, 0.65);
-        margin-right: 10px;
+        .notice {
+            cursor: pointer;
+        }
     }
 }
 
@@ -53,4 +51,10 @@
     display: flex;
     justify-content: center;
     align-items: center; // background: #ECEFF4;
+}
+
+.notice-pop {
+    .ant-popover-inner-content {
+        padding: 0;
+    }
 }

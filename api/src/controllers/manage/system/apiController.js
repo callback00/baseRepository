@@ -1,10 +1,10 @@
 const { trim } = require('lodash')
-const menuOperate = require('../../../operates/manage/system/menuOperate')
+const apiOperate = require('../../../operates/manage/system/apiOperate')
 
 module.exports = {
 
-    getMenuTree: (req, res) => {
-        menuOperate.getMenuTree((error, success) => {
+    getApiTree: (req, res) => {
+        apiOperate.getApiTree((error, success) => {
             res.type = 'json';
 
             if (error) {
@@ -15,9 +15,9 @@ module.exports = {
         })
     },
 
-    getMenuById: (req, res) => {
+    getApiById: (req, res) => {
         const id = req.body.id
-        menuOperate.getMenuById(id, (error, success) => {
+        apiOperate.getApiById(id, (error, success) => {
             res.type = 'json';
 
             if (error) {
@@ -28,18 +28,14 @@ module.exports = {
         })
     },
 
-    menuCreate: (req, res) => {
+    apiCreate: (req, res) => {
         const name = trim(req.body.name);
-        const menuLink = trim(req.body.menuLink);
-        const comPath = trim(req.body.comPath);
-        const icon = trim(req.body.icon);
+        const url = trim(req.body.url);
         const parentId = trim(req.body.parentId);
         const sort = trim(req.body.sort);
-        const menuType = trim(req.body.menuType);
-        const menuTypeDesc = menuType === '1' ? '导航栏目' : '页面路由';
 
         res.type = 'json';
-        menuOperate.menuCreate(name, menuLink, comPath, icon, parentId, sort, menuType, menuTypeDesc, (error, success) => {
+        apiOperate.apiCreate(name, url, parentId, sort, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });
@@ -49,18 +45,14 @@ module.exports = {
         })
     },
 
-    menuEdit: (req, res) => {
+    apiEdit: (req, res) => {
         const id = trim(req.body.id);
         const name = trim(req.body.name);
-        const menuLink = trim(req.body.menuLink);
-        const comPath = trim(req.body.comPath);
-        const icon = trim(req.body.icon);
+        const url = trim(req.body.url);
         const sort = trim(req.body.sort);
-        const menuType = trim(req.body.menuType);
-        const menuTypeDesc = menuType === '1' ? '导航栏目' : '页面路由';
 
         res.type = 'json';
-        menuOperate.menuEdit(id, name, menuLink, comPath, icon, sort, menuType, menuTypeDesc, (error, success) => {
+        apiOperate.apiEdit(id, name, url, sort, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });
@@ -70,11 +62,11 @@ module.exports = {
         })
     },
 
-    menuDelete: (req, res) => {
+    apiDelete: (req, res) => {
         const idArry = req.body.idArry ? JSON.parse(req.body.idArry) : [];
 
         res.type = 'json'
-        menuOperate.menuDelete(idArry, (error, success) => {
+        apiOperate.apiDelete(idArry, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });

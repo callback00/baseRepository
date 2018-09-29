@@ -147,25 +147,6 @@ module.exports = {
     })
   },
 
-
-  /**
-   * 获取权限列表
-   */
-  getRuleList: (req, res) => {
-    userOperate.getRuleList((error, success) => {
-      res.type = 'json'
-
-      if (error) {
-        res.status(200).json({ error })
-      } else {
-        res.status(200).json({ success })
-        const key = redisUtility.createKey(req.originalUrl, req.body)
-        redisUtility.setCache(req.sessionID, key, success)
-      }
-    })
-  },
-
-
   /**
    * 获取用户名称列表
    */
@@ -181,6 +162,53 @@ module.exports = {
         res.status(200).json({ success })
         const key = redisUtility.createKey(req.originalUrl, req.body)
         redisUtility.setCache(req.sessionID, key, success)
+      }
+    })
+  },
+
+  /**
+ * 获取用户信息
+ */
+  getMyInfo: (req, res) => {
+    const userId = trim(req.userId)
+
+    userOperate.getMyInfo(userId, (error, success) => {
+      res.type = 'json'
+
+      if (error) {
+        res.status(200).json({ error })
+      } else {
+        res.status(200).json({ success })
+      }
+    })
+  },
+
+  /**
+ * 更新用户信息
+ */
+  updateMyInfo: (req, res) => {
+    const userId = trim(req.userId)
+
+    const data = {
+      displayName: trim(req.body.displayName),
+      telphone: trim(req.body.telphone) || null,
+      gender: trim(req.body.gender) || "1",
+      remark: trim(req.body.remark) || "",
+    }
+
+    if (data.telphone && tools.checkMoblie(data.telphone)) {
+      res.type = 'json'
+      res.status(200).json({ error: '无效的联系电话' })
+      return
+    }
+
+    userOperate.updateMyInfo(userId, data, (error, success) => {
+      res.type = 'json'
+
+      if (error) {
+        res.status(200).json({ error })
+      } else {
+        res.status(200).json({ success })
       }
     })
   },

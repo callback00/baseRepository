@@ -1,8 +1,8 @@
 const User = require('../models/userModel')
-const Rule = require('../models/ruleModel')
-const RuleMap = require('../models/rulemapModel')
 const Menu = require('../models/system/menuModel')
 const Sys_Menu_Permission = require('../models/system/sys_menu_permission')
+const Api = require('../models/system/apiModel')
+const Sys_Api_Permission = require('../models/system/sys_api_permission')
 const Member = require('../models/memberModel')
 const WorkArea = require('../models/workAreaModel')
 const WorkAreaAuditer = require('../models/workAreaAuditerModel')
@@ -13,20 +13,6 @@ User.sync({ force: true }).then(() => {
   console.log(`----- 创建 User 表成功 -----`)
 }).catch((err) => {
   console.error(`----- User 表创建失败: ${err} -----`)
-})
-
-// ---------- 创建 Rule 表 ----------
-Rule.sync({ force: true }).then(() => {
-  console.log(`----- 创建 Rule 表成功 -----`)
-}).catch((err) => {
-  console.error(`----- Rule 表创建失败: ${err} -----`)
-})
-
-// ---------- 创建 RuleMap 表 ----------
-RuleMap.sync({ force: true }).then(() => {
-  console.log(`----- 创建 RuleMap 表成功 -----`)
-}).catch((err) => {
-  console.error(`----- RuleMap 表创建失败: ${err} -----`)
 })
 
 // ---------- 创建 栏目权限 表 ----------
@@ -69,4 +55,18 @@ AuditLog.sync({ force: true }).then(() => {
   console.log(`----- 创建 AuditLog 表成功 -----`)
 }).catch((err) => {
   console.error(`----- AuditLog 表创建失败: ${err} -----`)
+})
+
+// ---------- 创建 api权限 表 ----------
+Sys_Api_Permission.sync({ force: true }).then(() => {
+  console.log(`----- 创建 Sys_Api_Permission 表成功 -----`)
+}).catch((err) => {
+  console.error(`----- Sys_Api_Permission 表创建失败: ${err} -----`)
+})
+
+// ---------- 创建 api管理列表 表 ----------
+Api.sync({ force: true }).then(() => {
+  console.log(`----- 创建 Api 表成功 -----`)
+}).catch((err) => {
+  console.error(`----- Api 表创建失败: ${err} -----`)
 })

@@ -2,50 +2,13 @@ const crypto = require('crypto')
 const config = require('../../../config/config')
 const logger = require('../../common/logger')
 
-const Rule = require('../../models/ruleModel')
-const Rulemap = require('../../models/rulemapModel')
 const User = require('../../models/userModel')
-const Sys_Menu_Permission = require('../../models/system/sys_menu_permission')
-const Menu = require('../../models/system/menuModel')
+const Sys_Api_Permission = require('../../models/system/sys_api_permission')
+const Api = require('../../models/system/apiModel')
 
-// User.belongsToMany(Rule, { as: 'rules', through: Rulemap, foreignKey: 'userId', otherKey: 'ruleid' })
-
-User.belongsToMany(Menu, { as: 'Menus', through: Sys_Menu_Permission, foreignKey: 'userId', otherKey: 'menuId' })
+User.belongsToMany(Api, { as: 'Apis', through: Sys_Api_Permission, foreignKey: 'userId', otherKey: 'apiId' })
 
 module.exports = {
-    login_OLD: (loginName, _password, callback) => {
-
-        const key = config.secret
-        const password = crypto.createHmac('sha1', key).update(_password).digest('hex')
-
-        User.findOne({
-            where: {
-                loginName,
-                password,
-                status: '1'
-            },
-            attributes: ['userId', 'displayName', 'telphone', 'role'],
-            include: [{
-                model: Rule,
-                as: 'rules',
-                attributes: ['reveal', 'permission'],
-                through: {
-                    attributes: []
-                }
-            }]
-        }).then((success) => {
-            if (success) {
-                return callback(null, success)
-            }
-
-            return callback('incorrect')
-
-        }).catch((error) => {
-            logger.error(`----- authOperate login error = ${error} -----`)
-            return callback('请求已被服务器拒绝')
-        })
-    },
-
     login: (loginName, _password, callback) => {
 
         const key = config.secret
@@ -57,10 +20,10 @@ module.exports = {
                 password,
                 status: '1'
             },
-            attributes: ['userId', 'displayName', 'telphone'],
+            attributes: ['userId', 'loginName', 'displayName', 'telphone'],
             include: [{
-                model: Menu,
-                as: 'Menus',
+                model: Api,
+                as: 'Apis',
                 through: {
                 }
             }]

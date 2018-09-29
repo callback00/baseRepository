@@ -9,61 +9,20 @@ class UserAdd extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      rulelist: [],
-      rules: {},
       secure: true,
       loading: false
     }
-
-    this.checkboxChange = this.checkboxChange.bind(this)
-    this.checkboxSecure = this.checkboxSecure.bind(this)
-    this.checkAll = this.checkAll.bind(this)
 
     this.saveBtnClick = this.saveBtnClick.bind(this)
     this.resetBtnClick = this.resetBtnClick.bind(this)
   }
 
   componentWillMount() {
-    this.getRuleList()
-  }
 
-  getRuleList() {
-    userjs.getRuleList((json) => {
-      if (json.success) {
-        // console.log('----- success -----' + json.success)
-        this.setState({ rulelist: json.success })
-      } else if (json.auth) {
-        message.warning(json.auth)
-      } else {
-        message.warning(json.error)
-        // console.log('----- error -----' + json.error)
-      }
-    })
-  }
-
-  checkboxSecure(event) {
-    this.setState({ secure: !event.target.checked })
-  }
-
-  checkboxChange(event) {
-    const rules = this.state.rules
-    rules[event.target.value] = event.target.checked
-
-    this.setState({ rules })
-  }
-
-  checkAll(event) {
-    const rules = {}
-    this.state.rulelist.forEach((data) => {
-      rules[data.ruleid] = event.target.checked
-    })
-
-    this.setState({ rules })
   }
 
   resetBtnClick() {
     this.props.form.resetFields()
-    this.setState({ rules: {} })
   }
 
   saveBtnClick() {
@@ -74,13 +33,6 @@ class UserAdd extends React.Component {
     this.props.form.validateFieldsAndScroll((errors, values) => {
       if (!!errors) {
         return
-      }
-
-      values.adds = []
-      for (const ruleid in this.state.rules) {
-        if (this.state.rules[ruleid]) {
-          values.adds.push(ruleid)
-        }
       }
 
       this.setState({ loading: true })
@@ -108,21 +60,6 @@ class UserAdd extends React.Component {
 
   render() {
     let count = 0
-    const checkboxs = this.state.rulelist.map((rule) => {
-      const checked = this.state.rules[rule.ruleid]
-      if (checked) {
-        count++
-      }
-
-      return (
-        <span key={rule.ruleid} className="ant-checkbox-vertical">
-          <Checkbox
-            checked={checked}
-            onChange={this.checkboxChange.bind(this)}
-            value={rule.ruleid} /> {rule.rulename}
-        </span>
-      )
-    })
 
     const { getFieldDecorator } = this.props.form
     const formItemLayout = {
@@ -194,34 +131,19 @@ class UserAdd extends React.Component {
           {...formItemLayout}
           label="显示密码">
           <Checkbox
-            checked={ !this.state.secure }
-            onChange={ this.checkboxSecure } />
-        </Item>
-
-        <Item
-          {...formItemLayout}
-          label="权限">
-
-          <span className="ant-checkbox-vertical">
-            <Checkbox
-              checked={count === this.state.rulelist.length}
-              onChange={ this.checkAll }
-              value="0" /> <a>全选</a>
-          </span>
-
-          {checkboxs}
-
+            checked={!this.state.secure}
+            onChange={this.checkboxSecure} />
         </Item>
 
         <Item wrapperCol={{ offset: 3 }}>
           <Button
             loading={this.state.loading}
-            onClick={ this.saveBtnClick }
+            onClick={this.saveBtnClick}
             type="primary">
             <Icon type="save" />确定
           </Button>
           &nbsp;&nbsp;&nbsp;
-          <Button type="ghost" onClick={ this.resetBtnClick }>
+          <Button type="ghost" onClick={this.resetBtnClick}>
             <Icon type="reload" />重置
           </Button>
         </Item>

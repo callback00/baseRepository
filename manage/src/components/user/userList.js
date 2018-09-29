@@ -3,7 +3,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { message, notification, Popconfirm, Table } from 'antd'
 
-import UserPermissionModal from './userPermissionModal'
+import MenuPermissionModal from './menuPermissionModal'
+import ApiPermissionModal from './apiPermissionModal'
 import userjs from '../../utils/user'
 
 class UserList extends React.Component {
@@ -18,7 +19,7 @@ class UserList extends React.Component {
       loading: false,
 
       permissionModalKey: 0,
-      permissionModalVisible: false,
+      menuPermissionModalVisible: false,
     }
   }
 
@@ -38,25 +39,47 @@ class UserList extends React.Component {
     })
   }
 
-  permissionModalShow(user) {
+  menuPermissionModalShow(user) {
     const permissionModalKey = this.state.permissionModalKey + 1;
     this.setState({
-      permissionModalVisible: true,
+      menuPermissionModalVisible: true,
       permissionModalKey,
       userId: user.userId,
       loginName: user.loginName,
     });
   }
 
-  handlePermissionOk() {
+  handleMenuPermissionOk() {
     this.setState({
-      permissionModalVisible: false
+      menuPermissionModalVisible: false
     });
   }
 
-  handlePermissionCancel() {
+  handleMenuPermissionCancel() {
     this.setState({
-      permissionModalVisible: false
+      menuPermissionModalVisible: false
+    });
+  }
+
+  apiPermissionModalShow(user) {
+    const permissionModalKey = this.state.permissionModalKey + 1;
+    this.setState({
+      apiPermissionModalVisible: true,
+      permissionModalKey,
+      userId: user.userId,
+      loginName: user.loginName,
+    });
+  }
+
+  handleApiPermissionOk() {
+    this.setState({
+      apiPermissionModalVisible: false
+    });
+  }
+
+  handleApiPermissionCancel() {
+    this.setState({
+      apiPermissionModalVisible: false
     });
   }
 
@@ -112,7 +135,9 @@ class UserList extends React.Component {
           <span>
             <Link to={`/dashboard/user/info/${record.userId}`}>查看</Link>
             &nbsp;&nbsp;&nbsp;
-            <a onClick={this.permissionModalShow.bind(this, record)} >权限</a>
+            <a onClick={this.menuPermissionModalShow.bind(this, record)} >菜单权限</a>
+            &nbsp;&nbsp;&nbsp;
+            <a onClick={this.apiPermissionModalShow.bind(this, record)} >api权限</a>
             &nbsp;&nbsp;&nbsp;
             <Popconfirm onConfirm={this.deleteBtnClick.bind(this, record.key)} title="确定要删除此条记录吗？">
               <a>删除</a>
@@ -132,14 +157,24 @@ class UserList extends React.Component {
         />
 
         <div>
-          <UserPermissionModal
-            visible={this.state.permissionModalVisible}
+          <MenuPermissionModal
+            visible={this.state.menuPermissionModalVisible}
             userId={this.state.userId}
-            key={this.state.permissionModalKey}
+            key={'menu' + this.state.permissionModalKey}
             modalKey={this.state.permissionModalKey}
             loginName={this.state.loginName}
-            onOk={this.handlePermissionOk.bind(this)}
-            onCancel={this.handlePermissionCancel.bind(this)}
+            onOk={this.handleMenuPermissionOk.bind(this)}
+            onCancel={this.handleMenuPermissionCancel.bind(this)}
+          />
+
+          <ApiPermissionModal
+            visible={this.state.apiPermissionModalVisible}
+            userId={this.state.userId}
+            key={'api' + this.state.permissionModalKey}
+            modalKey={this.state.permissionModalKey}
+            loginName={this.state.loginName}
+            onOk={this.handleApiPermissionOk.bind(this)}
+            onCancel={this.handleApiPermissionCancel.bind(this)}
           />
         </div>
       </div>
