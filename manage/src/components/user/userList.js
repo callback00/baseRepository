@@ -148,7 +148,7 @@ class UserList extends React.Component {
     }]
 
     return (
-      <div>
+      <div style={{ background: 'white', padding: '15px' }} >
         <Table
           columns={columns}
           dataSource={dataSource}

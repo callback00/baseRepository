@@ -6,7 +6,7 @@ const conn = dbConn.getConn()
 moment.locale('zh-cn')
 
 // 栏目
-const Menu = conn.define('menu', {
+const Menu = conn.define('sys_menu', {
     id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
 
     name: { type: sequelize.STRING, allowNull: false, comment: '栏目名称' },

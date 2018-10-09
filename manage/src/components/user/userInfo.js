@@ -84,7 +84,7 @@ class UserInfo extends React.Component {
     const secure = this.state.secure ? 'password' : 'text'
 
     return (
-      <Form>
+      <Form style={{ background: 'white', padding: '15px' }}>
 
         <Item
           {...formItemLayout}

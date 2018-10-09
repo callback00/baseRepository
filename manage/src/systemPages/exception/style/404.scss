@@ -1,0 +1,16 @@
+.exception-404 {
+    display: flex;
+    align-items: center;
+    padding-top: 60px;
+    .left {
+        padding-right: 40px;
+        width: 65%;
+        text-align: center;
+    }
+    .right {
+        .title {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+    }
+}

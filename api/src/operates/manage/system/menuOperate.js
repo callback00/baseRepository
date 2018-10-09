@@ -29,7 +29,7 @@ module.exports = {
 
         try {
             const data = await conn.query(
-                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from menus where deletedAt is null order by sort asc,createdAt asc
+                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where deletedAt is null order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;

@@ -35,7 +35,7 @@ module.exports = {
     getMenuPermissionTree: async (userId, callback) => {
         try {
             const menuList = await conn.query(
-                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from menus where deletedAt is null order by sort asc,createdAt asc
+                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where deletedAt is null order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;
@@ -136,7 +136,7 @@ module.exports = {
     getCurrentMenuPermission: async (userId, callback) => {
 
         const permissionList = await conn.query(
-            `select  A.id, A.userId, A.userName, A.menuId, A.menuName, B.treeId, B.menuLink, B.comPath from sys_menu_permissions A inner join menus B on A.menuId = B.id  where A.userId = ${userId} and A.deletedAt is null
+            `select  A.id, A.userId, A.userName, A.menuId, A.menuName, B.treeId, B.menuLink, B.comPath from sys_menu_permissions A inner join sys_menus B on A.menuId = B.id  where A.userId = ${userId} and A.deletedAt is null
             `, { type: sequelize.QueryTypes.SELECT }
         ).then((result) => {
             return result;
@@ -157,7 +157,7 @@ module.exports = {
         let menuList = []
         if (selectIds) {
             menuList = await conn.query(
-                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, menuType, sort, remark from menus where deletedAt is null and id in (${selectIds}) order by sort asc,createdAt asc
+                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, menuType, sort, remark from sys_menus where deletedAt is null and id in (${selectIds}) order by sort asc,createdAt asc
                 `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;

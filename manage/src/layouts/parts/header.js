@@ -1,9 +1,14 @@
-import React from 'react'
-import { Menu, Icon, Dropdown, Badge, Popover, Tabs, List, Avatar } from 'antd';
-import auth from '../../utils/auth'
+import React from 'react';
+import { Menu, Icon, Dropdown, Badge, Popover, Tabs, List, Avatar, notification } from 'antd';
+import auth from '../../utils/auth';
+
+import io from 'socket.io-client';
 
 const TabPane = Tabs.TabPane;
 
+notification.config({
+    placement: 'bottomRight',
+});
 
 const messageData = [
     {
@@ -23,6 +28,21 @@ const messageData = [
 class Header extends React.PureComponent {
     constructor(props) {
         super(props)
+    }
+
+    componentDidMount() {
+        const socket = io('http://localhost:8081');
+        
+        socket.on('connect', () => {
+        });
+
+        socket.on('newMessage', (data) => {
+            notification.open({
+                message: '您有新的消息',
+                description: `hi ${data}`,
+                icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+            });
+        });
     }
 
     onMenuClick({ key }) {

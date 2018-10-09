@@ -16,6 +16,8 @@ import Footer from './parts/footer'
 import tools from '../utils/tools'
 import systemRoute from '../../config/systemRoute.config'
 
+import NoPageComponent from '../systemPages/exception/404'
+
 const { Sider } = Layout;
 
 class BasicLayout extends React.Component {
@@ -95,7 +97,7 @@ class BasicLayout extends React.Component {
             <Route
                 key='404'
                 render={(props) => (
-                    <div>404</div>
+                    <NoPageComponent />
                 )}
             />
         )
