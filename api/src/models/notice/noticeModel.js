@@ -10,7 +10,7 @@ const Notice = conn.define('sys_notice', {
   noticeTypeDesc: { type: sequelize.STRING, allowNull: true, comment: '类型描述' },
   noticeIcon: { type: sequelize.STRING, allowNull: true, comment: '通知图标' },
   noticeTemplet: { type: sequelize.STRING, allowNull: true, comment: '消息模板' },
-  noticeParam: { type: sequelize.STRING, allowNull: true, comment: '参数' },
+  templetParam: { type: sequelize.STRING, allowNull: true, comment: '模板参数' },
 }, {
     paranoid: true
   })

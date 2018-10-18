@@ -3,6 +3,18 @@ const noticeOperate = require('../../../operates/manage/notice/noticeOperate')
 
 module.exports = {
 
+    getNoticeList: (req, res) => {
+        noticeOperate.getNoticeList((error, success) => {
+            res.type = 'json';
+
+            if (error) {
+                res.status(200).json({ error });
+            } else {
+                res.status(200).json({ success });
+            }
+        })
+    },
+
     getNoticeById: (req, res) => {
         const id = req.body.id
         noticeOperate.getNoticeById(id, (error, success) => {
@@ -22,10 +34,12 @@ module.exports = {
         const noticeTypeDesc = trim(req.body.noticeTypeDesc);
         const noticeIcon = trim(req.body.noticeIcon);
         const noticeTemplet = trim(req.body.noticeTemplet);
-        const noticeParam = trim(req.body.noticeParam);
+
+        const defaultParam = []
+        const templetParam = trim(req.body.templetParam) ? trim(req.body.templetParam) : JSON.stringify(defaultParam);
 
         res.type = 'json';
-        noticeOperate.noticeCreate(noticeCode, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, noticeParam, (error, success) => {
+        noticeOperate.noticeCreate(noticeCode, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });
@@ -41,10 +55,10 @@ module.exports = {
         const noticeTypeDesc = trim(req.body.noticeTypeDesc);
         const noticeIcon = trim(req.body.noticeIcon);
         const noticeTemplet = trim(req.body.noticeTemplet);
-        const noticeParam = trim(req.body.noticeParam);
+        const templetParam = trim(req.body.templetParam);
 
         res.type = 'json';
-        noticeOperate.noticeEdit(id, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, noticeParam, (error, success) => {
+        noticeOperate.noticeEdit(id, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });

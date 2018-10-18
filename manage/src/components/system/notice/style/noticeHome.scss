@@ -1,0 +1,22 @@
+.page-description {
+    background: white;
+    margin: -18px -20px 0px;
+    height: 100%;
+    padding: 16px 32px 0;
+}
+
+.message-card {
+    padding: 0 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    .message-add {
+        height: 197.71px;
+        width: 100%;
+    }
+    .ellipsis {
+        min-height: 65px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+    }
+}

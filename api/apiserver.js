@@ -38,8 +38,3 @@ io.on('connection', function (socket) {
 server.listen(apiport, () => {
     console.info(`==> 🌐  ${config.name} Server started on port ${apiport}, env=${env}`)
 })
-
-
-// http.createServer(app).listen(apiport, () => {
-//   console.info(`==> 🌐  ${config.name} Server started on port ${apiport}, env=${env}`)
-// })

@@ -13,7 +13,6 @@ class page extends React.Component {
         super(props);
         this.state = {
             data: {},
-            menuType: '1'
         };
     }
 
@@ -27,12 +26,6 @@ class page extends React.Component {
                 }
             }, { id: parseInt(this.props.id) })
         }
-    }
-
-    handleMenuTypeChange(value) {
-        this.setState({
-            menuType: value
-        })
     }
 
     handleOk(event) {
@@ -91,10 +84,10 @@ class page extends React.Component {
                     )}
                 >
                     {getFieldDecorator('menuType', {
-                        initialValue: this.state.menuType,
-                        rules: [{ required: true, message: '请输入栏目名称' }]
+                        initialValue: this.state.data.menuType ? this.state.data.menuType : '1',
+                        rules: [{ required: true, message: '请选择栏目类型' }]
                     })(
-                        <Select onChange={this.handleMenuTypeChange.bind(this)} >
+                        <Select  >
                             <Option value="1">导航栏目</Option>
                             <Option value="2">页面路由</Option>
                         </Select>

@@ -9,6 +9,9 @@ const menuController = require('../../src/controllers/manage/system/menuControll
 const menuPermissionController = require('../../src/controllers/manage/system/menuPermissionController')
 const apiController = require('../../src/controllers/manage/system/apiController')
 const apiPermissionController = require('../../src/controllers/manage/system/apiPermissionController')
+
+const noticeController = require('../../src/controllers/manage/notice/noticeController')
+const noticeDetailController = require('../../src/controllers/manage/notice/noticeDetailController')
 // const tempFileController = require('../../src/controllers/file/tempFileController')
 
 const memberController = require('../../src/controllers/manage/memberController')
@@ -160,6 +163,16 @@ module.exports = (router, app, config) => {
         .post('/apiPermission/getApiPermissionTree', strongCheck, getUser, apiPermissionController.getApiPermissionTree)
         .post('/apiPermission/permissionSave', strongCheck, apiPermissionController.permissionSave)
         .post('/apiPermission/getCurrentapiPermission', strongCheck, getUser, apiPermissionController.getCurrentApiPermission)
+
+    router
+        .post('/noticeManage/noticeCreate', strongCheck, noticeController.noticeCreate)
+        .post('/noticeManage/noticeEdit', strongCheck, noticeController.noticeEdit)
+        .delete('/noticeManage/noticeDelete', strongCheck, noticeController.noticeDelete)
+        .post('/noticeManage/getNoticeById', strongCheck, noticeController.getNoticeById)
+        .post('/noticeManage/getNoticeList', strongCheck, noticeController.getNoticeList)
+
+    router
+        .post('/noticeManage/sendNoticeDetail', strongCheck, noticeDetailController.sendNoticeDetail)
 
     router
         .post('/member/getMemberList', strongCheck, memberController.getMemberList)

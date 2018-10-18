@@ -9,6 +9,19 @@ const conn = dbConn.getConn()
 
 module.exports = {
 
+    getNoticeList: async (callback) => {
+
+        try {
+            const data = await Sys_Notice.findAll().then((list) => {
+                return list;
+            });
+
+            return callback(null, data);
+        } catch (error) {
+            logger.error(`----- noticeOperate getNoticeList error = ${error} -----`);
+            return callback('请求已被服务器拒绝');
+        }
+    },
 
     getNoticeById: async (id, callback) => {
 
@@ -26,7 +39,7 @@ module.exports = {
         }
     },
 
-    noticeCreate: async (noticeCode, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, noticeParam, callback) => {
+    noticeCreate: async (noticeCode, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, callback) => {
 
         let data = {
             noticeCode,
@@ -34,7 +47,7 @@ module.exports = {
             noticeTypeDesc,
             noticeIcon,
             noticeTemplet,
-            noticeParam
+            templetParam
         };
 
         try {
@@ -65,16 +78,15 @@ module.exports = {
 
     },
 
-    noticeEdit: async (id, name, menuLink, comPath, icon, sort, menuType, menuTypeDesc, callback) => {
+    noticeEdit: async (id, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, callback) => {
         try {
             const result = await Sys_Notice.update(
                 {
-                    noticeCode,
                     noticeType,
                     noticeTypeDesc,
                     noticeIcon,
                     noticeTemplet,
-                    noticeParam
+                    templetParam
                 },
                 {
                     where: { id },
