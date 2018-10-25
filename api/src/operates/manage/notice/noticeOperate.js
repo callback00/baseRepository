@@ -39,10 +39,11 @@ module.exports = {
         }
     },
 
-    noticeCreate: async (noticeCode, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, callback) => {
+    noticeCreate: async (noticeCode, noticeName, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, callback) => {
 
         let data = {
             noticeCode,
+            noticeName,
             noticeType,
             noticeTypeDesc,
             noticeIcon,
@@ -78,10 +79,11 @@ module.exports = {
 
     },
 
-    noticeEdit: async (id, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, callback) => {
+    noticeEdit: async (id, noticeName, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, callback) => {
         try {
             const result = await Sys_Notice.update(
                 {
+                    noticeName,
                     noticeType,
                     noticeTypeDesc,
                     noticeIcon,
@@ -113,9 +115,7 @@ module.exports = {
             return callback(null, '删除成功！');
 
         } catch (error) {
-            trans.rollback();
-
-            logger.error(`----- noticeOperate menuDelete try catch error = ${error} -----`);
+            logger.error(`----- noticeOperate noticeDelete try catch error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
     }

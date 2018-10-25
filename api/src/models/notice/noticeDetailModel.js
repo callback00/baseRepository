@@ -9,7 +9,7 @@ const NoticeDetail = conn.define('sys_notice_detail', {
     noticeContent: { type: sequelize.STRING, allowNull: false, comment: '内容' },
     noticedFlag: { type: sequelize.BOOLEAN, allowNull: false, comment: '是否已通知' },
     readFlag: { type: sequelize.BOOLEAN, allowNull: false, comment: '是否已读(系统消息才会使用)' },
-    mobile: { type: sequelize.STRING, allowNull: true, comment: '手机号码(短信消息才会使用)' },
+    contact: { type: sequelize.STRING, allowNull: true, comment: '联系人(当为系统消息时，保存userId，当为短信消息时，保存手机号码)' },
 }, {
         paranoid: true
     })

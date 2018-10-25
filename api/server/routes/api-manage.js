@@ -89,7 +89,7 @@ module.exports = (router, app, config) => {
                                     return;
                                 } else {
                                     res.type = 'json';
-                                    res.status(401).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
+                                    res.status(403).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
                                 }
                             }
                         } else {
@@ -102,8 +102,8 @@ module.exports = (router, app, config) => {
                     }
                 }
             } else {
-                res.type = 'json';
-                res.status(401).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
+                loginExpired(res);
+                return;
             }
         })
     }

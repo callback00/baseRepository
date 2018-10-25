@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Layout, message } from 'antd';
 
 import {
     withRouter,

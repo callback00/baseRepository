@@ -125,9 +125,9 @@ class Page extends React.Component {
     renderTableHeader() {
         return (
             <div>
-                <button onClick={this.showMenuModalHandle.bind(this, 'create')}>新增</button>
-                <button style={{ marginLeft: '20px' }} onClick={this.showMenuModalHandle.bind(this, 'edit')}>编辑</button>
-                <button style={{ marginLeft: '20px' }} onClick={this.deleteConfirm.bind(this)}>删除</button>
+                <button className='btn-add' onClick={this.showMenuModalHandle.bind(this, 'create')}>新增</button>
+                <button className='btn-edit' style={{ marginLeft: '20px' }} onClick={this.showMenuModalHandle.bind(this, 'edit')}>编辑</button>
+                <button className='btn-delete' style={{ marginLeft: '20px' }} onClick={this.deleteConfirm.bind(this)}>删除</button>
             </div>
         )
     }

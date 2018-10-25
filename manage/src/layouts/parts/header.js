@@ -3,6 +3,7 @@ import { Menu, Icon, Dropdown, Badge, Popover, Tabs, List, Avatar, notification 
 import auth from '../../utils/auth';
 
 import io from 'socket.io-client';
+const config = require('../../../config/config')
 
 const TabPane = Tabs.TabPane;
 
@@ -27,22 +28,69 @@ const messageData = [
 
 class Header extends React.PureComponent {
     constructor(props) {
-        super(props)
+        super(props);
+        this.socket = null; //登出时需停止监听
+
+        this.state = {
+            unReadMsgCount: 0
+        }
     }
 
     componentDidMount() {
-        const socket = io('http://localhost:8081');
-        
-        socket.on('connect', () => {
+
+        const token = window.localStorage.getItem('system-manage-token')
+        this.socket = io(config.socketUrl, {
+            query: {
+                token
+            }
         });
 
-        socket.on('newMessage', (data) => {
+        const socket = this.socket;
+
+        socket.on('connect', () => {
+            console.log(socket.id);
+        });
+
+        socket.on('connect_error', () => {
             notification.open({
-                message: '您有新的消息',
-                description: `hi ${data}`,
-                icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+                message: '无法获取消息',
+                description: '连接消息服务器失败，无法获取实时消息，请联系管理员',
+                icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
             });
         });
+
+        socket.on('connect_failed', () => {
+            notification.open({
+                message: '无法获取消息',
+                description: '连接消息服务器失败，无法获取实时消息，请联系管理员',
+                icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
+            });
+        });
+
+        socket.on('newMessage', (result) => {
+
+            if (this.state.unReadMsgCount !== result.unReadMsgCount) {
+                this.setState({
+                    unReadMsgCount: result.unReadMsgCount
+                })
+            }
+            result.data.forEach(item => {
+                notification.open({
+                    message: item.noticeTitle ? item.noticeTitle : '您有新的消息',
+                    description: item.noticeContent,
+                    icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+                });
+            });
+        });
+
+        socket.on('error', (data) => {
+            notification.open({
+                message: '获取消息出错',
+                description: `${data}`,
+                icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
+            });
+        });
+
     }
 
     onMenuClick({ key }) {
@@ -51,6 +99,8 @@ class Header extends React.PureComponent {
             return;
         }
         if (key === 'logout') {
+
+            this.socket.emit('loginOut');
             auth.logout();
             this.props.history.push('/login')
         }
@@ -74,6 +124,7 @@ class Header extends React.PureComponent {
         const noticeContent = (
             <Tabs style={{ width: '300px', minHeight: '175px' }} tabBarStyle={{ padding: '0 10px', margin: '0' }} defaultActiveKey="1">
                 <TabPane tab={messageData.length > 0 ? `消息 (${messageData.length})` : '消息'} key="1">
+                    {/* <TabPane tab={this.state.unReadMsgCount > 0 ? `消息 (${this.state.unReadMsgCount})` : '消息'} key="1"> */}
                     <div>
                         <List
                             itemLayout="horizontal"
@@ -109,7 +160,7 @@ class Header extends React.PureComponent {
                 <div className="right-content">
                     <span className="notice" style={{ marginRight: '30px' }} >
                         <Popover overlayClassName="notice-pop" arrowPointAtCenter content={noticeContent} trigger="click" placement="bottom">
-                            <Badge count={5}>
+                            <Badge count={this.state.unReadMsgCount}>
                                 <img style={{ height: '15px', width: '15px' }} src="/manage/images/icon/layout-header/notice.png" alt="无" />
                             </Badge>
                         </Popover>

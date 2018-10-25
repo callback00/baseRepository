@@ -49,11 +49,11 @@ class page extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 const noticeTitle = values.noticeTitle;
-                const mobile = values.mobile;
+                const contact = values.contact;
 
                 const temp = { ...values }
                 delete temp.noticeTitle
-                delete temp.mobile
+                delete temp.contact
                 delete temp.noticeType
                 delete temp.noticeCode
                 delete temp.noticeTemplet
@@ -61,7 +61,7 @@ class page extends React.Component {
                 // 传入的参数个数
                 const noticeParamData = {
                     noticeTitle,
-                    mobile,
+                    contact,
 
                     // 此对象保存消息模板参数的键、值
                     templetParam: {
@@ -71,6 +71,7 @@ class page extends React.Component {
 
                 tools.post('/noticeManage/sendNoticeDetail', (json) => {
                     if (json.success) {
+                        message.success('发送成功')
                         this.props.onOk();
                     } else {
                         message.error(json.error);
@@ -135,7 +136,7 @@ class page extends React.Component {
                             })(
                                 <Select disabled>
                                     <Option value="1">系统消息</Option>
-                                    <Option value="2">短信消息</Option>
+                                    <Option value="2" disabled>短信消息(暂未实现)</Option>
                                 </Select>
                             )}
                         </FormItem>
@@ -178,15 +179,14 @@ class page extends React.Component {
                                 </FormItem> : null
                         }
                         {
-                            this.state.data.noticeType === '2' ?
-                                <FormItem
-                                    {...formItemLayout}
-                                    label={'手机号码'}
-                                >
-                                    {getFieldDecorator('mobile')(
-                                        <Input placeholder="请输入接收该信息的手机号码" />
-                                    )}
-                                </FormItem> : null
+                            <FormItem
+                                {...formItemLayout}
+                                label={this.state.data.noticeType === '2' ? '手机号码' : '用户id'}
+                            >
+                                {getFieldDecorator('contact')(
+                                    <Input placeholder={this.state.data.noticeType === '2' ? '请输入接收该信息的手机号码' : '请输入接收该消息的用户id'} />
+                                )}
+                            </FormItem>
                         }
                         {
                             templetParamFormItems
@@ -203,11 +203,11 @@ class page extends React.Component {
 this.props.form.validateFields((err, values) => {
     if (!err) {
         const noticeTitle = values.noticeTitle;
-        const mobile = values.mobile;
+        const contact = values.contact;
 
         const temp = { ...values }
-        delete temp.noticeTitle
-        delete temp.mobile
+        delete temp.noticeTitle //消息标题，只有系统消息才需要该参数
+        delete temp.contact // 短信消息填入手机号码，系统消息填入用户id
         delete temp.noticeType
         delete temp.noticeCode
         delete temp.noticeTemplet
@@ -215,7 +215,7 @@ this.props.form.validateFields((err, values) => {
         // 传入的参数格式
         const noticeParamData = {
             noticeTitle,
-            mobile,
+            contact,
 
             // 此对象保存消息模板参数的键、值
             templetParam: {

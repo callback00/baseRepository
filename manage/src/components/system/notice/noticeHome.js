@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Card, Icon, Avatar, Button, message, Modal } from 'antd'
+import { Row, Col, Card, Icon, Popconfirm, Button, message, Modal } from 'antd'
 
 import tools from '../../../utils/tools'
 
@@ -22,6 +22,10 @@ class Page extends React.Component {
     }
 
     componentDidMount() {
+        this.search();
+    }
+
+    search() {
         tools.post('/noticeManage/getNoticeList', (json) => {
             if (json.success) {
                 this.setState({ data: json.success, loading: false });
@@ -74,6 +78,17 @@ class Page extends React.Component {
         });
     }
 
+    handelDelete(id) {
+        tools.del('/noticeManage/noticeDelete', (json) => {
+            if (json.success) {
+                message.success(json.success)
+                this.search();
+            } else {
+                message.error(json.error)
+            }
+        }, { id })
+    }
+
     renderMessageItem() {
         const List = this.state.data.map((item) => {
             return (
@@ -81,11 +96,18 @@ class Page extends React.Component {
                     <div className="message-card" >
                         <Card
                             style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
-                            actions={[<span onClick={this.showModalHandle.bind(this, 'edit', item.id)} >编辑</span>, <span>删除</span>, <span onClick={this.showSendModalHandle.bind(this, item.id)}>测试</span>]}
+                            actions={[
+                                <span onClick={this.showModalHandle.bind(this, 'edit', item.id)} >编辑</span>,
+                                <span >
+                                    <Popconfirm placement="topLeft" title={'你确定要删除该模板吗'} onConfirm={this.handelDelete.bind(this, item.id)} okText="确定" cancelText="取消">
+                                        <span>删除</span>
+                                    </Popconfirm>
+                                </span>,
+                                <span onClick={this.showSendModalHandle.bind(this, item.id)}>测试</span>]}
                         >
                             <Meta
                                 avatar={<Icon type={item.noticeType === '1' ? "bell" : 'mail'} style={{ fontSize: '45px', color: '#08c' }} />}
-                                title="Card title"
+                                title={item.noticeName}
                                 description={
                                     <p className="ellipsis">
                                         <style>

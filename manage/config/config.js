@@ -7,4 +7,5 @@ module.exports = {
 
   // 服务端口
   manageport: 8082,
+  socketUrl: 'http://localhost:8081',
 }

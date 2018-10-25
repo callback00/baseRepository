@@ -62,7 +62,7 @@ class page extends React.Component {
                         } else {
                             message.error(json.error);
                         }
-                    }, { id, noticeCode: values.noticeCode, noticeType: values.noticeType, noticeIcon: values.noticeIcon, noticeTemplet: values.noticeTemplet, templetParam: values.templetParam })
+                    }, { id, noticeCode: values.noticeCode, noticeName: values.noticeName, noticeType: values.noticeType, noticeIcon: values.noticeIcon, noticeTemplet: values.noticeTemplet, templetParam: values.templetParam })
                 } else {
                     tools.post('/noticeManage/noticeCreate', (json) => {
                         if (json.success) {
@@ -70,7 +70,7 @@ class page extends React.Component {
                         } else {
                             message.error(json.error);
                         }
-                    }, { noticeCode: values.noticeCode, noticeType: values.noticeType, noticeIcon: values.noticeIcon, noticeTemplet: values.noticeTemplet, templetParam: values.templetParam })
+                    }, { noticeCode: values.noticeCode, noticeName: values.noticeName, noticeType: values.noticeType, noticeIcon: values.noticeIcon, noticeTemplet: values.noticeTemplet, templetParam: values.templetParam })
                 }
             }
         })
@@ -151,7 +151,7 @@ class page extends React.Component {
                     })(
                         <Select {...(this.props.option === 'edit' ? { disabled: true } : { disabled: false })}>
                             <Option value="1">系统消息</Option>
-                            <Option value="2">短信消息</Option>
+                            <Option value="2" disabled>短信消息(暂未实现)</Option>
                         </Select>
                     )}
                 </FormItem>
@@ -164,6 +164,17 @@ class page extends React.Component {
                         rules: [{ required: true, message: '请输入模板编码' }]
                     })(
                         <Input {...(this.props.option === 'edit' ? { disabled: true } : { disabled: false })} placeholder="请输入模板编码" />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="模板名称"
+                >
+                    {getFieldDecorator('noticeName', {
+                        initialValue: this.state.data.noticeName,
+                        rules: [{ required: true, message: '请输入模板名称' }]
+                    })(
+                        <Input placeholder="请输入模板名称" />
                     )}
                 </FormItem>
                 <FormItem
@@ -203,7 +214,7 @@ class page extends React.Component {
                         >
                             <p style={{ color: '#008000' }}>{'您好，您在{shopName}商城购买{goodName}商品，付款金额{money}，请注意查收【测试】'}</p>
                             <p style={{ color: 'red' }}>{'注释1：{}的内容将会被参数替换为实际值'}</p>
-                            <p style={{ color: 'red' }}>{'注释2：{}的内容需与模板参数相对于'}</p>
+                            <p style={{ color: 'red' }}>{'注释2：{}的内容需与模板参数相对应'}</p>
                         </FormItem> : null
                 }
                 {

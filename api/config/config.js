@@ -7,9 +7,7 @@ module.exports = {
 
   // 服务端口
   apiport: 8081,
-  // manageport: 8082,
-  // fileport: 8084,
-
+  socketport: 8083,
 
   // 功能开关
   auth: true,
@@ -42,23 +40,13 @@ module.exports = {
   redis_host: '127.0.0.1',
   redis_port: 3603,
   redis_maxAge: 7 * 24 * 60 * 60, // cookie缓存时间，单位：秒
+  // redis_maxAge: 10, // cookie缓存时间，单位：秒
+
   cache_maxAge: 60, // 缓存时间，单位：秒
   code_maxAge: 15 * 60, // 短信验证码缓存时间，单位：秒
 
-  wxapp_token_maxAge: 1.5 * 60 * 60, // 微信token缓存时间，单位：秒
-  wxapp_retry_maxAge: 60, // 微信token重试时间，单位：秒
-  cache_file_key: 'cache', // 上传文件名称
-  cache_file_expire: 12 * 60 * 60, // 不操作有效期12小时
-
-
-  // 小程序
-  wxapp_appid: 'wx00b8f12720ad60bb',
-  wxapp_secret: 'a74273589de59a7d556d70b269097a22',
-
-  wxapp_template_id: 'WzHmaBVMPKoTKNXPyvgXpFsjacyoAS4_LtZ2CJCJH6A',
-  token_url: 'https://api.weixin.qq.com/cgi-bin/token',
-  message_send_url: 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send',
-  wxacode_url: 'https://api.weixin.qq.com/wxa/getwxacodeunlimit',//不限量获取小程序二维码接口
+  //socket.io 配置
+  socket_origins: 'http://localhost:8082',
 
   // 短信
   accessKeyId: 'LTAIxGnDKvOIgXGk',

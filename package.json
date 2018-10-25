@@ -9,7 +9,7 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "api": "nodemon --harmony --inspect ./api/apiserver.js -w ./api",
+    "api": "nodemon --harmony --inspect ./api/apiServer.js -w ./api",
     "manage": "node babel.manageserver.js",
     "build": "set NODE_ENV=production && webpack-cli --progress --config ./webpack/manage/product/webpack.config.js"
   },

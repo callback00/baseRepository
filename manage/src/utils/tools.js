@@ -34,6 +34,13 @@ export default {
           assign(addto, res.body)
           callback(addto)
         } else if (res.statusCode === 401) {
+          window.localStorage.clear()
+          callback({ error: '登录信息已过期，请重新登录' })
+          setTimeout(() => {
+            window.location.href = '/manage/login'
+          })
+
+        } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
@@ -55,6 +62,13 @@ export default {
           assign(addto, res.body)
           callback(addto)
         } else if (res.statusCode === 401) {
+          window.localStorage.clear()
+          callback({ error: '登录信息已过期，请重新登录' })
+          setTimeout(() => {
+            window.location.href = '/manage/login'
+          })
+
+        } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
@@ -76,6 +90,13 @@ export default {
           assign(addto, res.body)
           callback(addto)
         } else if (res.statusCode === 401) {
+          window.localStorage.clear()
+          callback({ error: '登录信息已过期，请重新登录' })
+          setTimeout(() => {
+            window.location.href = '/manage/login'
+          })
+
+        } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
@@ -107,6 +128,13 @@ export default {
           assign(addto, res.body)
           callback(addto)
         } else if (res.statusCode === 401) {
+          window.localStorage.clear()
+          callback({ error: '登录信息已过期，请重新登录' })
+          setTimeout(() => {
+            window.location.href = '/manage/login'
+          })
+
+        } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })
@@ -128,6 +156,13 @@ export default {
           assign(addto, res.body)
           callback(addto)
         } else if (res.statusCode === 401) {
+          window.localStorage.clear()
+          callback({ error: '登录信息已过期，请重新登录' })
+          setTimeout(() => {
+            window.location.href = '/manage/login'
+          })
+
+        } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
         } else {
           callback({ error: '连接中断，请重试' })

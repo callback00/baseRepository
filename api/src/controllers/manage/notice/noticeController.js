@@ -30,8 +30,9 @@ module.exports = {
 
     noticeCreate: (req, res) => {
         const noticeCode = trim(req.body.noticeCode);
+        const noticeName = trim(req.body.noticeName);
         const noticeType = trim(req.body.noticeType);
-        const noticeTypeDesc = trim(req.body.noticeTypeDesc);
+        const noticeTypeDesc = noticeType === '1' ? '系统消息' : '短信消息'
         const noticeIcon = trim(req.body.noticeIcon);
         const noticeTemplet = trim(req.body.noticeTemplet);
 
@@ -39,7 +40,7 @@ module.exports = {
         const templetParam = trim(req.body.templetParam) ? trim(req.body.templetParam) : JSON.stringify(defaultParam);
 
         res.type = 'json';
-        noticeOperate.noticeCreate(noticeCode, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, (error, success) => {
+        noticeOperate.noticeCreate(noticeCode, noticeName, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });
@@ -51,14 +52,15 @@ module.exports = {
 
     noticeEdit: (req, res) => {
         const id = trim(req.body.id);
+        const noticeName = trim(req.body.noticeName);
         const noticeType = trim(req.body.noticeType);
-        const noticeTypeDesc = trim(req.body.noticeTypeDesc);
+        const noticeTypeDesc = noticeType === '1' ? '系统消息' : '短信消息'
         const noticeIcon = trim(req.body.noticeIcon);
         const noticeTemplet = trim(req.body.noticeTemplet);
         const templetParam = trim(req.body.templetParam);
 
         res.type = 'json';
-        noticeOperate.noticeEdit(id, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, (error, success) => {
+        noticeOperate.noticeEdit(id, noticeName, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });
@@ -69,10 +71,10 @@ module.exports = {
     },
 
     noticeDelete: (req, res) => {
-        const idArry = req.body.idArry ? JSON.parse(req.body.idArry) : [];
+        const id = req.body.id;
 
         res.type = 'json'
-        noticeOperate.noticeDelete(idArry, (error, success) => {
+        noticeOperate.noticeDelete(id, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });

@@ -46,6 +46,7 @@ class Home extends React.Component {
                         ) : (
                                 <Route
                                     path="/"
+                                    exact
                                     render={(props) => (
                                         <Redirect to="/login" />
                                     )}
