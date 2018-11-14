@@ -1,7 +1,7 @@
 const { trim } = require('lodash')
 
-const redisUtility = require('../../common/redisUtility')
-const memberOperate = require('../../operates/manage/memberOperate')
+const redisUtility = require('../../../common/redisUtility')
+const memberOperate = require('../../../operates/manage/user/memberOperate')
 
 module.exports = {
     //获取会员列表

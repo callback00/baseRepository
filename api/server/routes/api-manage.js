@@ -3,8 +3,8 @@ const path = require('path')
 const redisUtility = require('../../src/common/redisUtility');
 const file = require('../../src/common/file');
 
-const loginController = require('../../src/controllers/manage/loginController')
-const userController = require('../../src/controllers/manage/userController')
+const loginController = require('../../src/controllers/manage/user/loginController')
+const userController = require('../../src/controllers/manage/user/userController')
 const menuController = require('../../src/controllers/manage/system/menuController')
 const menuPermissionController = require('../../src/controllers/manage/system/menuPermissionController')
 const apiController = require('../../src/controllers/manage/system/apiController')
@@ -14,7 +14,7 @@ const noticeController = require('../../src/controllers/manage/notice/noticeCont
 const noticeDetailController = require('../../src/controllers/manage/notice/noticeDetailController')
 // const tempFileController = require('../../src/controllers/file/tempFileController')
 
-const memberController = require('../../src/controllers/manage/memberController')
+const memberController = require('../../src/controllers/manage/user/memberController')
 const workAreaAuditerController = require('../../src/controllers/manage/workAreaAuditerController')
 const auditLogController = require('../../src/controllers/manage/auditLogController')
 const wxHomeInfoController = require('../../src/controllers/manage/wxHomeInfoController')

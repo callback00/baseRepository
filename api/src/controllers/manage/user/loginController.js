@@ -1,8 +1,8 @@
 const { trim, union } = require('lodash')
 const jwt = require('jsonwebtoken')
-const config = require('../../../config/config')
-const redisUtility = require('../../common/redisUtility')
-const loginOperate = require('../../operates/manage/loginOperate')
+const config = require('../../../../config/config')
+const redisUtility = require('../../../common/redisUtility')
+const loginOperate = require('../../../operates/manage/user/loginOperate')
 module.exports = {
   /**
    * 用户登录

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Card, Icon, Popconfirm, Button, message, Modal } from 'antd'
+import { Row, Col, Card, Icon, Popconfirm, Button, message } from 'antd'
 
 import tools from '../../../utils/tools'
 

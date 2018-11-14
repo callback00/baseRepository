@@ -87,7 +87,7 @@ class page extends React.Component {
                         initialValue: this.state.data.menuType ? this.state.data.menuType : '1',
                         rules: [{ required: true, message: '请选择栏目类型' }]
                     })(
-                        <Select  >
+                        <Select>
                             <Option value="1">导航栏目</Option>
                             <Option value="2">页面路由</Option>
                         </Select>

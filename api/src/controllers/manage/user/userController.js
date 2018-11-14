@@ -1,9 +1,9 @@
 const { trim } = require('lodash')
 
-const redisUtility = require('../../common/redisUtility')
-const tools = require('../../common/tools')
+const redisUtility = require('../../../common/redisUtility')
+const tools = require('../../../common/tools')
 
-const userOperate = require('../../operates/manage/userOperate')
+const userOperate = require('../../../operates/manage/user/userOperate')
 
 module.exports = {
   /**

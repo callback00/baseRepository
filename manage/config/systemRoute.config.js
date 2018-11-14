@@ -5,7 +5,7 @@ export default [
 
     {
         key: 'accountInfo',
-        title: '基本设置',
+        title: '个人中心',
         menuLink: '/account/setting/:name',
         component: AccountSetting
     },

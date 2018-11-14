@@ -1,8 +1,8 @@
 const crypto = require('crypto')
-const config = require('../../../config/config')
-const logger = require('../../common/logger')
+const config = require('../../../../config/config')
+const logger = require('../../../common/logger')
 
-const Member = require('../../models/memberModel')
+const Member = require('../../../models/memberModel')
 
 module.exports = {
     getMemberList: (mobile, province, city, callback) => {

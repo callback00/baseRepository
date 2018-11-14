@@ -1,7 +1,7 @@
 //该文件做作用仅仅是同步一些中间加入的表，防止误删createTables.js的内容引起生产环境的错误
 
-const Notice = require('../models/notice/noticeModel')
-const NoticeDetail = require('../models/notice/noticeDetailModel')
+const Notice = require('../../models/notice/noticeModel')
+const NoticeDetail = require('../../models/notice/noticeDetailModel')
 
 
 // ---------- 创建 消息模板表头 表 ----------

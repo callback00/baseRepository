@@ -1,11 +1,11 @@
 const { parallel } = require('async')
 const crypto = require('crypto')
 
-const config = require('../../../config/config')
-const dbConn = require('../../common/dbConn')
-const logger = require('../../common/logger')
+const config = require('../../../../config/config')
+const dbConn = require('../../../common/dbConn')
+const logger = require('../../../common/logger')
 
-const User = require('../../models/userModel')
+const User = require('../../../models/userModel')
 
 const conn = dbConn.getConn()
 

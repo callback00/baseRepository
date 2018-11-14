@@ -1,10 +1,10 @@
 const crypto = require('crypto')
-const config = require('../../../config/config')
-const logger = require('../../common/logger')
+const config = require('../../../../config/config')
+const logger = require('../../../common/logger')
 
-const User = require('../../models/userModel')
-const Sys_Api_Permission = require('../../models/system/sys_api_permission')
-const Api = require('../../models/system/apiModel')
+const User = require('../../../models/userModel')
+const Sys_Api_Permission = require('../../../models/system/sys_api_permission')
+const Api = require('../../../models/system/apiModel')
 
 User.belongsToMany(Api, { as: 'Apis', through: Sys_Api_Permission, foreignKey: 'userId', otherKey: 'apiId' })
 

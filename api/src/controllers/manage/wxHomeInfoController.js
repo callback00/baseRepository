@@ -3,7 +3,7 @@ const { assign, union } = require('lodash')
 const file = require('../../common/file')
 
 const redisUtility = require('../../common/redisUtility')
-const memberOperate = require('../../operates/manage/memberOperate')
+const memberOperate = require('../../operates/manage/user/memberOperate')
 
 module.exports = {
     //获取会员列表

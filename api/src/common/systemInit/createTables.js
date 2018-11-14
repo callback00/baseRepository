@@ -1,14 +1,14 @@
-const User = require('../models/userModel')
-const Sys_Menu = require('../models/system/menuModel')
-const Sys_Menu_Permission = require('../models/system/sys_menu_permission')
-const Api = require('../models/system/apiModel')
-const Sys_Api_Permission = require('../models/system/sys_api_permission')
-const Member = require('../models/memberModel')
-const WorkArea = require('../models/workAreaModel')
-const WorkAreaAuditer = require('../models/workAreaAuditerModel')
+const User = require('../../models/userModel')
+const Sys_Menu = require('../../models/system/menuModel')
+const Sys_Menu_Permission = require('../../models/system/sys_menu_permission')
+const Api = require('../../models/system/apiModel')
+const Sys_Api_Permission = require('../../models/system/sys_api_permission')
+const Member = require('../../models/memberModel')
+const WorkArea = require('../../models/workAreaModel')
+const WorkAreaAuditer = require('../../models/workAreaAuditerModel')
 
-const Notice = require('../models/notice/noticeModel')
-const NoticeDetail = require('../models/notice/noticeDetailModel')
+const Notice = require('../../models/notice/noticeModel')
+const NoticeDetail = require('../../models/notice/noticeDetailModel')
 
 // ---------- 创建 用户表 表 ----------
 User.sync({ force: true }).then(() => {
