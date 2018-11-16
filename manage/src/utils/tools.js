@@ -36,10 +36,13 @@ export default {
         } else if (res.statusCode === 401) {
           window.localStorage.clear()
           callback({ error: '登录信息已过期，请重新登录' })
-          setTimeout(() => {
-            window.location.href = '/manage/login'
-          })
 
+          if (window.location.pathname !== '/manage/login') {
+            setTimeout(() => {
+              window.location.href = '/manage/login'
+            })
+
+          }
         } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
         } else {
@@ -64,9 +67,12 @@ export default {
         } else if (res.statusCode === 401) {
           window.localStorage.clear()
           callback({ error: '登录信息已过期，请重新登录' })
-          setTimeout(() => {
-            window.location.href = '/manage/login'
-          })
+          if (window.location.pathname !== '/manage/login') {
+            setTimeout(() => {
+              window.location.href = '/manage/login'
+            })
+
+          }
 
         } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
@@ -92,9 +98,12 @@ export default {
         } else if (res.statusCode === 401) {
           window.localStorage.clear()
           callback({ error: '登录信息已过期，请重新登录' })
-          setTimeout(() => {
-            window.location.href = '/manage/login'
-          })
+          if (window.location.pathname !== '/manage/login') {
+            setTimeout(() => {
+              window.location.href = '/manage/login'
+            })
+
+          }
 
         } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
@@ -130,9 +139,12 @@ export default {
         } else if (res.statusCode === 401) {
           window.localStorage.clear()
           callback({ error: '登录信息已过期，请重新登录' })
-          setTimeout(() => {
-            window.location.href = '/manage/login'
-          })
+          if (window.location.pathname !== '/manage/login') {
+            setTimeout(() => {
+              window.location.href = '/manage/login'
+            })
+
+          }
 
         } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })
@@ -158,9 +170,12 @@ export default {
         } else if (res.statusCode === 401) {
           window.localStorage.clear()
           callback({ error: '登录信息已过期，请重新登录' })
-          setTimeout(() => {
-            window.location.href = '/manage/login'
-          })
+          if (window.location.pathname !== '/manage/login') {
+            setTimeout(() => {
+              window.location.href = '/manage/login'
+            })
+
+          }
 
         } else if (res.statusCode === 403) {
           callback({ error: '您无权进行该操作' })

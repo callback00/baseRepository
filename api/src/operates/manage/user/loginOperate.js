@@ -2,6 +2,7 @@ const crypto = require('crypto')
 const config = require('../../../../config/config')
 const logger = require('../../../common/logger')
 
+const Company = require('../../../models/system/sys_companyModel')
 const User = require('../../../models/userModel')
 const Sys_Api_Permission = require('../../../models/system/sys_api_permission')
 const Api = require('../../../models/system/apiModel')
@@ -9,7 +10,7 @@ const Api = require('../../../models/system/apiModel')
 User.belongsToMany(Api, { as: 'Apis', through: Sys_Api_Permission, foreignKey: 'userId', otherKey: 'apiId' })
 
 module.exports = {
-    login: (loginName, _password, callback) => {
+    login: (loginName, _password, companyId, callback) => {
 
         const key = config.secret
         const password = crypto.createHmac('sha1', key).update(_password).digest('hex')
@@ -18,7 +19,8 @@ module.exports = {
             where: {
                 loginName,
                 password,
-                status: '1'
+                status: '1',
+                companyId
             },
             attributes: ['userId', 'loginName', 'displayName', 'telphone'],
             include: [{
@@ -27,12 +29,19 @@ module.exports = {
                 through: {
                 }
             }]
-        }).then((success) => {
-            if (success) {
-                return callback(null, success)
+        }).then((user) => {
+            if (user) {
+                Company.findOne({
+                    where: {
+                        id: companyId
+                    },
+                    attributes: ['id', 'name', 'parentId', 'treeId']
+                }).then((company) => {
+                    return callback(null, user, company)
+                })
+            }else{
+                return callback('incorrect')
             }
-
-            return callback('incorrect')
 
         }).catch((error) => {
             logger.error(`----- authOperate login error = ${error} -----`)

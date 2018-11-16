@@ -25,11 +25,11 @@ function buildTree(nodeList, data) {
 }
 
 module.exports = {
-    getMenuTree: async (callback) => {
+    getMenuTree: async (companyId, callback) => {
 
         try {
             const data = await conn.query(
-                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where deletedAt is null order by sort asc,createdAt asc
+                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where companyId = ${companyId} and deletedAt is null order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;
@@ -63,7 +63,7 @@ module.exports = {
         }
     },
 
-    menuCreate: async (name, menuLink, comPath, icon, parentId, sort, menuType, menuTypeDesc, callback) => {
+    menuCreate: async (name, menuLink, comPath, icon, parentId, sort, menuType, menuTypeDesc, companyId, callback) => {
 
         let data = {
             name,
@@ -72,7 +72,8 @@ module.exports = {
             icon,
             sort,
             menuType,
-            menuTypeDesc
+            menuTypeDesc,
+            companyId
         };
 
         if (parentId === '0' || parentId === 0) {

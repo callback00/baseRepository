@@ -39,12 +39,12 @@ module.exports = (express, app, config) => {
   router.use(urlCache);
 
   // 单独处理登出请求，无需权限控制，直接销毁对应的登录内容
-  router.use('/logout', (req, res) => {
-    res.status(200).end()
-    if (config.auth) {
-      redisUtility.deleteUser(req.sessionID)
-    }
-  });
+  // router.use('/logout', (req, res) => {
+  //   res.status(200).end()
+  //   if (config.auth) {
+  //     redisUtility.deleteUser(req.sessionID)
+  //   }
+  // });
 
   require('./routes/api-wxApp')(router, app, config);
   require('./routes/api-manage')(router, app, config);

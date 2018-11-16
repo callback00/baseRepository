@@ -29,7 +29,7 @@ module.exports = {
 
         try {
             const data = await conn.query(
-                `select  id, name, parentId, treeId, isLeaf, sort, remark from sys_companys where deletedAt is null order by sort asc,createdAt asc
+                `select  id, name, parentId, sort, remark, name as title, id as value, id as 'key'  from sys_companies where deletedAt is null order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;
@@ -41,8 +41,8 @@ module.exports = {
             })[0]
 
             const result = buildTree([node], data).sort((a, b) => a.sort - b.sort);
-            if (result[0].children) {
-                return callback(null, result[0].children);
+            if (result) {
+                return callback(null, result);
             } else {
                 return callback(null, []);
             }
@@ -68,11 +68,12 @@ module.exports = {
         }
     },
 
-    companyCreate: async (name, parentId, sort, callback) => {
+    companyCreate: async (name, parentId, sort, remark, callback) => {
 
         let data = {
             name,
-            sort
+            sort,
+            remark
         };
 
         if (parentId === '0' || parentId === 0) {
@@ -140,12 +141,13 @@ module.exports = {
         }
     },
 
-    companyEdit: async (id, name, sort, callback) => {
+    companyEdit: async (id, name, sort, remark, callback) => {
         try {
             const result = await Company.update(
                 {
                     name,
                     sort,
+                    remark
                 },
                 {
                     where: { id },
@@ -186,7 +188,7 @@ module.exports = {
                 force: false // 真删除标记,此处用软删除
             })
 
-            // 必须包含在事务中，如果不包含在事务中可以查询到删除的菜单，因为事务没提交，还没真正提交，包含在事务内则查询不到
+            // 必须包含在事务中，如果不包含在事务中可以查询到删除的公司，因为事务没提交，还没真正提交，包含在事务内则查询不到
             const children = await Company.findAll({
                 where: { parentId },
                 transaction: trans,

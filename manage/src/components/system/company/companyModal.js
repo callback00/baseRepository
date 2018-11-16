@@ -18,7 +18,7 @@ class page extends React.Component {
 
     componentDidMount() {
         if (this.props.option === 'edit') {
-            tools.post('/menu/getMenuById', (json) => {
+            tools.post('/company/getCompanyById', (json) => {
                 if (json.success) {
                     this.setState({ data: json.success });
                 } else {
@@ -38,21 +38,21 @@ class page extends React.Component {
             if (!err) {
                 if (this.state.data && this.state.data.id) {
 
-                    tools.post('/menu/menuEdit', (json) => {
+                    tools.post('/company/companyEdit', (json) => {
                         if (json.success) {
                             this.props.onOk();
                         } else {
                             message.error(json.error);
                         }
-                    }, { name: values.name, id, menuLink: values.menuLink, comPath: values.comPath, icon: values.icon, sort: values.sort, menuType: values.menuType })
+                    }, { id, name: values.name, sort: values.sort, remark: values.remark })
                 } else {
-                    tools.post('/menu/menuCreate', (json) => {
+                    tools.post('/company/companyCreate', (json) => {
                         if (json.success) {
                             this.props.onOk();
                         } else {
                             message.error(json.error);
                         }
-                    }, { name: values.name, parentId: id, menuLink: values.menuLink, comPath: values.comPath, icon: values.icon, sort: values.sort, menuType: values.menuType })
+                    }, { name: values.name, parentId: id, sort: values.sort, remark: values.remark })
                 }
             }
         })
@@ -74,71 +74,23 @@ class page extends React.Component {
             <Form>
                 <FormItem
                     {...formItemLayout}
-                    label={(
-                        <span>
-                            导航类型&nbsp;
-                            <Tooltip title="导航栏目以系统左侧菜单栏为体现，页面路由不会出现在菜单栏中，仅仅是作为页面路由权限">
-                                <Icon type="question-circle-o" />
-                            </Tooltip>
-                        </span>
-                    )}
-                >
-                    {getFieldDecorator('menuType', {
-                        initialValue: this.state.data.menuType ? this.state.data.menuType : '1',
-                        rules: [{ required: true, message: '请选择栏目类型' }]
-                    })(
-                        <Select>
-                            <Option value="1">导航栏目</Option>
-                            <Option value="2">页面路由</Option>
-                        </Select>
-                    )}
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label="栏目名称"
+                    label="公司名称"
                 >
                     {getFieldDecorator('name', {
                         initialValue: this.state.data.name,
-                        rules: [{ required: true, message: '请输入栏目名称' }]
+                        rules: [{ required: true, message: '请输入公司名称' }]
                     })(
-                        <Input placeholder="请输入栏目名称" />
+                        <Input placeholder="请输入公司名称" />
                     )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                    label="路由链接"
+                    label="备注"
                 >
-                    {getFieldDecorator('menuLink', {
+                    {getFieldDecorator('remark', {
                         initialValue: this.state.data.menuLink,
                     })(
-                        <Input placeholder="例如：/user/list" />
-                    )}
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={(
-                        <span>
-                            组件路径&nbsp;
-                            <Tooltip title="只需填写components文件下的路径,例如 /user/userList.js(系统在处理路由时会自动将components这一级路径自动加入)">
-                                <Icon type="question-circle-o" />
-                            </Tooltip>
-                        </span>
-                    )}
-                >
-                    {getFieldDecorator('comPath', {
-                        initialValue: this.state.data.comPath,
-                    })(
-                        <Input placeholder="例如 /user/userList.js (文件后缀必填)" />
-                    )}
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label="图标"
-                >
-                    {getFieldDecorator('icon', {
-                        initialValue: this.state.data.icon,
-                    })(
-                        <Input disabled={this.state.data.menuType === '1' ? false : true} placeholder="请输入antd图标名称，建议一级栏目设置图标" />
+                        <Input />
                     )}
                 </FormItem>
                 <FormItem
@@ -165,7 +117,7 @@ class page extends React.Component {
     render() {
         return (
             <Modal
-                title={this.state.data.id ? '编辑栏目' : '新增栏目'}
+                title={this.state.data.id ? '编辑' : '新增'}
                 visible={this.props.visible}
                 key={this.props.modalKey}
                 onOk={this.handleOk.bind(this)}

@@ -13,10 +13,11 @@ module.exports = {
     /**
      * 注册前校验
      */
-    userExist: (loginName, callback) => {
+    userExist: (loginName, companyId, callback) => {
         User.findOne({
             where: {
-                loginName
+                loginName,
+                companyId
             },
             attributes: ['userId', 'displayName']
         }).then((success) => {
@@ -35,7 +36,7 @@ module.exports = {
     /**
      * 创建用户
      */
-    createUser: (data, adds, callback) => {
+    createUser: (data, callback) => {
         const key = config.secret
         data.password = crypto.createHmac('sha1', key).update(data.password).digest('hex')
 
@@ -63,7 +64,7 @@ module.exports = {
     /**
      * 更新用户信息
      */
-    updateUser: (userId, data, adds, deletes, callback) => {
+    updateUser: (userId, data, callback) => {
         conn.transaction({
             autocommit: false
         }).then((tran) => {
@@ -144,12 +145,12 @@ module.exports = {
     /**
      * 获取用户列表
      */
-    getUserList: (pageindex, callback) => {
+    getUserList: (pageindex, companyId, callback) => {
         const pagesize = 1000
         const offset = pageindex * pagesize
 
         User.findAll({
-            where: { loginname: { $ne: 'admin' } },
+            where: { loginname: { $ne: 'admin' }, companyId },
             attributes: ['userId', 'displayName', 'loginName', 'telphone'],
             order: 'userId DESC',
             offset,
@@ -165,12 +166,13 @@ module.exports = {
     /**
      * 获取用户名称列表
      */
-    getUserName: (pageindex, callback) => {
+    getUserName: (pageindex, companyId, callback) => {
         const pagesize = 1000
         const offset = pageindex * pagesize
 
         User.findAll({
             where: {
+                companyId,
                 $or: [{
                     role: '1',
                 }, {

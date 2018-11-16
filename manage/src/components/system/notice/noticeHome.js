@@ -49,7 +49,7 @@ class Page extends React.Component {
         this.setState({
             visible: false
         });
-
+        this.search();
         message.success('操作成功');
     }
 
@@ -59,6 +59,7 @@ class Page extends React.Component {
         });
     }
 
+    // 暂时不需要处理
     handleSendOk() {
 
     }

@@ -5,7 +5,7 @@ const conn = dbConn.getConn()
 
 moment.locale('zh-cn')
 
-// 栏目
+// 栏目，与api权限不同，菜单栏可以分组织
 const Menu = conn.define('sys_menu', {
     id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
 
@@ -21,6 +21,7 @@ const Menu = conn.define('sys_menu', {
     sort: { type: sequelize.INTEGER, defaultValue: null, comment: '排序' },
 
     remark: { type: sequelize.STRING, defaultValue: null, comment: '备注' },
+    companyId: { type: sequelize.INTEGER, allowNull: false, comment: '公司id' },
     createdAt: {
         type: sequelize.DATE,
         get() {

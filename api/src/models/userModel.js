@@ -16,6 +16,7 @@ const User = conn.define('sys_user', {
   remark: { type: sequelize.STRING, defaultValue: null, comment: '备注' },
   status: { type: sequelize.ENUM, values: ['0', '1'], defaultValue: '1', comment: '账号状态: 0.锁定 1.正常' },
   role: { type: sequelize.ENUM, values: ['0', '1', '2'], defaultValue: '1', comment: '角色: 0.管理员 1.立案庭 2.审判庭' },
+  companyId: { type: sequelize.INTEGER, allowNull: false, comment: '公司id' },
 }, {
   paranoid: true
 })

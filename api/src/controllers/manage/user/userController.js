@@ -10,11 +10,15 @@ module.exports = {
    * 创建用户
    */
   createUser: (req, res) => {
+
+    const companyId = req.company.id
+
     const data = {
       displayName: trim(req.body.displayName),
       loginName: trim(req.body.loginName),
       password: trim(req.body.password),
       telphone: trim(req.body.telphone) || null,
+      companyId
     }
 
     if (data.telphone && tools.checkMoblie(data.telphone)) {
@@ -23,17 +27,14 @@ module.exports = {
       return
     }
 
-    const _adds = trim(req.body.adds)
-    const adds = _adds ? JSON.parse(_adds) : null
-
-    userOperate.userExist(data.loginName, (err1, user) => {
+    userOperate.userExist(data.loginName, companyId, (err1, user) => {
       res.type = 'json'
 
       if ((err1 === null) && (user !== null)) {
         res.status(200).json({ error: '用户已存在' })
       } else {
 
-        userOperate.createUser(data, adds, (error, success) => {
+        userOperate.createUser(data, (error, success) => {
           if (error !== null) {
             res.status(200).json({ error })
           } else {
@@ -68,13 +69,7 @@ module.exports = {
       data.password = password
     }
 
-    const _adds = trim(req.body.adds)
-    const adds = _adds ? JSON.parse(_adds) : null
-
-    const _deletes = trim(req.body.deletes)
-    const deletes = _adds ? JSON.parse(_deletes) : null
-
-    userOperate.updateUser(userId, data, adds, deletes, (error, success) => {
+    userOperate.updateUser(userId, data, (error, success) => {
       res.type = 'json'
 
       if (error) {
@@ -133,8 +128,9 @@ module.exports = {
    */
   getUserList: (req, res) => {
     const pageindex = trim(req.body.pageindex)
+    const companyId = req.company.id
 
-    userOperate.getUserList(pageindex, (error, success) => {
+    userOperate.getUserList(pageindex, companyId, (error, success) => {
       res.type = 'json'
 
       if (error) {
@@ -152,8 +148,9 @@ module.exports = {
    */
   getUserName: (req, res) => {
     const pageindex = trim(req.body.pageindex)
+    const companyId = req.company.id
 
-    userOperate.getUserName(pageindex, (error, success) => {
+    userOperate.getUserName(pageindex, companyId, (error, success) => {
       res.type = 'json'
 
       if (error) {
@@ -170,7 +167,7 @@ module.exports = {
  * 获取用户信息
  */
   getMyInfo: (req, res) => {
-    const userId = trim(req.userId)
+    const userId = trim(req.user.userId)
 
     userOperate.getMyInfo(userId, (error, success) => {
       res.type = 'json'
@@ -187,7 +184,7 @@ module.exports = {
  * 更新用户信息
  */
   updateMyInfo: (req, res) => {
-    const userId = trim(req.userId)
+    const userId = trim(req.user.userId)
 
     const data = {
       displayName: trim(req.body.displayName),

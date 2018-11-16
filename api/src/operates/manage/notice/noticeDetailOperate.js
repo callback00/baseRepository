@@ -26,14 +26,15 @@ module.exports = {
         }
     },
 
-    sendNotice: async (noticeCode, noticeType, noticeParamData, callback) => {
+    sendNotice: async (noticeCode, noticeType, noticeParamData,companyId, callback) => {
 
         try {
 
             const header = await Sys_Notice.findOne({
                 where: {
                     noticeCode,
-                    noticeType
+                    noticeType,
+                    companyId
                 }
             }).then((item) => {
                 return item;
@@ -60,6 +61,7 @@ module.exports = {
                     noticeContent,
                     noticedFlag: false,
                     readFlag: false,
+                    companyId,
                 };
 
                 const result = await Sys_Notice_Detail.create(data).then((result) => {

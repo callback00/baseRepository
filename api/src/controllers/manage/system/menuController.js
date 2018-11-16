@@ -4,7 +4,8 @@ const menuOperate = require('../../../operates/manage/system/menuOperate')
 module.exports = {
 
     getMenuTree: (req, res) => {
-        menuOperate.getMenuTree((error, success) => {
+        const companyId = req.company.id
+        menuOperate.getMenuTree(companyId, (error, success) => {
             res.type = 'json';
 
             if (error) {
@@ -38,8 +39,10 @@ module.exports = {
         const menuType = trim(req.body.menuType);
         const menuTypeDesc = menuType === '1' ? '导航栏目' : '页面路由';
 
+        const companyId = req.company.id
+
         res.type = 'json';
-        menuOperate.menuCreate(name, menuLink, comPath, icon, parentId, sort, menuType, menuTypeDesc, (error, success) => {
+        menuOperate.menuCreate(name, menuLink, comPath, icon, parentId, sort, menuType, menuTypeDesc, companyId, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });

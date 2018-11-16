@@ -38,59 +38,60 @@ class Header extends React.PureComponent {
 
     componentDidMount() {
 
-        const token = window.localStorage.getItem('system-manage-token')
-        this.socket = io(config.socketUrl, {
-            query: {
-                token
-            }
-        });
-
-        const socket = this.socket;
-
-        socket.on('connect', () => {
-            console.log(socket.id);
-        });
-
-        socket.on('connect_error', () => {
-            notification.open({
-                message: '无法获取消息',
-                description: '连接消息服务器失败，无法获取实时消息，请联系管理员',
-                icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
+        if (config.notice_open) {
+            const token = window.localStorage.getItem('system-manage-token')
+            this.socket = io(config.socketUrl, {
+                query: {
+                    token
+                }
             });
-        });
 
-        socket.on('connect_failed', () => {
-            notification.open({
-                message: '无法获取消息',
-                description: '连接消息服务器失败，无法获取实时消息，请联系管理员',
-                icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
+            const socket = this.socket;
+
+            socket.on('connect', () => {
+                console.log(socket.id);
             });
-        });
 
-        socket.on('newMessage', (result) => {
-
-            if (this.state.unReadMsgCount !== result.unReadMsgCount) {
-                this.setState({
-                    unReadMsgCount: result.unReadMsgCount
-                })
-            }
-            result.data.forEach(item => {
+            socket.on('connect_error', () => {
                 notification.open({
-                    message: item.noticeTitle ? item.noticeTitle : '您有新的消息',
-                    description: item.noticeContent,
-                    icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+                    message: '无法获取消息',
+                    description: '连接消息服务器失败，无法获取实时消息，请联系管理员',
+                    icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
                 });
             });
-        });
 
-        socket.on('error', (data) => {
-            notification.open({
-                message: '获取消息出错',
-                description: `${data}`,
-                icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
+            socket.on('connect_failed', () => {
+                notification.open({
+                    message: '无法获取消息',
+                    description: '连接消息服务器失败，无法获取实时消息，请联系管理员',
+                    icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
+                });
             });
-        });
 
+            socket.on('newMessage', (result) => {
+
+                if (this.state.unReadMsgCount !== result.unReadMsgCount) {
+                    this.setState({
+                        unReadMsgCount: result.unReadMsgCount
+                    })
+                }
+                result.data.forEach(item => {
+                    notification.open({
+                        message: item.noticeTitle ? item.noticeTitle : '您有新的消息',
+                        description: item.noticeContent,
+                        icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+                    });
+                });
+            });
+
+            socket.on('error', (data) => {
+                notification.open({
+                    message: '获取消息出错',
+                    description: `${data}`,
+                    icon: <Icon type="warning" style={{ color: '#108ee9' }} />,
+                });
+            });
+        }
     }
 
     onMenuClick({ key }) {
@@ -100,7 +101,10 @@ class Header extends React.PureComponent {
         }
         if (key === 'logout') {
 
-            this.socket.emit('loginOut');
+            if (config.notice_open) {
+                this.socket.emit('loginOut');
+            }
+
             auth.logout();
             this.props.history.push('/login')
         }

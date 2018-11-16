@@ -71,6 +71,25 @@ module.exports = {
     return `${path}?${array.join('&')}`
   },
 
+  setCompany(sessionID, value, maxAge = config.redis_maxAge) {
+    const key = `${sessionID}@company`
+    const data = JSON.stringify(value)
+    redis.set(key, data, 'EX', maxAge)
+  },
+
+
+  getCompany(sessionID, callback) {
+    const key = `${sessionID}@company`
+    return redis.get(key, (error, data) => {
+      if (data) {
+        const current = JSON.parse(data)
+        return callback(current)
+      }
+
+      return callback(undefined)
+    })
+  },
+
 
   setUser(sessionID, value, maxAge = config.redis_maxAge) {
     if (!config.auth) {

@@ -9,10 +9,14 @@ const conn = dbConn.getConn()
 
 module.exports = {
 
-    getNoticeList: async (callback) => {
+    getNoticeList: async (companyId, callback) => {
 
         try {
-            const data = await Sys_Notice.findAll().then((list) => {
+            const data = await Sys_Notice.findAll({
+                where: {
+                    companyId
+                }
+            }).then((list) => {
                 return list;
             });
 
@@ -39,7 +43,7 @@ module.exports = {
         }
     },
 
-    noticeCreate: async (noticeCode, noticeName, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, callback) => {
+    noticeCreate: async (noticeCode, noticeName, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, companyId, callback) => {
 
         let data = {
             noticeCode,
@@ -48,7 +52,8 @@ module.exports = {
             noticeTypeDesc,
             noticeIcon,
             noticeTemplet,
-            templetParam
+            templetParam,
+            companyId
         };
 
         try {
@@ -56,7 +61,8 @@ module.exports = {
             const tepmData = await Sys_Notice.findAll({
                 where: {
                     noticeCode,
-                    noticeType
+                    noticeType,
+                    companyId
                 }
             }).then((data) => {
                 return data;

@@ -1,8 +1,6 @@
 const redisUtility = require('../../src/common/redisUtility');
-
 const mobileAuth = require('../../src/controllers/wx/authController')
-const memberController = require('../../src/controllers/wx/memberController')
-const auditController = require('../../src/controllers/wx/auditController')
+
 module.exports = (router, app, config) => {
 
     const loginExpired = (res) => {
@@ -37,7 +35,7 @@ module.exports = (router, app, config) => {
     }
 
     // 单独处理登出请求，无需权限控制，直接销毁对应的登录内容
-    router.use('/logout', (req, res) => {
+    router.use('/wxapp/logout', (req, res) => {
         res.status(200).end()
         if (config.auth) {
             redisUtility.deleteUser(req.sessionID)
@@ -49,12 +47,4 @@ module.exports = (router, app, config) => {
     router
         .post('/wxapp/login', mobileAuth.wxappLogin)
         .post('/wxapp/login/send', mobileAuth.sendCode)
-
-    router
-        .post('/wxapp/member/QRInfo', weakCheck, getUser, memberController.getWXQr)
-        .post('/wxapp/member/getMemberInfoByMobile', weakCheck, getUser, memberController.getMemberInfoByMobile)
-
-    router
-        .get('/wxapp/auditer/getAuditerInfo', weakCheck, getUser, auditController.getAuditerInfo)
-        .post('/wxapp/auditer/handleAudit', weakCheck, getUser, auditController.handleAudit)
 }

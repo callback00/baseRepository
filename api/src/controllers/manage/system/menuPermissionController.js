@@ -23,9 +23,10 @@ module.exports = {
         const userId = req.body.userId;
         const addKeyList = JSON.parse(trim(req.body.addKeyList))
         const deleteKeyList = JSON.parse(trim(req.body.deleteKeyList))
+        const companyId = req.company.id
 
         res.type = 'json'
-        menuPermissionOperate.permissionSave(addKeyList, deleteKeyList, userId, (error, success) => {
+        menuPermissionOperate.permissionSave(addKeyList, deleteKeyList, userId, companyId, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error })

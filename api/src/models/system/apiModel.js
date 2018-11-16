@@ -5,7 +5,7 @@ const conn = dbConn.getConn()
 
 moment.locale('zh-cn')
 
-// 栏目
+// api的权限控制是否分组织还需要考虑，目前未加组织id
 const Api = conn.define('sys_api', {
     id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
 

@@ -7,14 +7,15 @@ import tools from './tools'
 
 export default {
   // 跟后台服务器校验登录情况
-  login(loginName, password, callback) {
+  login(loginName, password, companyId, callback) {
     const md5password = tools.md5password(password)
 
     request
       .post(`${API_SERVER_ROOT}/login`)
       .send({
         loginName,
-        password: md5password
+        password: md5password,
+        companyId: parseInt(companyId, 10)
       })
       .set('Accept', 'application/json')
       .end((err, res) => {

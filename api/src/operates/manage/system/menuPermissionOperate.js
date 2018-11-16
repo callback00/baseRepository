@@ -62,7 +62,7 @@ module.exports = {
         }
     },
 
-    permissionSave: async (addKeyList, deleteKeyList, userId, callback) => {
+    permissionSave: async (addKeyList, deleteKeyList, userId, companyId, callback) => {
 
         try {
 
@@ -88,7 +88,7 @@ module.exports = {
             const addList = [];
 
             menuList.forEach(item => {
-                const data = { userId: user.userId, userName: user.loginName, menuId: item.id, menuName: item.name, menuType: item.menuType, menuTypeDesc: item.menuTypeDesc }
+                const data = { userId: user.userId, userName: user.loginName, menuId: item.id, menuName: item.name, menuType: item.menuType, menuTypeDesc: item.menuTypeDesc, companyId }
                 addList.push(data)
             })
 

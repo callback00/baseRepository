@@ -15,6 +15,7 @@ module.exports = {
   sms: true,
   sms_default: true,
   sms_default_code: '6666',
+  notice_open: false,
 
 
   // 项目常规配置

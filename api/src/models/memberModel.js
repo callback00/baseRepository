@@ -11,6 +11,7 @@ const Member = conn.define('member', {
   mobile: { type: sequelize.STRING, defaultValue: null, comment: '手机号' },
   province: { type: sequelize.STRING, defaultValue: null, comment: '手机号省份' },
   city: { type: sequelize.STRING, defaultValue: null, comment: '手机号城市' },
+  companyId: { type: sequelize.INTEGER, allowNull: false, comment: '公司id' },
   createdAt: {
     type: sequelize.DATE,
     get() {

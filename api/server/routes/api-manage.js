@@ -15,9 +15,8 @@ const noticeDetailController = require('../../src/controllers/manage/notice/noti
 // const tempFileController = require('../../src/controllers/file/tempFileController')
 
 const memberController = require('../../src/controllers/manage/user/memberController')
-const workAreaAuditerController = require('../../src/controllers/manage/workAreaAuditerController')
-const auditLogController = require('../../src/controllers/manage/auditLogController')
-const wxHomeInfoController = require('../../src/controllers/manage/wxHomeInfoController')
+
+const companyController = require('../../src/controllers/manage/system/companyController')
 
 const multipart = require('connect-multiparty')
 
@@ -41,82 +40,64 @@ module.exports = (router, app, config) => {
         res.status(401).json({ error: '用户登录已过期，请重新登录!' });
     };
 
-    // 自定义 获取操作用户userid 中间件
-    const getUserid = (req, res, next) => {
-        redisUtility.getUser(req.sessionID, (current) => {
-            if (current) {
-                req.userId = current.userId;
-            }
-
-            next();
-        });
-    };
-
-    // 自定义 弱权限校验 中间件，只校验是否登录
-    const weakCheck = (req, res, next) => {
-        if (req.sessionID) {
-            next();
-        } else {
-            loginExpired(res);
-        }
-    };
-
-    // 权限校验中间件，对于维护在api表中的路由进行用户权限校验，未维护在api表中的路由直接通过
+    // 校验登录、权限的中间件，对于维护在api表中的路由进行用户权限校验，未维护在api表中的路由直接通过
     const strongCheck = (req, res, next) => {
         redisUtility.getUser(req.sessionID, (user) => {
             if (user) {
-                // 超级管理员无需api权限校验
-                if (user.loginName === 'admin') {
-                    next();
-                    return
-                } else {
-                    // 为防止权限校验有bug，保留文本配置的功能，稳定后可去掉该判断
-                    if (config.auth) {
-                        // 判断当前url是否在需校验的列表里
-                        const isCheckPermission = apiList.some((data) => {
-                            return req.originalUrl.match(`/api${data.url}`) !== null;
-                        })
+                req.company = redisUtility.getCompany(user.companyId, (company) => {
+                    if (company) {
 
-                        // 如需校验api则校验用户api权限，否则next
-                        if (isCheckPermission) {
-                            if (user.apiPermissions) {
-                                const isGoNext = user.apiPermissions.some((data) => {
-                                    return req.originalUrl.match(`/api${data}`) !== null;
+                        //管理端的api都自动获取当前用户和当前组织
+                        req.user = user;
+                        req.company = company;
+
+                        // 超级管理员无需api权限校验
+                        if (user.loginName === 'admin') {
+                            next();
+                            return
+                        } else {
+                            // 为防止权限校验有bug，保留文本配置的功能，稳定后可去掉该判断
+                            if (config.auth) {
+                                // 判断当前url是否在需校验的列表里
+                                const isCheckPermission = apiList.some((data) => {
+                                    return req.originalUrl.match(`/api${data.url}`) !== null;
                                 })
 
-                                if (isGoNext) {
+                                // 如需校验api则校验用户api权限，否则next
+                                if (isCheckPermission) {
+                                    if (user.apiPermissions) {
+                                        const isGoNext = user.apiPermissions.some((data) => {
+                                            return req.originalUrl.match(`/api${data}`) !== null;
+                                        })
+
+                                        if (isGoNext) {
+                                            next();
+                                            return;
+                                        } else {
+                                            res.type = 'json';
+                                            res.status(403).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
+                                        }
+                                    }
+                                } else {
                                     next();
                                     return;
-                                } else {
-                                    res.type = 'json';
-                                    res.status(403).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
                                 }
+                            } else {
+                                next();
+                                return;
                             }
-                        } else {
-                            next();
-                            return;
                         }
                     } else {
-                        next();
+                        loginExpired(res);
                         return;
                     }
-                }
+                })
             } else {
                 loginExpired(res);
                 return;
             }
         })
     }
-
-    // 自定义 获取操作用户user 中间件
-    const getUser = (req, res, next) => {
-        redisUtility.getUser(req.sessionID, (user) => {
-            if (user) {
-                req.user = user;
-            }
-            next();
-        });
-    };
 
     // 单独处理登出请求，无需权限控制，直接销毁对应的登录内容
     router.use('/logout', (req, res) => {
@@ -129,9 +110,10 @@ module.exports = (router, app, config) => {
     // 后台 API
     router
         .post('/login', loginController.login)
-        .post('/password', strongCheck, getUserid, loginController.updatePassword)
-        .put('/updateMyInfo', strongCheck, getUserid, userController.updateMyInfo)
-        .get('/getMyInfo', strongCheck, getUserid, userController.getMyInfo)
+        .post('/password', strongCheck, loginController.updatePassword)
+        .put('/updateMyInfo', strongCheck, userController.updateMyInfo)
+        .get('/getMyInfo', strongCheck, userController.getMyInfo)
+        .get('/login/getCompanyTree', companyController.getCompanyTree)
 
     router
         .put('/user/create', strongCheck, userController.createUser)
@@ -155,14 +137,14 @@ module.exports = (router, app, config) => {
         .post('/apiManage/getApiById', strongCheck, apiController.getApiById)
 
     router
-        .post('/menuPermission/getMenuPermissionTree', strongCheck, getUser, menuPermissionController.getMenuPermissionTree)
+        .post('/menuPermission/getMenuPermissionTree', strongCheck, menuPermissionController.getMenuPermissionTree)
         .post('/menuPermission/permissionSave', strongCheck, menuPermissionController.permissionSave)
-        .post('/menuPermission/getCurrentMenuPermission', strongCheck, getUser, menuPermissionController.getCurrentMenuPermission)
+        .post('/menuPermission/getCurrentMenuPermission', strongCheck, menuPermissionController.getCurrentMenuPermission)
 
     router
-        .post('/apiPermission/getApiPermissionTree', strongCheck, getUser, apiPermissionController.getApiPermissionTree)
+        .post('/apiPermission/getApiPermissionTree', strongCheck, apiPermissionController.getApiPermissionTree)
         .post('/apiPermission/permissionSave', strongCheck, apiPermissionController.permissionSave)
-        .post('/apiPermission/getCurrentapiPermission', strongCheck, getUser, apiPermissionController.getCurrentApiPermission)
+        .post('/apiPermission/getCurrentapiPermission', strongCheck, apiPermissionController.getCurrentApiPermission)
 
     router
         .post('/noticeManage/noticeCreate', strongCheck, noticeController.noticeCreate)
@@ -170,33 +152,18 @@ module.exports = (router, app, config) => {
         .delete('/noticeManage/noticeDelete', strongCheck, noticeController.noticeDelete)
         .post('/noticeManage/getNoticeById', strongCheck, noticeController.getNoticeById)
         .post('/noticeManage/getNoticeList', strongCheck, noticeController.getNoticeList)
-
-    router
         .post('/noticeManage/sendNoticeDetail', strongCheck, noticeDetailController.sendNoticeDetail)
 
     router
         .post('/member/getMemberList', strongCheck, memberController.getMemberList)
 
+    router
+        .get('/company/getCompanyTree', strongCheck, companyController.getCompanyTree)
+        .post('/company/companyCreate', strongCheck, companyController.companyCreate)
+        .post('/company/companyEdit', strongCheck, companyController.companyEdit)
+        .delete('/company/companyDelete', strongCheck, companyController.companyDelete)
+        .post('/company/getCompanyById', strongCheck, companyController.getCompanyById)
+
     // router
     //     .post('/tempFile/baseUpload', multipartMiddleware, weakCheck, tempFileController.baseUpload)
-
-    router
-        .get('/workAreaAuditer/getWorkAreaTree', strongCheck, workAreaAuditerController.getWorkAreaTree)
-        .post('/workAreaAuditer/getWorkAreaById', strongCheck, workAreaAuditerController.getWorkAreaById)
-        .post('/workAreaAuditer/workAreaCreate', strongCheck, workAreaAuditerController.workAreaCreate)
-        .post('/workAreaAuditer/workAreaEdit', strongCheck, workAreaAuditerController.workAreaEdit)
-        .delete('/workAreaAuditer/workAreaDelete', strongCheck, workAreaAuditerController.workAreaDelete)
-
-    router
-        .post('/workAreaAuditer/getAuditerListByAreaId', strongCheck, workAreaAuditerController.getAuditerListByAreaId)
-        .post('/workAreaAuditer/getAuditerById', strongCheck, workAreaAuditerController.getAuditerById)
-        .post('/workAreaAuditer/workAreaAuditerCreate', strongCheck, workAreaAuditerController.workAreaAuditerCreate)
-        .post('/workAreaAuditer/workAreaAuditerEdit', strongCheck, workAreaAuditerController.workAreaAuditerEdit)
-        .delete('/workAreaAuditer/workAreaAuditerDelete', strongCheck, workAreaAuditerController.workAreaAuditerDelete)
-
-    router
-        .post('/auditLog/getAuditLogList', strongCheck, auditLogController.getAuditLogList)
-
-    router
-        .post('/wxHomeInfo/createScenic', strongCheck, wxHomeInfoController.createScenic)
 }

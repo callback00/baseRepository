@@ -32,9 +32,10 @@ module.exports = {
         const name = trim(req.body.name);
         const parentId = trim(req.body.parentId);
         const sort = trim(req.body.sort);
+        const remark = trim(req.body.remark);
 
         res.type = 'json';
-        companyOperate.companyCreate(name, parentId, sort, (error, success) => {
+        companyOperate.companyCreate(name, parentId, sort, remark, (error, success) => {
             if (error) {
                 res.status(200).json({ error });
             } else {
@@ -47,9 +48,10 @@ module.exports = {
         const id = trim(req.body.id);
         const name = trim(req.body.name);
         const sort = trim(req.body.sort);
+        const remark = trim(req.body.remark);
 
         res.type = 'json';
-        companyOperate.companyEdit(name, parentId, sort, (error, success) => {
+        companyOperate.companyEdit(id, name, sort, remark, (error, success) => {
 
             if (error) {
                 res.status(200).json({ error });
