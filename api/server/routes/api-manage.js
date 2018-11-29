@@ -18,6 +18,8 @@ const memberController = require('../../src/controllers/manage/user/memberContro
 
 const companyController = require('../../src/controllers/manage/system/companyController')
 
+const roleController =  require('../../src/controllers/manage/role/roleController')
+
 const multipart = require('connect-multiparty')
 
 const Api = require('../../src/models/system/apiModel')
@@ -121,6 +123,18 @@ module.exports = (router, app, config) => {
         .delete('/user/delete', strongCheck, userController.deleteUser)
         .post('/user/info', strongCheck, userController.getUserInfo)
         .post('/user/list', strongCheck, userController.getUserList)
+
+        router
+        .get('/role/getRoleList', strongCheck, roleController.getRoleList)
+        .post('/role/roleCreate', strongCheck, roleController.roleCreate)
+        .post('/role/getRoleUserByRoleId', strongCheck, roleController.getRoleUserByRoleId)
+        .post('/role/roleEdit', strongCheck, roleController.roleEdit)
+        .delete('/role/roleDelete', strongCheck, roleController.roleDelete)
+        .post('/role/getRoleById', strongCheck, roleController.getRoleById)
+        .post('/role/getRoleMenuPermissionTree', strongCheck, roleController.getRoleMenuPermissionTree)
+        .post('/role/roleMenuPermissionEdit', strongCheck, roleController.roleMenuPermissionEdit)
+        .post('/role/getRoleApiPermissionTree', strongCheck, roleController.getRoleApiPermissionTree)
+        .post('/role/roleApiPermissionEdit', strongCheck, roleController.roleApiPermissionEdit)
 
     router
         .get('/menu/getMenuTree', strongCheck, menuController.getMenuTree)

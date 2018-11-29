@@ -78,7 +78,7 @@ module.exports = {
 
     },
 
-    // 获取用户系统消息，不需要提供api，内部调用
+    // 获取用户系统消息，不需要提供api，内部调用，旧websocket调用
     getUserWebNoticeList: async (userId, callback) => {
 
         try {
@@ -108,6 +108,54 @@ module.exports = {
                 idArry.push(item.id)
             });
 
+            //此处更新noticedFlag标志不合理，万一没发生成功，比如取数据时，用户立即刷新了界面，导致socket重连，此时就没有通知了。
+            if (idArry.length > 0) {
+                conn.query(
+                    ` update  sys_notice_details set noticedFlag = 1 where id in (${idArry})`
+                    , { type: sequelize.QueryTypes.UPDATE }
+                )
+            }
+
+            const result ={
+                data,
+                unReadMsgCount
+            }
+            return callback(null, result);
+        } catch (error) {
+            logger.error(`----- noticeDetailOperate getUserWebNoticeList error = ${error} -----`);
+            return callback('请求已被服务器拒绝');
+        }
+    },
+
+    // 新的websocket调用
+    getUnsendNoticeList: async (callback) => {
+
+        try {
+            const data = await Sys_Notice_Detail.findAll({
+                where: {
+                    noticedFlag: '0'
+                },
+                order: [
+                    ['createdAt', 'asc']
+                ]
+            }).then((list) => {
+                return list;
+            });
+
+            const unReadMsgCount = await conn.query(
+                `select count(A.id) from sys_notice_details A inner join sys_notices B on (A.headerId = B.id)
+                 where A.deletedAt is null and A.contact=${userId} and A.readFlag = 0 and B.noticeType = 1
+            `, { type: sequelize.QueryTypes.SELECT }
+            ).then((result) => {
+                return result.length;
+            })
+
+            const idArry = [];
+            data.forEach(item => {
+                idArry.push(item.id)
+            });
+
+            //此处更新noticedFlag标志不合理，万一没发生成功，比如取数据时，用户立即刷新了界面，导致socket重连，此时就没有通知了。
             if (idArry.length > 0) {
                 conn.query(
                     ` update  sys_notice_details set noticedFlag = 1 where id in (${idArry})`

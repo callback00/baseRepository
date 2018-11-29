@@ -1,11 +1,10 @@
-const { trim } = require('lodash')
-const menuOperate = require('../../../operates/manage/system/menuOperate')
+const { trim } = require('lodash');
+const menuOperate = require('../../../operates/manage/system/menuOperate');
 
 module.exports = {
 
     getMenuTree: (req, res) => {
-        const companyId = req.company.id
-        menuOperate.getMenuTree(companyId, (error, success) => {
+        menuOperate.getMenuTree((error, success) => {
             res.type = 'json';
 
             if (error) {

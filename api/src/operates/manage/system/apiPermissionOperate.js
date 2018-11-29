@@ -34,7 +34,7 @@ function buildTree(nodeList, menuList) {
 module.exports = {
     getApiPermissionTree: async (userId, callback) => {
         try {
-            const menuList = await conn.query(
+            const apiList = await conn.query(
                 `select  id, name, parentId, treeId, isLeaf, sort, remark from sys_apis where deletedAt is null order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
@@ -48,7 +48,7 @@ module.exports = {
                 return result;
             })
 
-            const result = buildTree([{ id: 0, name: 'api管理' }], menuList).sort((a, b) => a.sort - b.sort);
+            const result = buildTree([{ id: 0, name: 'api管理' }], apiList).sort((a, b) => a.sort - b.sort);
 
             let rtnObject = { treeData: [], permissionList };
             if (result[0].children) {

@@ -5,6 +5,7 @@ const conn = dbConn.getConn()
 
 moment.locale('zh-cn')
 
+// 栏目权限需要区分companyId
 const Sys_Menu_Permission = conn.define('sys_menu_permission', {
     id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
 

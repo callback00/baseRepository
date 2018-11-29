@@ -39,7 +39,7 @@ module.exports = {
             res.status(200).json({ error })
           } else {
             res.status(200).json({ success })
-            redisUtility.reset(req.sessionID)
+            // redisUtility.reset(req.sessionID)
           }
         })
 
@@ -77,7 +77,7 @@ module.exports = {
       } else {
         res.status(200).json({ success })
         redisUtility.deleteUser(userId)
-        redisUtility.reset(req.sessionID)
+        // redisUtility.reset(req.sessionID)
       }
     })
   },
@@ -97,7 +97,7 @@ module.exports = {
       } else {
         res.status(200).json({ success })
         redisUtility.deleteUser(userId)
-        redisUtility.reset(req.sessionID)
+        // redisUtility.reset(req.sessionID)
       }
     })
   },

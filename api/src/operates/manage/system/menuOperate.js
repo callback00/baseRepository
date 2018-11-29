@@ -25,11 +25,11 @@ function buildTree(nodeList, data) {
 }
 
 module.exports = {
-    getMenuTree: async (companyId, callback) => {
+    getMenuTree: async (callback) => {
 
         try {
             const data = await conn.query(
-                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where companyId = ${companyId} and deletedAt is null order by sort asc,createdAt asc
+                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where deletedAt is null order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;

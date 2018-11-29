@@ -6,6 +6,7 @@ const redisUtility = require('./redisUtility');
 
 const noticeDetailOperate = require('../operates/manage/notice/noticeDetailOperate')
 
+const socketList = []
 exports.socketInit = function (server) {
 
     if (config.notice_open) {
@@ -40,6 +41,9 @@ exports.socketInit = function (server) {
         // 案例一：如果该信息是餐厅的菜单提示，页面是一直开着的，如果因为token过期收不到消息，厨房就要爆炸了...
         // 获取相应的用户消息，只需知道userId即可，所以在中间件校验里只需记录当前登录用户即可
         io.on('connection', function (socket) {
+
+            socketList.push(socket)
+            
             const tweets = setInterval(function () {
                 if (socket.user) {
                     noticeDetailOperate.getUserWebNoticeList(socket.user.userId, (error, success) => {
@@ -66,4 +70,6 @@ exports.socketInit = function (server) {
         });
     }
 }
+
+exports.socketList = socketList
 
