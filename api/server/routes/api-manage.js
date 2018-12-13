@@ -131,6 +131,7 @@ module.exports = (router, app, config) => {
         .post('/role/roleEdit', strongCheck, roleController.roleEdit)
         .delete('/role/roleDelete', strongCheck, roleController.roleDelete)
         .post('/role/getRoleById', strongCheck, roleController.getRoleById)
+        .post('/role/roleUserEdit', strongCheck, roleController.roleUserEdit)
         .post('/role/getRoleMenuPermissionTree', strongCheck, roleController.getRoleMenuPermissionTree)
         .post('/role/roleMenuPermissionEdit', strongCheck, roleController.roleMenuPermissionEdit)
         .post('/role/getRoleApiPermissionTree', strongCheck, roleController.getRoleApiPermissionTree)

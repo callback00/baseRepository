@@ -139,7 +139,7 @@ class UserList extends React.Component {
             &nbsp;&nbsp;&nbsp;
             <a onClick={this.apiPermissionModalShow.bind(this, record)} >api权限</a>
             &nbsp;&nbsp;&nbsp;
-            <Popconfirm onConfirm={this.deleteBtnClick.bind(this, record.key)} title="确定要删除此条记录吗？">
+            <Popconfirm okText="确定" cancelText="取消" onConfirm={this.deleteBtnClick.bind(this, record.key)} title="确定要删除此条记录吗？">
               <a>删除</a>
             </Popconfirm>
           </span>
