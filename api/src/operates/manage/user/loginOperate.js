@@ -7,7 +7,11 @@ const User = require('../../../models/userModel')
 const Sys_Api_Permission = require('../../../models/system/sys_api_permission')
 const Api = require('../../../models/system/apiModel')
 
-User.belongsToMany(Api, { as: 'Apis', through: Sys_Api_Permission, foreignKey: 'userId', otherKey: 'apiId' })
+const sequelize = require('sequelize')
+const dbConn = require('../../../common/dbConn')
+const conn = dbConn.getConn()
+
+// User.belongsToMany(Api, { as: 'Apis', through: Sys_Api_Permission, foreignKey: 'userId', otherKey: 'apiId' })
 
 module.exports = {
     login: (loginName, _password, companyId, callback) => {
@@ -23,23 +27,36 @@ module.exports = {
                 companyId
             },
             attributes: ['userId', 'loginName', 'displayName', 'telphone'],
-            include: [{
-                model: Api,
-                as: 'Apis',
-                through: {
-                }
-            }]
+            // include: [{
+            //     model: Api,
+            //     as: 'Apis',
+            //     through: {
+            //     }
+            // }]
         }).then((user) => {
             if (user) {
-                Company.findOne({
-                    where: {
-                        id: companyId
-                    },
-                    attributes: ['id', 'name', 'parentId', 'treeId']
-                }).then((company) => {
-                    return callback(null, user, company)
+
+                // 获取api权限
+                conn.query(
+                    `select Api.* from (
+                        select B.apiId,B.apiName from sys_role_users A inner join sys_role_api_permissions B on A.roleId = B.roleId where A.userId = ${user.userId}
+                        UNION 
+                        select apiId,apiName from sys_api_permissions where userId = ${user.userId}
+                        ) tempData inner join sys_apis as Api on tempData.apiId = Api.id`
+                    , { type: sequelize.QueryTypes.SELECT }
+                ).then((result) => {
+                    user.Apis = result;
+
+                    Company.findOne({
+                        where: {
+                            id: companyId
+                        },
+                        attributes: ['id', 'name', 'parentId', 'treeId']
+                    }).then((company) => {
+                        return callback(null, user, company)
+                    })
                 })
-            }else{
+            } else {
                 return callback('incorrect')
             }
 

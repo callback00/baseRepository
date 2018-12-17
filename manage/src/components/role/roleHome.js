@@ -58,6 +58,10 @@ class Page extends React.Component {
         this.setState({
             roleModalVisible: false
         });
+
+        this.getRoleList();
+
+        message.success("添加成功")
     }
 
     handleRoleCancel() {

@@ -135,8 +135,20 @@ module.exports = {
 
     getCurrentMenuPermission: async (userId, callback) => {
 
+        // const permissionList = await conn.query(
+        //     `select  A.id, A.userId, A.userName, A.menuId, A.menuName, B.treeId, B.menuLink, B.comPath from sys_menu_permissions A inner join sys_menus B on A.menuId = B.id  where A.userId = ${userId} and A.deletedAt is null
+        //     `, { type: sequelize.QueryTypes.SELECT }
+        // ).then((result) => {
+        //     return result;
+        // })
+
         const permissionList = await conn.query(
-            `select  A.id, A.userId, A.userName, A.menuId, A.menuName, B.treeId, B.menuLink, B.comPath from sys_menu_permissions A inner join sys_menus B on A.menuId = B.id  where A.userId = ${userId} and A.deletedAt is null
+            `
+            select C.menuId, C.menuName, D.treeId, D.menuLink, D.comPath from (
+                select  menuId, menuName from sys_menu_permissions where userId = ${userId} and deletedAt is null 
+                UNION 
+                select A.menuId, A.menuName from sys_role_users B inner join sys_role_menu_permissions A on B.roleId = A.roleId where B.userId = ${userId}
+            ) C inner join sys_menus D on C.menuId = D.id
             `, { type: sequelize.QueryTypes.SELECT }
         ).then((result) => {
             return result;
