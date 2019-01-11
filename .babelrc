@@ -3,6 +3,6 @@
     "plugins": [
       ["transform-object-rest-spread"],
       ["transform-decorators-legacy"],
-      ["import", { libraryName: "antd", style: "css" }]
+      ["import", { "libraryName": "antd", "style": "css" }]
     ]
   }

@@ -1,6 +1,3 @@
-/**************************************
- * Created by Hertz on 2015年10月20日
- **************************************/
 const path = require('path')
 const webpack = require('webpack')
 

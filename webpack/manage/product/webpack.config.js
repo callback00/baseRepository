@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // webpack 配置
 module.exports = [
@@ -12,7 +13,10 @@ module.exports = [
         },
 
         entry: {
-            vendor: ['react', 'react-dom', 'react-router-dom'],
+            vendor: ['react', 'react-dom', 'react-router-dom', 'lodash', 'moment'],
+            antd: ['antd'],
+            highlighter: ['react-syntax-highlighter'],
+            moment: ['moment'],
             css: [
                 '../../manage/src/scssAutoLoad.js'
             ],
@@ -70,6 +74,24 @@ module.exports = [
             ]
         }, // end of module
 
+        // 用于拆分entry里的内容，如果写成development的配置，vendor的代码均会写进components.js内，引不引用vendor都行
+        optimization: {
+            splitChunks: {
+                chunks: 'all',
+                // minSize: 100000,
+                maxInitialRequests: 20, // for HTTP2
+                maxAsyncRequests: 20, // for HTTP2
+                name: false,
+                cacheGroups: {
+                    vendors: {
+                        test: /[\\/]node_modules[\\/]/,
+                        priority: -10
+                    },
+                    default: false
+                }
+            }
+        },
+
         resolve: {
             extensions: ['.js', '.jsx']
         },
@@ -84,7 +106,9 @@ module.exports = [
                 'process.env.NODE_ENV': JSON.stringify('production'),
                 'API_SERVER_ROOT': JSON.stringify('http://localhost:8081/api'),
                 __DEVELOPMENT__: false
-            })
+            }),
+
+            new BundleAnalyzerPlugin()
         ]
     },
 ]
