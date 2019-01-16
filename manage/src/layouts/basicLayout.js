@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, message } from 'antd';
+import systemMenu from '../../config/systemMenu.config'
 
 import {
     withRouter,
@@ -26,8 +27,11 @@ class BasicLayout extends React.Component {
         this.state = {
             menuTreeList: [],
             menuPermissionList: [],
-            getPermissionFlag: false
+            getPermissionFlag: false, //未调用api前界面不显示
         }
+
+        this.siderKey = 0;
+        this.rootSubmenuKeys = []
     }
 
     componentWillMount() {
@@ -63,11 +67,32 @@ class BasicLayout extends React.Component {
         })
     }
 
+    // 根据路径选择菜单，同时记录父节点路径
+    getSelectedMenu(menuTreeList, pathname, parent = null) {
+        for (const item of menuTreeList) {
+            if (item.children && item.children.length > 0) {
+                if (item.menuId) {
+                    this.rootSubmenuKeys.push(item.menuId)
+                } else {
+                    this.rootSubmenuKeys.push(item.key)
+                }
+                const selectItem = this.getSelectedMenu(item.children, pathname, item);
+                if (selectItem) {
+                    return selectItem
+                }
+            } else {
+                if (item.menuLink === pathname) {
+                    return item
+                }
+            }
+        };
+    }
+
     // 渲染组件内容
     renderContentRoute() {
         let route = this.state.menuPermissionList.map((item) => {
             return (
-                <Route key={`base-${item.id}`} path={item.menuLink} component={item.component} />
+                <Route key={`base-${item.menuId}`} path={item.menuLink} component={item.component} />
             )
         })
 
@@ -105,36 +130,46 @@ class BasicLayout extends React.Component {
     }
 
     render() {
+        if (this.state.getPermissionFlag) {
+            // 注意，在这里是无法通过this.props.match获取到参数的，要获取/:xxx的参数只能在路由对应的组件内才能获取到。
+            const { pathname } = this.props.location;
+            const menuTreeList = this.state.menuTreeList;
+            const list = [...menuTreeList, ...systemMenu]
+            const selectMenu = this.getSelectedMenu(list, pathname);
+            const selectedKeys = selectMenu ? [`${selectMenu.id}`] : [];
+            const openKeys = selectMenu ? selectMenu.treeId : [];
 
-        return (
-            <React.Fragment>
-                {
-                    this.state.getPermissionFlag ?
-                        (<div className="wrap">
+            return (
+                <React.Fragment>
+                    <div className="wrap">
 
-                            <div className="layout-left">
-                                <Sider>
-                                    <SiderMenu menuTreeList={this.state.menuTreeList} />
-                                </Sider>
-                            </div>
+                        <div className="layout-left">
+                            <Sider>
+                                <SiderMenu menuTreeList={list} selectedKeys={selectedKeys} openKeys={openKeys} rootSubmenuKeys ={this.rootSubmenuKeys} />
+                            </Sider>
+                        </div>
 
-                            <div className="layout-right">
-                                <Header {...this.props} />
+                        <div className="layout-right">
+                            <Header {...this.props} />
 
-                                <BusinessContent>
-                                    <Switch>
-                                        {
-                                            this.renderContentRoute()
-                                        }
-                                    </Switch>
-                                </BusinessContent>
+                            <BusinessContent>
+                                <Switch>
+                                    {
+                                        this.renderContentRoute()
+                                    }
+                                </Switch>
+                            </BusinessContent>
 
-                                <Footer />
-                            </div>
-                        </div>) : null
-                }
-            </React.Fragment>
-        );
+                            <Footer />
+                        </div>
+                    </div>
+                </React.Fragment>
+            );
+        } else {
+            return (
+                null
+            );
+        }
     }
 }
 

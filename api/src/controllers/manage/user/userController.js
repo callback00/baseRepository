@@ -21,6 +21,12 @@ module.exports = {
       companyId
     }
 
+    if (data.loginName === 'admin') {
+      res.type = 'json'
+      res.status(200).json({ error: '名称不能包含关键字眼：admin' })
+      return
+    }
+
     if (data.telphone && tools.checkMoblie(data.telphone)) {
       res.type = 'json'
       res.status(200).json({ error: '无效的联系电话' })

@@ -10,28 +10,28 @@ class SiderMenu extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            menuTreeList: [],
-
-            defaultSelectedKeys: [],
-            defaultOpenKeys: [],
+            openKeys: props.openKeys
         }
 
     }
 
-    // 根据路径选择菜单，同时记录父节点路径
-    getSelectedMenu(menuTreeList, pathname, parent = null) {
-        for (const item of menuTreeList) {
-            if (item.children && item.children.length > 0) {
-                const selectItem = this.getSelectedMenu(item.children, pathname, item);
-                if (selectItem) {
-                    return selectItem
-                }
-            } else {
-                if (item.menuLink === pathname) {
-                    return item
-                }
-            }
-        };
+    componentWillReceiveProps(nextProps){
+        if (nextProps.openKeys !== this.state.openKeys) {
+            this.setState({
+                openKeys: nextProps.openKeys
+            })
+        }
+    }
+
+    onOpenChange(openKeys) {
+        const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
+        if (this.props.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+            this.setState({ openKeys });
+        } else {
+            this.setState({
+                openKeys: latestOpenKey ? [latestOpenKey] : [],
+            });
+        }
     }
 
     renderMenu(menuTreeList) {
@@ -63,32 +63,23 @@ class SiderMenu extends Component {
     }
 
     render() {
-
-        // 注意，在这里是无法通过this.props.match获取到参数的，要获取/:xxx的参数只能在本组件内调用才能获取到。
-        const { pathname } = this.props.location;
-
-        const menuTreeList = this.props.menuTreeList;
-        const list = [...menuTreeList, ...systemMenu]
-        const selectMenu = this.getSelectedMenu(list, pathname);
-
-        const defaultSelectedKeys = selectMenu ? [`${selectMenu.id}`] : [];
-        const defaultOpenKeys = selectMenu ? selectMenu.treeId : [];
-
         return (
             <Menu
                 mode="inline"
                 theme="dark"
                 style={{ padding: '80px 0 60px 0' }}
-                defaultSelectedKeys={defaultSelectedKeys}
-                defaultOpenKeys={defaultOpenKeys}
+                defaultSelectedKeys={this.props.selectedKeys}
+                defaultOpenKeys={this.props.openKeys}
+                selectedKeys={this.props.selectedKeys}
+
+                openKeys={this.state.openKeys}
+                onOpenChange={this.onOpenChange.bind(this)}
             >
-                {this.renderMenu(list)}
+                {this.renderMenu(this.props.menuTreeList)}
             </Menu>
         )
     }
 }
-
-// export default SiderMenu
 
 const SiderMenuWithRouter = withRouter(SiderMenu)
 
