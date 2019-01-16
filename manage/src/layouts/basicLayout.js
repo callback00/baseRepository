@@ -67,14 +67,14 @@ class BasicLayout extends React.Component {
     renderContentRoute() {
         let route = this.state.menuPermissionList.map((item) => {
             return (
-                <Route key={item.id} path={item.menuLink} component={item.component} />
+                <Route key={`base-${item.id}`} path={item.menuLink} component={item.component} />
             )
         })
 
         // 系统默认带有的路由
         const defaultRoute = systemRoute.map(item => {
             return (
-                <Route key={item.key} path={item.menuLink} component={item.component} />
+                <Route key={`system-${item.key}`} path={item.menuLink} component={item.component} />
             )
         })
 
