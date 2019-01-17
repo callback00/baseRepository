@@ -48,6 +48,8 @@ class Page extends React.Component {
 
         if (option === 'edit' && !this.state.selectNode) {
             message.error('请选择要编辑的公司');
+        } else if (option === 'create' && !this.state.selectNode) {
+            message.error('请先选择上级公司')
         } else {
             const modalKey = this.state.modalKey + 1;
             this.setState({
@@ -72,6 +74,7 @@ class Page extends React.Component {
         const handelDelete = this.handelDelete.bind(this)
         confirm({
             title: '你确定要删除该记录吗',
+            content: '删除公司可能会引起系统崩溃，非技术人员操作请慎重选择。',
             okText: '确定',
             okType: 'danger',
             cancelText: '取消',
@@ -181,6 +184,7 @@ class Page extends React.Component {
                         <div>
                             <p>1、如果公司存在主从关系，以层级关系维护，便于数据统计</p>
                             <p>2、主从关系的公司，母公司可以查询到子公司的数据</p>
+                            <p style={{ color: 'red' }}>3、公司与数据存在密切联系，若要删除公司，请手动将该公司下的数据删除完毕，并清空redis，否则容易引起系统崩溃</p>
                         </div>
                     }
                     type="info"

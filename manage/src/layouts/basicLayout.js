@@ -45,9 +45,7 @@ class BasicLayout extends React.Component {
                 const menuTreeList = json.success.menuTreeList;
                 let menuPermissionList = json.success.menuPermissionList;
 
-                // webpack是预加载文件，require 不接受变量路径。
-                // 利用require.context将components文件下的所有js引入进来
-                var context = require.context('..', true, /^\.\/components\/.*\.js$/);//参数3正则介绍：扫描../components/目录下所有以.js结尾的文件
+                const context = this.props.comContext
                 // console.log(context.keys());//获取正则js目录下文件，转化成数组形势输出
 
                 // 注意此时context的路径已经在src下，输出的文件名 ./components/xx/xx.js 其中xx与components下的文件结构有关
@@ -145,7 +143,7 @@ class BasicLayout extends React.Component {
 
                         <div className="layout-left">
                             <Sider>
-                                <SiderMenu menuTreeList={list} selectedKeys={selectedKeys} openKeys={openKeys} rootSubmenuKeys ={this.rootSubmenuKeys} />
+                                <SiderMenu menuTreeList={list} selectedKeys={selectedKeys} openKeys={openKeys} rootSubmenuKeys={this.rootSubmenuKeys} />
                             </Sider>
                         </div>
 

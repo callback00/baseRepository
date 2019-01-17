@@ -76,8 +76,8 @@ class page extends React.Component {
                     {...formItemLayout}
                     label={(
                         <span>
-                            导航类型&nbsp;
-                            <Tooltip title="导航栏目以系统左侧菜单栏为体现，页面路由不会出现在菜单栏中，仅仅是作为页面路由权限">
+                            路由类型&nbsp;
+                            <Tooltip title="导航栏目以系统左侧菜单栏为体现，页面路由不会出现在左侧菜单栏中，可通过url直接访问">
                                 <Icon type="question-circle-o" />
                             </Tooltip>
                         </span>
@@ -88,7 +88,7 @@ class page extends React.Component {
                         rules: [{ required: true, message: '请选择栏目类型' }]
                     })(
                         <Select>
-                            <Option value="1">导航栏目</Option>
+                            <Option value="1">导航路由</Option>
                             <Option value="2">页面路由</Option>
                         </Select>
                     )}

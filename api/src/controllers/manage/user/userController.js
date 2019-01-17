@@ -11,7 +11,7 @@ module.exports = {
    */
   createUser: (req, res) => {
 
-    const companyId = req.company.id
+    const companyId = req.user.company.id
 
     const data = {
       displayName: trim(req.body.displayName),
@@ -134,7 +134,7 @@ module.exports = {
    */
   getUserList: (req, res) => {
     const pageindex = trim(req.body.pageindex)
-    const companyId = req.company.id
+    const companyId = req.user.company.id
 
     userOperate.getUserList(pageindex, companyId, (error, success) => {
       res.type = 'json'
@@ -154,7 +154,7 @@ module.exports = {
    */
   getUserName: (req, res) => {
     const pageindex = trim(req.body.pageindex)
-    const companyId = req.company.id
+    const companyId = req.user.company.id
 
     userOperate.getUserName(pageindex, companyId, (error, success) => {
       res.type = 'json'

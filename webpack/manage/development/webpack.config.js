@@ -4,7 +4,7 @@ const webpack = require('webpack')
 // webpack 配置
 module.exports = {
 
-    devtool: 'cheap-module-source-map',
+    devtool: 'inline-source-map', //热加载需要这种模式
 
     context: path.resolve(__dirname, '..'),
 

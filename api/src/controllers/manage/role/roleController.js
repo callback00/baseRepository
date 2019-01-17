@@ -4,7 +4,7 @@ const roleOperate = require('../../../operates/manage/role/roleOperate')
 module.exports = {
 
     getRoleList: (req, res) => {
-        const companyId = req.company.id
+        const companyId = req.user.company.id
         roleOperate.getRoleList(companyId, (error, success) => {
             res.type = 'json';
 
@@ -32,7 +32,7 @@ module.exports = {
     roleCreate: (req, res) => {
         const name = trim(req.body.name);
         const remark = trim(req.body.remark);
-        const companyId = req.company.id
+        const companyId = req.user.company.id
 
         res.type = 'json';
         roleOperate.roleCreate(name, remark, companyId, (error, success) => {
@@ -77,7 +77,7 @@ module.exports = {
 
     getRoleUserByRoleId: (req, res) => {
         const roleId = trim(req.body.roleId);
-        const companyId = req.company.id;
+        const companyId = req.user.company.id;
         res.type = 'json';
 
         roleOperate.getRoleUserByRoleId(roleId, companyId, (error, success) => {
@@ -93,7 +93,7 @@ module.exports = {
     roleUserEdit: (req, res) => {
         const roleId = req.body.roleId; // 角色id
         const userIdList = req.body.userIdList ? JSON.parse(req.body.userIdList) : [];;
-        const companyId = req.company.id;
+        const companyId = req.user.company.id;
 
         res.type = 'json';
         roleOperate.roleUserEdit(roleId, userIdList, companyId, (error, success) => {
@@ -126,7 +126,7 @@ module.exports = {
         const roleId = req.body.roleId;
         const addKeyList = JSON.parse(trim(req.body.addKeyList))
         const deleteKeyList = JSON.parse(trim(req.body.deleteKeyList))
-        const companyId = req.company.id
+        const companyId = req.user.company.id
         res.type = 'json'
         roleOperate.roleMenuPermissionEdit(addKeyList, deleteKeyList, roleId, companyId, (error, success) => {
 
@@ -157,7 +157,7 @@ module.exports = {
         const roleId = req.body.roleId;
         const addKeyList = JSON.parse(trim(req.body.addKeyList))
         const deleteKeyList = JSON.parse(trim(req.body.deleteKeyList))
-        const companyId = req.company.id
+        const companyId = req.user.company.id
         res.type = 'json'
         roleOperate.roleApiPermissionEdit(addKeyList, deleteKeyList, roleId, companyId, (error, success) => {
 

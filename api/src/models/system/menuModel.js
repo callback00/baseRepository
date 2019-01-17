@@ -10,7 +10,7 @@ const Menu = conn.define('sys_menu', {
     id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
 
     name: { type: sequelize.STRING, allowNull: false, comment: '栏目名称' },
-    menuType: { type: sequelize.ENUM, allowNull: false, values: ['1', '2'], defaultValue: '1', comment: '栏目类型: 1. 导航栏目 2. 页面路由' },
+    menuType: { type: sequelize.ENUM, allowNull: false, values: ['1', '2'], defaultValue: '1', comment: '栏目类型: 1. 导航路由 2. 页面路由' },
     menuTypeDesc: { type: sequelize.STRING, allowNull: true, comment: '栏目类型描述' },
     menuLink: { type: sequelize.STRING, allowNull: true, comment: '路由链接' },
     icon: { type: sequelize.STRING, allowNull: true, comment: '图标' },

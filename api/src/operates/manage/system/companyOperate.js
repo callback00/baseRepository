@@ -2,6 +2,7 @@ const sequelize = require('sequelize')
 const logger = require('../../../common/logger')
 const Company = require('../../../models/system/sys_companyModel')
 const Sys_Menu_Permission = require('../../../models/system/sys_menu_permission')
+const User = require('../../../models/userModel')
 
 const dbConn = require('../../../common/dbConn')
 const conn = dbConn.getConn()
@@ -25,7 +26,34 @@ function buildTree(nodeList, data) {
 }
 
 module.exports = {
-    getCompanyTree: async (callback) => {
+    getCompanyTree: async (companyId, callback) => {
+
+        try {
+            const data = await conn.query(
+                `select  id, name, parentId, sort, remark, name as title, id as value, id as 'key'  from sys_companies where deletedAt is null and (treeId like '%[${companyId}]%' or id = '${companyId}') order by sort asc,createdAt asc
+            `, { type: sequelize.QueryTypes.SELECT }
+            ).then((result) => {
+                return result;
+            })
+
+            //取最上级公司节点
+            const node = data.filter((item) => {
+                return item.id === companyId;
+            })[0]
+
+            const result = buildTree([node], data).sort((a, b) => a.sort - b.sort);
+            if (result) {
+                return callback(null, result);
+            } else {
+                return callback(null, []);
+            }
+        } catch (error) {
+            logger.error(`----- companyOperate getCompanyTree error = ${error} -----`);
+            callback('请求已被服务器拒绝');
+        }
+    },
+
+    getLoginCompanyTree: async (callback) => {
 
         try {
             const data = await conn.query(
@@ -35,9 +63,11 @@ module.exports = {
                 return result;
             })
 
+            // 只要没有人为改变数据库id，最小id值即为最上级公司
+            const minId = Math.min.apply(Math, data.map(function (o) { return o.id }))
             //取最上级公司节点
             const node = data.filter((item) => {
-                return item.id === 1;
+                return item.id === minId;
             })[0]
 
             const result = buildTree([node], data).sort((a, b) => a.sort - b.sort);
@@ -86,6 +116,10 @@ module.exports = {
                     return result;
                 })
 
+                const adminUser = await User.create({ loginName: 'admin', displayName: '超级管理员', password: 'fb71dec4e0f6ca87c720ff11ed8faa59c824f48f', gender: '1', status: '1', companyId: result.id }).then((users) => {
+                    return users;
+                })
+
                 return callback(null, '创建成功。');
             } catch (error) {
                 logger.error(`----- companyOperate companyCreate first try catch error = ${error} -----`);
@@ -127,6 +161,10 @@ module.exports = {
                     }
                 ).then((result) => {
                     return result;
+                })
+
+                const adminUser = await User.create({ loginName: 'admin', displayName: '超级管理员', password: 'fb71dec4e0f6ca87c720ff11ed8faa59c824f48f', gender: '1', status: '1', companyId: createResult.id }, { transaction: trans }).then((users) => {
+                    return users;
                 })
 
                 trans.commit();

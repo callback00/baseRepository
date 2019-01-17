@@ -61,7 +61,7 @@ Sys_Menu_Permission.sync({ force: true }).then(() => {
   console.error(`----- Sys_Menu_Permission 表创建失败: ${err} -----`)
 })
 
-// ---------- 创建 导航栏目 表 ----------
+// ---------- 创建 导航路由 表 ----------
 Sys_Menu.sync({ force: true }).then(() => {
   console.log(`----- 创建 Sys_Menu 表成功 -----`)
 }).catch((err) => {

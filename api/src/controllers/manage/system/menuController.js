@@ -36,9 +36,9 @@ module.exports = {
         const parentId = trim(req.body.parentId);
         const sort = trim(req.body.sort);
         const menuType = trim(req.body.menuType);
-        const menuTypeDesc = menuType === '1' ? '导航栏目' : '页面路由';
+        const menuTypeDesc = menuType === '1' ? '导航路由' : '页面路由';
 
-        const companyId = req.company.id
+        const companyId = req.user.company.id
 
         res.type = 'json';
         menuOperate.menuCreate(name, menuLink, comPath, icon, parentId, sort, menuType, menuTypeDesc, companyId, (error, success) => {
@@ -59,7 +59,7 @@ module.exports = {
         const icon = trim(req.body.icon);
         const sort = trim(req.body.sort);
         const menuType = trim(req.body.menuType);
-        const menuTypeDesc = menuType === '1' ? '导航栏目' : '页面路由';
+        const menuTypeDesc = menuType === '1' ? '导航路由' : '页面路由';
 
         res.type = 'json';
         menuOperate.menuEdit(id, name, menuLink, comPath, icon, sort, menuType, menuTypeDesc, (error, success) => {

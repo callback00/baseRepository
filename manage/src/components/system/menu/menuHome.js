@@ -1,6 +1,6 @@
 import assign from 'lodash.assign'
 import React from 'react'
-import { Table, Button, message, Modal } from 'antd'
+import { Table, Button, message, Modal, Alert } from 'antd'
 
 import tools from '../../../utils/tools'
 import MenuModal from './menuModal'
@@ -178,6 +178,19 @@ class Page extends React.Component {
 
         return (
             <div className="menuHome">
+
+                <Alert
+                    message="操作建议"
+                    description={
+                        <div>
+                            <p>1、所有通过url访问的页面均可在此处配置</p>
+                            <p>2、路由类型分为两种类型：1、导航路由(出现在系统左侧菜单栏目中) 2、页面路由(不会出现在左侧菜单栏目中)</p>
+                        </div>
+                    }
+                    type="info"
+                    showIcon
+                />
+
                 <div className="card">
                     <Table
                         rowKey="id"

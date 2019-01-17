@@ -11,8 +11,6 @@ const sequelize = require('sequelize')
 const dbConn = require('../../../common/dbConn')
 const conn = dbConn.getConn()
 
-// User.belongsToMany(Api, { as: 'Apis', through: Sys_Api_Permission, foreignKey: 'userId', otherKey: 'apiId' })
-
 module.exports = {
     login: (loginName, _password, companyId, callback) => {
 
@@ -27,12 +25,6 @@ module.exports = {
                 companyId
             },
             attributes: ['userId', 'loginName', 'displayName', 'telphone'],
-            // include: [{
-            //     model: Api,
-            //     as: 'Apis',
-            //     through: {
-            //     }
-            // }]
         }).then((user) => {
             if (user) {
 

@@ -318,7 +318,7 @@ module.exports = {
                 return result;
             })
 
-            const result = buildMenuTree([{ id: 0, name: '导航栏目' }], menuList).sort((a, b) => a.sort - b.sort);
+            const result = buildMenuTree([{ id: 0, name: '导航路由' }], menuList).sort((a, b) => a.sort - b.sort);
 
             let rtnObject = { treeData: [], permissionList };
             if (result[0].children) {

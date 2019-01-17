@@ -4,7 +4,7 @@ const noticeOperate = require('../../../operates/manage/notice/noticeOperate')
 module.exports = {
 
     getNoticeList: (req, res) => {
-        const companyId = req.company.id;
+        const companyId = req.user.company.id;
 
         noticeOperate.getNoticeList(companyId, (error, success) => {
             res.type = 'json';
@@ -41,7 +41,7 @@ module.exports = {
         const defaultParam = []
         const templetParam = trim(req.body.templetParam) ? trim(req.body.templetParam) : JSON.stringify(defaultParam);
 
-        const companyId = req.company.id;
+        const companyId = req.user.company.id;
 
         res.type = 'json';
         noticeOperate.noticeCreate(noticeCode, noticeName, noticeType, noticeTypeDesc, noticeIcon, noticeTemplet, templetParam, companyId, (error, success) => {

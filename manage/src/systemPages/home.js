@@ -42,7 +42,7 @@ class Home extends React.Component {
                     />
                     {
                         isLogin ? (
-                            <BasicLayout key={this.state.updateKey} />
+                            <BasicLayout key={this.state.updateKey} comContext={this.props.comContext} />
                         ) : (
                                 <Route
                                     path="/"

@@ -11,7 +11,8 @@
   "scripts": {
     "api": "nodemon --harmony --inspect ./api/apiServer.js -w ./api",
     "manage": "node babel.manageserver.js",
-    "build": "set NODE_ENV=production && webpack-cli --progress --config ./webpack/manage/product/webpack.config.js"
+    "build": "set NODE_ENV=production && webpack-cli --progress --config ./webpack/manage/product/webpack.config.js",
+    "simplebuild": "set NODE_ENV=production && webpack-cli --progress --config ./webpack/manage/product/webpack.simple.config.js"
   },
   "dependencies": {
     "@alicloud/sms-sdk": "^1.1.2",

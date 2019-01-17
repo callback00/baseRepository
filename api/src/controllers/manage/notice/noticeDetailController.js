@@ -26,7 +26,7 @@ module.exports = {
         const noticeCode = trim(req.body.noticeCode);
         const noticeType = trim(req.body.noticeType);
         const noticeParamData = req.body.noticeParamData;
-        const companyId = req.company.id
+        const companyId = req.user.company.id
 
         res.type = 'json';
         noticeDetailOperate.sendNotice(noticeCode, noticeType, noticeParamData, companyId, (error, success) => {

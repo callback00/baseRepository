@@ -4,7 +4,20 @@ const companyOperate = require('../../../operates/manage/system/companyOperate')
 module.exports = {
 
     getCompanyTree: (req, res) => {
-        companyOperate.getCompanyTree((error, success) => {
+        const companyId = req.user.company.id
+        companyOperate.getCompanyTree(companyId, (error, success) => {
+            res.type = 'json';
+
+            if (error) {
+                res.status(200).json({ error });
+            } else {
+                res.status(200).json({ success });
+            }
+        })
+    },
+
+    getLoginCompanyTree: (req, res) => {
+        companyOperate.getLoginCompanyTree((error, success) => {
             res.type = 'json';
 
             if (error) {
@@ -64,14 +77,21 @@ module.exports = {
     companyDelete: (req, res) => {
         const idArry = req.body.idArry ? JSON.parse(req.body.idArry) : [];
 
-        res.type = 'json'
-        companyOperate.companyDelete(idArry, (error, success) => {
+        const companyId = req.user.company.id
 
-            if (error) {
-                res.status(200).json({ error });
-            } else {
-                res.status(200).json({ success });
-            }
-        })
+        res.type = 'json'
+
+        if (idArry.filter((id) => { return id === companyId }).length > 0) {
+            res.status(200).json({ error: '您无权限删除自身公司' });
+        } else {
+            companyOperate.companyDelete(idArry, (error, success) => {
+
+                if (error) {
+                    res.status(200).json({ error });
+                } else {
+                    res.status(200).json({ success });
+                }
+            })
+        }
     },
 }

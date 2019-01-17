@@ -47,11 +47,10 @@ module.exports = {
             displayName: user.displayName,
             telphone: user.telphone,
             apiPermissions: apiPermissions,
-            companyId
+            companyId,
+            company
           })
         }
-
-        redisUtility.setCompany(companyId, company)
 
         res.status(200).json({ success })
       } // end if user is not null

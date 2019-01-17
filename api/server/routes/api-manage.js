@@ -18,7 +18,7 @@ const memberController = require('../../src/controllers/manage/user/memberContro
 
 const companyController = require('../../src/controllers/manage/system/companyController')
 
-const roleController =  require('../../src/controllers/manage/role/roleController')
+const roleController = require('../../src/controllers/manage/role/roleController')
 
 const multipart = require('connect-multiparty')
 
@@ -43,57 +43,48 @@ module.exports = (router, app, config) => {
     };
 
     // 校验登录、权限的中间件，对于维护在api表中的路由进行用户权限校验，未维护在api表中的路由直接通过
+    // 不再需要weakCheck
     const strongCheck = (req, res, next) => {
         redisUtility.getUser(req.sessionID, (user) => {
             if (user) {
-                req.company = redisUtility.getCompany(user.companyId, (company) => {
-                    if (company) {
+                //管理端的api都自动获取当前用户和当前组织
+                req.user = user;
+                // 超级管理员无需api权限校验
+                if (user.loginName === 'admin') {
+                    next();
+                    return
+                } else {
+                    // 为防止权限校验有bug，保留文本配置的功能，稳定后可去掉该判断
+                    if (config.auth) {
+                        // 判断当前url是否在需校验的列表里
+                        const isCheckPermission = apiList.some((data) => {
+                            return req.originalUrl.match(`/api${data.url}`) !== null;
+                        })
 
-                        //管理端的api都自动获取当前用户和当前组织
-                        req.user = user;
-                        req.company = company;
-
-                        // 超级管理员无需api权限校验
-                        if (user.loginName === 'admin') {
-                            next();
-                            return
-                        } else {
-                            // 为防止权限校验有bug，保留文本配置的功能，稳定后可去掉该判断
-                            if (config.auth) {
-                                // 判断当前url是否在需校验的列表里
-                                const isCheckPermission = apiList.some((data) => {
-                                    return req.originalUrl.match(`/api${data.url}`) !== null;
+                        // 如需校验api则校验用户api权限，否则next
+                        if (isCheckPermission) {
+                            if (user.apiPermissions) {
+                                const isGoNext = user.apiPermissions.some((data) => {
+                                    return req.originalUrl.match(`/api${data}`) !== null;
                                 })
 
-                                // 如需校验api则校验用户api权限，否则next
-                                if (isCheckPermission) {
-                                    if (user.apiPermissions) {
-                                        const isGoNext = user.apiPermissions.some((data) => {
-                                            return req.originalUrl.match(`/api${data}`) !== null;
-                                        })
-
-                                        if (isGoNext) {
-                                            next();
-                                            return;
-                                        } else {
-                                            res.type = 'json';
-                                            res.status(403).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
-                                        }
-                                    }
-                                } else {
+                                if (isGoNext) {
                                     next();
                                     return;
+                                } else {
+                                    res.type = 'json';
+                                    res.status(403).json({ auth: '无权操作!', error: '用户没有权限执行此操作!' });
                                 }
-                            } else {
-                                next();
-                                return;
                             }
+                        } else {
+                            next();
+                            return;
                         }
                     } else {
-                        loginExpired(res);
+                        next();
                         return;
                     }
-                })
+                }
             } else {
                 loginExpired(res);
                 return;
@@ -115,7 +106,7 @@ module.exports = (router, app, config) => {
         .post('/password', strongCheck, loginController.updatePassword)
         .put('/updateMyInfo', strongCheck, userController.updateMyInfo)
         .get('/getMyInfo', strongCheck, userController.getMyInfo)
-        .get('/login/getCompanyTree', companyController.getCompanyTree)
+        .get('/login/getCompanyTree', companyController.getLoginCompanyTree)
 
     router
         .put('/user/create', strongCheck, userController.createUser)
@@ -124,7 +115,7 @@ module.exports = (router, app, config) => {
         .post('/user/info', strongCheck, userController.getUserInfo)
         .post('/user/list', strongCheck, userController.getUserList)
 
-        router
+    router
         .get('/role/getRoleList', strongCheck, roleController.getRoleList)
         .post('/role/roleCreate', strongCheck, roleController.roleCreate)
         .post('/role/getRoleUserByRoleId', strongCheck, roleController.getRoleUserByRoleId)

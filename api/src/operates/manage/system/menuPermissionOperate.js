@@ -48,7 +48,7 @@ module.exports = {
                 return result;
             })
 
-            const result = buildTree([{ id: 0, name: '导航栏目' }], menuList).sort((a, b) => a.sort - b.sort);
+            const result = buildTree([{ id: 0, name: '导航路由' }], menuList).sort((a, b) => a.sort - b.sort);
 
             let rtnObject = { treeData: [], permissionList };
             if (result[0].children) {
@@ -135,24 +135,37 @@ module.exports = {
 
     getCurrentMenuPermission: async (userId, callback) => {
 
-        // const permissionList = await conn.query(
-        //     `select  A.id, A.userId, A.userName, A.menuId, A.menuName, B.treeId, B.menuLink, B.comPath from sys_menu_permissions A inner join sys_menus B on A.menuId = B.id  where A.userId = ${userId} and A.deletedAt is null
-        //     `, { type: sequelize.QueryTypes.SELECT }
-        // ).then((result) => {
-        //     return result;
-        // })
-
-        const permissionList = await conn.query(
-            `
-            select C.menuId, C.menuName, D.treeId, D.menuLink, D.comPath from (
-                select  menuId, menuName from sys_menu_permissions where userId = ${userId} and deletedAt is null 
-                UNION 
-                select A.menuId, A.menuName from sys_role_users B inner join sys_role_menu_permissions A on B.roleId = A.roleId where B.userId = ${userId}
-            ) C inner join sys_menus D on C.menuId = D.id
-            `, { type: sequelize.QueryTypes.SELECT }
-        ).then((result) => {
+        const user = await User.findOne({
+            where: {
+                userId
+            }
+        }).then((result) => {
             return result;
         })
+
+        let permissionList = []
+
+        if (user.loginName === 'admin') {
+            permissionList = await conn.query(
+                `
+                select id as 'menuId', name as 'menuName', treeId, menuLink, comPath from sys_menus where deletedAt is null and isLeaf = '1'
+                `, { type: sequelize.QueryTypes.SELECT }
+            ).then((result) => {
+                return result;
+            })
+        } else {
+            permissionList = await conn.query(
+                `
+                select C.menuId, C.menuName, D.treeId, D.menuLink, D.comPath from (
+                    select  menuId, menuName from sys_menu_permissions where userId = ${userId} and deletedAt is null 
+                    UNION 
+                    select A.menuId, A.menuName from sys_role_users B inner join sys_role_menu_permissions A on B.roleId = A.roleId where B.userId = ${userId}
+                ) C inner join sys_menus D on C.menuId = D.id
+                `, { type: sequelize.QueryTypes.SELECT }
+            ).then((result) => {
+                return result;
+            })
+        }
 
         let parentIdList = [];
         let leafMenuIdList = []
@@ -176,7 +189,7 @@ module.exports = {
             })
         }
 
-        const result = buildTree([{ id: 0, name: '导航栏目' }], menuList).sort((a, b) => a.sort - b.sort);
+        const result = buildTree([{ id: 0, name: '导航路由' }], menuList).sort((a, b) => a.sort - b.sort);
         const menuPermissionList = permissionList;
 
         if (result[0].children) {
