@@ -77,7 +77,7 @@ class page extends React.Component {
                     label={(
                         <span>
                             路由类型&nbsp;
-                            <Tooltip title="导航栏目以系统左侧菜单栏为体现，页面路由不会出现在左侧菜单栏中，可通过url直接访问">
+                            <Tooltip title="导航栏目以系统左侧菜单栏为体现，页面路由不会出现在左侧菜单栏中，可通过url直接访问，管理员专用的栏目会出现在菜单栏中，但仅限最上级管理员可见">
                                 <Icon type="question-circle-o" />
                             </Tooltip>
                         </span>
@@ -90,6 +90,7 @@ class page extends React.Component {
                         <Select>
                             <Option value="1">导航路由</Option>
                             <Option value="2">页面路由</Option>
+                            <Option value="3">管理员专用</Option>
                         </Select>
                     )}
                 </FormItem>

@@ -15,7 +15,7 @@ class SiderMenu extends Component {
 
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (nextProps.openKeys !== this.state.openKeys) {
             this.setState({
                 openKeys: nextProps.openKeys
@@ -47,7 +47,7 @@ class SiderMenu extends Component {
                 )
             } else {
                 // 过滤掉页面路由
-                if (parseInt(menu.menuType) === 1) {
+                if (parseInt(menu.menuType) !== 2) {
                     return (
                         <Menu.Item key={`${menu.id}`}>
                             <Link to={{ pathname: menu.menuLink }}>{menu.icon ? <Icon type={menu.icon} /> : ''}{menu.name}</Link>

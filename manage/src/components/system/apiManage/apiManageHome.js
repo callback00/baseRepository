@@ -179,7 +179,7 @@ class Page extends React.Component {
                     message="操作建议"
                     description={
                         <div>
-                            <p>1、api权限的层级设置最好能与menu的相对应，api权限是相对于界面的。</p>
+                            <p>1、api权限的层级设置与菜单没有必然联系，但最好还是能与menu的相对应，大部分api权限是相对于界面的。</p>
                             <p>2、此处不需要维护所有的api，只需维护需要验证权限的api</p>
                             <p>3、后台api需加上权限校验中间件，中间件根据此表的内容判断路由是否需要权限校验</p>
                         </div>

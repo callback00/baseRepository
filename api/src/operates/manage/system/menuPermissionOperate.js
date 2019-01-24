@@ -35,7 +35,7 @@ module.exports = {
     getMenuPermissionTree: async (userId, callback) => {
         try {
             const menuList = await conn.query(
-                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where deletedAt is null order by sort asc,createdAt asc
+                `select  id, name, menuLink, icon, parentId, treeId, isLeaf, sort, remark from sys_menus where deletedAt is null and menuType !='3' order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;
@@ -133,7 +133,7 @@ module.exports = {
         }
     },
 
-    getCurrentMenuPermission: async (userId, callback) => {
+    getCurrentMenuPermission: async (userId, company, callback) => {
 
         const user = await User.findOne({
             where: {
@@ -146,10 +146,21 @@ module.exports = {
         let permissionList = []
 
         if (user.loginName === 'admin') {
-            permissionList = await conn.query(
-                `
+
+            let sqlStr = ''
+
+            //非最上级公司管理员无法获得超级管理员专用菜单
+            if (company.parentId === 0) {
+                sqlStr = `
                 select id as 'menuId', name as 'menuName', treeId, menuLink, comPath from sys_menus where deletedAt is null and isLeaf = '1'
-                `, { type: sequelize.QueryTypes.SELECT }
+                `
+            } else {
+                sqlStr = `
+                select id as 'menuId', name as 'menuName', treeId, menuLink, comPath from sys_menus where deletedAt is null and isLeaf = '1' and menuType != '3'
+                `
+            }
+
+            permissionList = await conn.query(sqlStr, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;
             })

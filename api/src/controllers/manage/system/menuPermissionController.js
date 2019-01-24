@@ -40,7 +40,9 @@ module.exports = {
     getCurrentMenuPermission: (req, res) => {
 
         const userId = trim(req.user.userId);
-        menuPermissionOperate.getCurrentMenuPermission(userId, (error, success) => {
+        const company = req.user.company
+
+        menuPermissionOperate.getCurrentMenuPermission(userId, company, (error, success) => {
             res.type = 'json';
 
             if (error) {
