@@ -130,9 +130,15 @@ class BasicLayout extends React.Component {
     render() {
         if (this.state.getPermissionFlag) {
             // 注意，在这里是无法通过this.props.match获取到参数的，要获取/:xxx的参数只能在路由对应的组件内才能获取到。
-            const { pathname } = this.props.location;
+            let { pathname } = this.props.location;
             const menuTreeList = this.state.menuTreeList;
             const list = [...menuTreeList, ...systemMenu]
+
+            // 特殊处理个人中心的路径查询
+            if (pathname === '/account/setting/security') {
+                pathname = '/account/setting/base'
+            }
+
             const selectMenu = this.getSelectedMenu(list, pathname);
             const selectedKeys = selectMenu ? [`${selectMenu.id}`] : [];
             const openKeys = selectMenu ? selectMenu.treeId : [];

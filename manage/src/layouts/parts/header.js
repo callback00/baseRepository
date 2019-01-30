@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu, Icon, Dropdown, Badge, Popover, Tabs, List, Avatar, notification } from 'antd';
 import auth from '../../utils/auth';
+import tools from '../../utils/tools'
 
 import io from 'socket.io-client';
 const config = require('../../../config/config')
@@ -11,33 +12,20 @@ notification.config({
     placement: 'bottomRight',
 });
 
-const messageData = [
-    {
-        title: 'Ant Design Title 1',
-    },
-    {
-        title: 'Ant Design Title 2',
-    },
-    {
-        title: 'Ant Design Title 3',
-    },
-    {
-        title: 'Ant Design Title 4',
-    },
-]
-
 class Header extends React.PureComponent {
     constructor(props) {
         super(props);
         this.socket = null; //登出时需停止监听
 
         this.state = {
-            unReadMsgCount: 0
+            unReadMsgCount: 0,
+            messageData: []
         }
     }
 
     componentDidMount() {
 
+        //websocket与后台保持通讯
         if (config.notice_open) {
             const token = window.localStorage.getItem('system-manage-token')
             this.socket = io(config.socketUrl, {
@@ -110,6 +98,19 @@ class Header extends React.PureComponent {
         }
     }
 
+    getNoticeClick() {
+        // 获取未读的数据
+        tools.get('/noticeDetail/getUserUnReadNoticeList', (json) => {
+            if (json.success) {
+                this.setState({
+                    messageData: json.success.data
+                })
+            } else {
+                message.error(json.error);
+            }
+        })
+    }
+
     render() {
         const menu = (
             <Menu selectedKeys={[]} onClick={this.onMenuClick.bind(this)}>
@@ -127,18 +128,22 @@ class Header extends React.PureComponent {
 
         const noticeContent = (
             <Tabs style={{ width: '300px', minHeight: '175px' }} tabBarStyle={{ padding: '0 10px', margin: '0' }} defaultActiveKey="1">
-                <TabPane tab={messageData.length > 0 ? `消息 (${messageData.length})` : '消息'} key="1">
-                    {/* <TabPane tab={this.state.unReadMsgCount > 0 ? `消息 (${this.state.unReadMsgCount})` : '消息'} key="1"> */}
+                <TabPane tab={this.state.messageData.length > 0 ? `消息 (${this.state.messageData.length})` : '消息'} key="1">
                     <div>
                         <List
                             itemLayout="horizontal"
-                            dataSource={messageData}
+                            dataSource={this.state.messageData}
                             renderItem={item => (
                                 <List.Item style={{ paddingLeft: '15px', paddingRight: '15px' }}>
                                     <List.Item.Meta
                                         avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                        title={<a href="https://ant.design">{item.title}</a>}
-                                        description={(<div style={{ fontSize: '12px' }} >2018-10-01 00:00:00</div>)}
+                                        title={<a href="https://ant.design">{item.noticeTitle}</a>}
+                                        description={
+                                            <div>
+                                                <div style={{ fontSize: '12px' }} >{item.noticeContent}</div>
+                                                <div style={{ fontSize: '12px' }} >2018-10-01 00:00:00</div>
+                                            </div>
+                                        }
                                     />
                                 </List.Item>
                             )}
@@ -163,7 +168,7 @@ class Header extends React.PureComponent {
             <div className="system-header">
                 <div className="right-content">
                     <span className="notice" style={{ marginRight: '30px' }} >
-                        <Popover overlayClassName="notice-pop" arrowPointAtCenter content={noticeContent} trigger="click" placement="bottom">
+                        <Popover overlayClassName="notice-pop" arrowPointAtCenter onClick={this.getNoticeClick.bind(this)} content={noticeContent} trigger="click" placement="bottom">
                             <Badge count={this.state.unReadMsgCount}>
                                 <img style={{ height: '15px', width: '15px' }} src="/manage/images/icon/layout-header/notice.png" alt="无" />
                             </Badge>

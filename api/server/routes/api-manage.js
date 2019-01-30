@@ -161,6 +161,9 @@ module.exports = (router, app, config) => {
         .post('/noticeManage/sendNoticeDetail', strongCheck, noticeDetailController.sendNoticeDetail)
 
     router
+        .get('/noticeDetail/getUserUnReadNoticeList', strongCheck, noticeDetailController.getUserUnReadNoticeList)
+
+    router
         .post('/member/getMemberList', strongCheck, memberController.getMemberList)
 
     router

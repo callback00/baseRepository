@@ -37,4 +37,17 @@ module.exports = {
             }
         })
     },
+
+    getUserUnReadNoticeList: (req, res) => {
+        const userId = req.user.userId
+
+        res.type = 'json';
+        noticeDetailOperate.getUserUnReadNoticeList(userId, (error, success) => {
+            if (error) {
+                res.status(200).json({ error });
+            } else {
+                res.status(200).json({ success });
+            }
+        })
+    },
 }
