@@ -2,6 +2,7 @@ import React from 'react';
 import { Menu, Icon, Dropdown, Badge, Popover, Tabs, List, Avatar, notification } from 'antd';
 import auth from '../../utils/auth';
 import tools from '../../utils/tools'
+import moment from 'moment'
 
 import io from 'socket.io-client';
 const config = require('../../../config/config')
@@ -141,7 +142,7 @@ class Header extends React.PureComponent {
                                         description={
                                             <div>
                                                 <div style={{ fontSize: '12px' }} >{item.noticeContent}</div>
-                                                <div style={{ fontSize: '12px' }} >2018-10-01 00:00:00</div>
+                                                <div style={{ fontSize: '12px' }} >{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</div>
                                             </div>
                                         }
                                     />

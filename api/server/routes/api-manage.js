@@ -158,10 +158,11 @@ module.exports = (router, app, config) => {
         .delete('/noticeManage/noticeDelete', strongCheck, noticeController.noticeDelete)
         .post('/noticeManage/getNoticeById', strongCheck, noticeController.getNoticeById)
         .post('/noticeManage/getNoticeList', strongCheck, noticeController.getNoticeList)
-        .post('/noticeManage/sendNoticeDetail', strongCheck, noticeDetailController.sendNoticeDetail)
+        .post('/noticeManage/sendTemplateNoticeDetail', strongCheck, noticeDetailController.sendTemplateNoticeDetail)
 
     router
         .get('/noticeDetail/getUserUnReadNoticeList', strongCheck, noticeDetailController.getUserUnReadNoticeList)
+        .post('/noticeDetail/getUserAllNoticeList', strongCheck, noticeDetailController.getUserAllNoticeList)
 
     router
         .post('/member/getMemberList', strongCheck, memberController.getMemberList)

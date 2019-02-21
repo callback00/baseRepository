@@ -2,6 +2,7 @@ const sequelize = require('sequelize')
 const dbConn = require('../../common/dbConn')
 const conn = dbConn.getConn()
 
+// 该数据库表与 sys_notice_detail 无主外键关系，该表主要是用于建立消息模板，而 sys_notice_detail 则是记录所有消息的表，包括模板消息和自定义的消息
 const Notice = conn.define('sys_notice', {
   id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true, unique: true },
   noticeCode: { type: sequelize.STRING, allowNull: false, comment: '模板代号' },

@@ -185,6 +185,7 @@ class Page extends React.Component {
                         <div>
                             <p>1、所有通过url访问的页面均可在此处配置</p>
                             <p>2、路由类型分为两种类型：1、导航路由(出现在系统左侧菜单栏目中) 2、页面路由(不会出现在左侧菜单栏目中)</p>
+                            <p>3、个人中心的栏目请在config文件夹内配置。</p>
                         </div>
                     }
                     type="info"

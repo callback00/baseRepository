@@ -26,7 +26,17 @@ module.exports = {
         }
     },
 
-    sendNotice: async (noticeCode, noticeType, noticeParamData, companyId, callback) => {
+    /**
+     * sendTemplateNoticeDetail，该方法仅将数据保存到数据库中，具体的发送逻辑不在此处.
+     * 该方法只用于发送消息模板的消息，客户消息不能使用该方法发送(客户消息暂时还没有使用)
+     * @param {string} noticeCode - 消息模板编码.
+     * @param {string} noticeType - 消息模板类型.
+     * @param {string} noticeParamData - 这是一个对象，具体参数使用请参考消息管理中的使用教程。
+     * @param {int} companyId - 所属组织id
+     * @param {object or int} sender - 发送者(当为系统消息时传递当前user,当为短信时传递发送者手机号码)
+     * @param {function} callback - 回调函数
+     */
+    sendTemplateNoticeDetail: async (noticeCode, noticeType, noticeParamData, companyId, sender, callback) => {
 
         try {
 
@@ -55,9 +65,12 @@ module.exports = {
                 }
 
                 let data = {
-                    headerId: header.id,
+                    noticeType: header.noticeType,
+                    noticeTypeDesc: header.noticeTypeDesc,
                     noticeTitle: noticeParamData.noticeTitle,
                     contact: noticeParamData.contact,
+                    sender: noticeType === '1' ? sender.userId : sender.phone,
+                    senderName: noticeType === '1' ? sender.displayName : sender.name,
                     noticeContent,
                     noticedFlag: false,
                     readFlag: false,
@@ -72,7 +85,7 @@ module.exports = {
             }
 
         } catch (error) {
-            logger.error(`----- noticeDetailOperate sendNotice first try catch error = ${error} -----`);
+            logger.error(`----- noticeDetailOperate sendTemplateNoticeDetail first try catch error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
 
@@ -86,7 +99,8 @@ module.exports = {
                 limit: 5,
                 where: {
                     noticedFlag: '0',
-                    contact: userId
+                    contact: userId,
+                    noticeType: { $ne: '2' }
                 },
                 order: [
                     ['createdAt', 'asc']
@@ -96,8 +110,8 @@ module.exports = {
             });
 
             const unReadMsgCount = await conn.query(
-                `select count(A.id) as unReadCount from sys_notice_details A inner join sys_notices B on (A.headerId = B.id)
-                 where A.deletedAt is null and A.contact=${userId} and A.readFlag = 0 and B.noticeType = 1
+                `select count(A.id) as unReadCount from sys_notice_details A
+                 where A.deletedAt is null and A.contact=${userId} and A.readFlag = 0 and A.noticeType != 2
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result[0].unReadCount;
@@ -158,6 +172,40 @@ module.exports = {
             return callback(null, result);
         } catch (error) {
             logger.error(`----- noticeDetailOperate getUserUnReadNoticeList error = ${error} -----`);
+            return callback('请求已被服务器拒绝');
+        }
+    },
+
+    getUserAllNoticeList: async (userId, callback) => {
+
+        try {
+            const data = await Sys_Notice_Detail.findAll({
+                where: {
+                    contact: userId,
+                    noticeType: { $ne: '2' }
+                },
+                order: [
+                    ['createdAt', 'desc']
+                ]
+            }).then((list) => {
+                return list;
+            });
+
+            const unReadMsgCount = await conn.query(
+                `select count(A.id) as unReadCount from sys_notice_details A 
+                 where A.deletedAt is null and A.contact=${userId} and A.readFlag = 0 and A.noticeType != 2
+            `, { type: sequelize.QueryTypes.SELECT }
+            ).then((result) => {
+                return result[0].unReadCount;
+            })
+
+            const result = {
+                data,
+                unReadMsgCount
+            }
+            return callback(null, result);
+        } catch (error) {
+            logger.error(`----- noticeDetailOperate getUserAllNoticeList error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
     },

@@ -69,7 +69,7 @@ class page extends React.Component {
                     }
                 }
 
-                tools.post('/noticeManage/sendNoticeDetail', (json) => {
+                tools.post('/noticeManage/sendTemplateNoticeDetail', (json) => {
                     if (json.success) {
                         message.success('发送成功')
                         this.props.onOk();
@@ -223,7 +223,7 @@ this.props.form.validateFields((err, values) => {
             }
         }
 
-        tools.post('/noticeManage/sendNoticeDetail', (json) => {
+        tools.post('/noticeManage/sendTemplateNoticeDetail', (json) => {
             if (json.success) {
                 this.props.onOk();
             } else {
