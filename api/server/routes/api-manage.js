@@ -163,6 +163,7 @@ module.exports = (router, app, config) => {
     router
         .get('/noticeDetail/getUserUnReadNoticeList', strongCheck, noticeDetailController.getUserUnReadNoticeList)
         .post('/noticeDetail/getUserAllNoticeList', strongCheck, noticeDetailController.getUserAllNoticeList)
+        .post('/noticeDetail/updateReadFlag', strongCheck, noticeDetailController.updateReadFlag)
 
     router
         .post('/member/getMemberList', strongCheck, memberController.getMemberList)

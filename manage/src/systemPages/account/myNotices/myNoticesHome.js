@@ -1,6 +1,6 @@
 import assign from 'lodash.assign'
 import React from 'react'
-import { Table, Button, message, Modal, Alert } from 'antd'
+import { Table, Button, message, Modal, Alert, Tag } from 'antd'
 
 import tools from '../../../utils/tools'
 
@@ -42,10 +42,44 @@ class Page extends React.Component {
         })
     }
 
+    onReadClick(record) {
+        if (!record.readFlag) {
+            tools.post('/noticeDetail/updateReadFlag', (json) => {
+                // if (json.success) {
+                //     this.getData();
+                // }
+
+                const data = this.state.data;
+                const item = data.filter((item) => item.id === record.id)[0]
+                if (item) {
+                    item.readFlag = true
+                    this.setState({
+                        data
+                    })
+                }
+            }, { id: record.id })
+        }
+    }
+
     render() {
         const dataSource = this.state.data
 
         const columns = [{
+            title: '',
+            key: 'readFlag',
+            dataIndex: 'readFlag',
+            render: (text, record) => (
+                <span>
+                    <Tag onClick={this.onReadClick.bind(this, record)} color={record.readFlag ? 'green' : 'volcano'}>{record.readFlag ? '已读' : '未读'}</Tag>
+                </span>
+            ),
+        }, {
+            width:100,
+            title: '发件人',
+            dataIndex: 'senderName',
+            key: 'senderName',
+        }, {
+            width:200,
             title: '标题',
             dataIndex: 'noticeTitle',
             key: 'noticeTitle',
@@ -53,6 +87,11 @@ class Page extends React.Component {
             title: '消息内容',
             dataIndex: 'noticeContent',
             key: 'noticeContent',
+        }, {
+            width:150,
+            title: '时间',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
         }];
 
         return (
@@ -69,7 +108,7 @@ class Page extends React.Component {
                         rowKey="id"
                         columns={columns}
                         dataSource={dataSource}
-                        // bordered
+
                         loading={this.state.loading}
                         size="small"
                         style={{ minHeight: '150px', marginTop: '20px' }}

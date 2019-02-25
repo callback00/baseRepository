@@ -1,6 +1,7 @@
 const sequelize = require('sequelize')
 const dbConn = require('../../common/dbConn')
 const conn = dbConn.getConn()
+const moment = require('moment')
 
 // 该数据库表与 sys_notice 无主外键关系
 const NoticeDetail = conn.define('sys_notice_detail', {
@@ -20,6 +21,12 @@ const NoticeDetail = conn.define('sys_notice_detail', {
     readFlag: { type: sequelize.BOOLEAN, allowNull: false, comment: '是否已读' },
     contact: { type: sequelize.STRING, allowNull: true, comment: '消息接收者唯一标识(当为系统消息时，保存userId，当为短信消息时，保存手机号码，当为客户消息时，保存指定的客服userId)' },
     companyId: { type: sequelize.INTEGER, allowNull: false, comment: '公司id' },
+    createdAt: {
+        type: sequelize.DATE,
+        get() {
+            return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm:ss');
+        }
+    }
 }, {
         paranoid: true
     })

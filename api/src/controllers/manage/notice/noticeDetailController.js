@@ -80,4 +80,17 @@ module.exports = {
             }
         })
     },
+
+    updateReadFlag: (req, res) => {
+        const id = req.body.id
+
+        res.type = 'json';
+        noticeDetailOperate.updateReadFlag(id, (error, success) => {
+            if (error) {
+                res.status(200).json({ error });
+            } else {
+                res.status(200).json({ success });
+            }
+        })
+    },
 }

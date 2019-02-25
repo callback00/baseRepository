@@ -209,4 +209,26 @@ module.exports = {
             return callback('请求已被服务器拒绝');
         }
     },
+
+    updateReadFlag: async (id, callback) => {
+
+        try {
+            const result = await Sys_Notice_Detail.update(
+                {
+                    readFlag: true
+                },
+                {
+                    where: { id },
+                }
+            ).then((result) => {
+                return result;
+            })
+
+            return callback(null, result);
+
+        } catch (error) {
+            logger.error(`----- noticeDetailOperate updateReadFlag error = ${error} -----`);
+            return callback('请求已被服务器拒绝');
+        }
+    },
 }
