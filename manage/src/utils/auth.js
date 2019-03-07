@@ -51,7 +51,9 @@ export default {
 
   logout() {
     const tokenString = tools.getToken()
+    const companyId = window.localStorage.getItem('companyId')
     window.localStorage.clear()
+    window.localStorage.setItem('companyId', `${companyId}`)
 
     request
       .post(`${API_SERVER_ROOT}/logout`)

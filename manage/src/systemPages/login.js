@@ -41,7 +41,8 @@ class Login extends Component {
     componentDidMount() {
         tools.get('/login/getCompanyTree', (json) => {
             if (json.success) {
-                this.setState({ companys: json.success }, () => {
+                const companyId = window.localStorage.getItem('companyId') ? window.localStorage.getItem('companyId') : '1'
+                this.setState({ companys: json.success, companyId }, () => {
                     // 实现淡入淡出切换效果
                     const one = document.getElementById("one")
                     const two = document.getElementById("two")
@@ -145,6 +146,7 @@ class Login extends Component {
     companyChange(value, label, extra) {
         // 这个控件可以取消选择，所以要判断value值是否存在
         if (value) {
+            window.localStorage.setItem('companyId', `${value}`)
             this.setState({
                 companyId: `${value}`
             })
