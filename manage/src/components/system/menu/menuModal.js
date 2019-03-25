@@ -12,7 +12,9 @@ class page extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: {},
+            data: {
+                parentId: props.id
+            },
         };
     }
 
@@ -139,7 +141,7 @@ class page extends React.Component {
                     {getFieldDecorator('icon', {
                         initialValue: this.state.data.icon,
                     })(
-                        <Input disabled={this.state.data.menuType === '1' ? false : true} placeholder="请输入antd图标名称，建议一级栏目设置图标" />
+                        <Input disabled={this.state.data.parentId === 0 || !this.state.data.parentId ? false : true} placeholder="请输入antd图标名称，建议一级栏目设置图标" />
                     )}
                 </FormItem>
                 <FormItem
