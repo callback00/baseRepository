@@ -5,7 +5,7 @@ const BufferHelper = require('bufferhelper')
 const request = require('superagent')
 const logger = require('../../common/logger')
 
-const Member = require('../../models/memberModel')
+const Member = require('../../models/system/memberModel')
 
 module.exports = {
   /**

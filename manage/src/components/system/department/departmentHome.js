@@ -1,9 +1,8 @@
-import assign from 'lodash.assign'
 import React from 'react'
-import { Table, Button, message, Modal, Alert } from 'antd'
+import { Table, message, Modal, Alert } from 'antd'
 
 import tools from '../../../utils/tools'
-import CompanyModal from './companyModal'
+import DepartmentModal from './departmentModal'
 
 message.config({
     top: 200,
@@ -35,7 +34,7 @@ class Page extends React.Component {
             loading: true
         });
 
-        tools.get('/company/getCompanyTree', (json) => {
+        tools.get('/department/getDepartmentTree', (json) => {
             if (json.success) {
                 this.setState({ data: json.success, loading: false });
             } else {
@@ -44,12 +43,10 @@ class Page extends React.Component {
         })
     }
 
-    showCompanyModalHandle(option) {
+    showDepartmentModalHandle(option) {
 
         if (option === 'edit' && !this.state.selectNode) {
-            message.error('请选择要编辑的公司');
-        } else if (option === 'create' && !this.state.selectNode) {
-            message.error('请先选择上级公司')
+            message.error('请选择要编辑的部门');
         } else {
             const modalKey = this.state.modalKey + 1;
             this.setState({
@@ -62,7 +59,7 @@ class Page extends React.Component {
 
     deleteConfirm() {
         if (!this.state.selectNode) {
-            message.error('请选择删除的公司');
+            message.error('请选择删除的部门');
             return;
         }
 
@@ -74,7 +71,7 @@ class Page extends React.Component {
         const handelDelete = this.handelDelete.bind(this)
         confirm({
             title: '你确定要删除该记录吗',
-            content: '删除公司可能会引起系统崩溃，非技术人员操作请慎重选择。',
+            content: '请谨慎选择删除的部门，删除后数据无法恢复。',
             okText: '确定',
             okType: 'danger',
             cancelText: '取消',
@@ -128,8 +125,8 @@ class Page extends React.Component {
     renderTableHeader() {
         return (
             <div>
-                <button className='btn-add' onClick={this.showCompanyModalHandle.bind(this, 'create')}>新增</button>
-                <button className='btn-edit' style={{ marginLeft: '20px' }} onClick={this.showCompanyModalHandle.bind(this, 'edit')}>编辑</button>
+                <button className='btn-add' onClick={this.showDepartmentModalHandle.bind(this, 'create')}>新增</button>
+                <button className='btn-edit' style={{ marginLeft: '20px' }} onClick={this.showDepartmentModalHandle.bind(this, 'edit')}>编辑</button>
                 <button className='btn-delete' style={{ marginLeft: '20px' }} onClick={this.deleteConfirm.bind(this)}>删除</button>
             </div>
         )
@@ -166,7 +163,7 @@ class Page extends React.Component {
         const dataSource = this.state.data
 
         const columns = [{
-            title: '公司名称',
+            title: '部门名称',
             dataIndex: 'name',
             key: 'name',
         }, {
@@ -177,20 +174,6 @@ class Page extends React.Component {
 
         return (
             <div className="menuHome">
-
-                <Alert
-                    message="操作建议"
-                    description={
-                        <div>
-                            <p>1、如果公司存在主从关系，以层级关系维护，便于数据统计</p>
-                            <p>2、主从关系的公司，母公司可以查询到子公司的数据</p>
-                            <p style={{ color: 'red' }}>3、公司与数据存在密切联系，若要删除公司，请手动将该公司下的数据删除完毕，并清空redis，否则容易引起系统崩溃</p>
-                        </div>
-                    }
-                    type="info"
-                    showIcon
-                />
-
                 <div className="card" style={{ minHeight: '400px', paddingTop: '20px' }}>
                     <Table
                         rowKey="id"
@@ -208,7 +191,7 @@ class Page extends React.Component {
                     />
                 </div>
 
-                <CompanyModal
+                <DepartmentModal
                     visible={this.state.visible}
                     id={this.state.selectNode ? this.state.selectNode.id : 0}
                     option={this.state.option}

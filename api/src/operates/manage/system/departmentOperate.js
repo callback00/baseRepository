@@ -1,6 +1,6 @@
 const sequelize = require('sequelize')
 const logger = require('../../../common/logger')
-const Company = require('../../../models/system/sys_companyModel')
+const Department = require('../../../models/system/department/departmentModel')
 const User = require('../../../models/system/userModel')
 
 const dbConn = require('../../../common/dbConn')
@@ -25,84 +25,55 @@ function buildTree(nodeList, data) {
 }
 
 module.exports = {
-    getCompanyTree: async (companyId, callback) => {
+    getDepartmentTree: async (companyId, callback) => {
 
         try {
             const data = await conn.query(
-                `select  id, name, parentId, sort, remark, name as title, id as value, id as 'key'  from sys_companies where deletedAt is null and (treeId like '%[${companyId}]%' or id = '${companyId}') order by sort asc,createdAt asc
+                `select  id, name, parentId, sort, remark, name as title, id as value, id as 'key'  from sys_departments where deletedAt is null and companyId = '${companyId}' order by sort asc,createdAt asc
             `, { type: sequelize.QueryTypes.SELECT }
             ).then((result) => {
                 return result;
             })
 
-            //取最上级公司节点
-            const node = data.filter((item) => {
-                return item.id === companyId;
-            })[0]
+            const nodeList = data.filter((item) => {
+                return item.parentId === 0;
+            })
 
-            const result = buildTree([node], data).sort((a, b) => a.sort - b.sort);
+            const result = buildTree(nodeList, data).sort((a, b) => a.sort - b.sort);
             if (result) {
                 return callback(null, result);
             } else {
                 return callback(null, []);
             }
         } catch (error) {
-            logger.error(`----- companyOperate getCompanyTree error = ${error} -----`);
+            logger.error(`----- departmentOperate getDepartmentTree error = ${error} -----`);
             callback('请求已被服务器拒绝');
         }
     },
 
-    getLoginCompanyTree: async (callback) => {
+    getDepartmentById: async (id, callback) => {
 
         try {
-            const data = await conn.query(
-                `select  id, name, parentId, sort, remark, name as title, id as value, id as 'key'  from sys_companies where deletedAt is null order by sort asc,createdAt asc
-            `, { type: sequelize.QueryTypes.SELECT }
-            ).then((result) => {
-                return result;
-            })
-
-            // 只要没有人为改变数据库id，最小id值即为最上级公司
-            const minId = Math.min.apply(Math, data.map(function (o) { return o.id }))
-            //取最上级公司节点
-            const node = data.filter((item) => {
-                return item.id === minId;
-            })[0]
-
-            const result = buildTree([node], data).sort((a, b) => a.sort - b.sort);
-            if (result) {
-                return callback(null, result);
-            } else {
-                return callback(null, []);
-            }
-        } catch (error) {
-            logger.error(`----- companyOperate getCompanyTree error = ${error} -----`);
-            callback('请求已被服务器拒绝');
-        }
-    },
-
-    getCompanyById: async (id, callback) => {
-
-        try {
-            const company = await Company.findOne({
+            const department = await Department.findOne({
                 where: { id },
             }).then((item) => {
                 return item;
             });
 
-            return callback(null, company);
+            return callback(null, department);
         } catch (error) {
-            logger.error(`----- companyOperate getCompanyById error = ${error} -----`);
+            logger.error(`----- departmentOperate getDepartmentById error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
     },
 
-    companyCreate: async (name, parentId, sort, remark, callback) => {
+    departmentCreate: async (name, parentId, sort, remark, companyId, callback) => {
 
         let data = {
             name,
             sort,
-            remark
+            remark,
+            companyId
         };
 
         if (parentId === '0' || parentId === 0) {
@@ -111,21 +82,17 @@ module.exports = {
             data.isLeaf = true;
 
             try {
-                const result = await Company.create(data).then((result) => {
+                const result = await Department.create(data).then((result) => {
                     return result;
-                })
-
-                const adminUser = await User.create({ loginName: 'admin', displayName: '超级管理员', password: 'fb71dec4e0f6ca87c720ff11ed8faa59c824f48f', gender: '1', status: '1', companyId: result.id }).then((users) => {
-                    return users;
                 })
 
                 return callback(null, '创建成功。');
             } catch (error) {
-                logger.error(`----- companyOperate companyCreate first try catch error = ${error} -----`);
+                logger.error(`----- departmentOperate departmentCreate first try catch error = ${error} -----`);
                 return callback('请求已被服务器拒绝');
             }
         } else {
-            let parentNode = await Company.findOne({ where: { id: parentId } }).then((parentNode) => {
+            let parentNode = await Department.findOne({ where: { id: parentId } }).then((parentNode) => {
                 return parentNode;
             });
 
@@ -146,11 +113,11 @@ module.exports = {
             })
 
             try {
-                const createResult = await Company.create(data, { transaction: trans }).then((result) => {
+                const createResult = await Department.create(data, { transaction: trans }).then((result) => {
                     return result;
                 })
 
-                const updateResult = await Company.update(
+                const updateResult = await Department.update(
                     {
                         isLeaf: false
                     },
@@ -162,25 +129,21 @@ module.exports = {
                     return result;
                 })
 
-                const adminUser = await User.create({ loginName: 'admin', displayName: '超级管理员', password: 'fb71dec4e0f6ca87c720ff11ed8faa59c824f48f', gender: '1', status: '1', companyId: createResult.id }, { transaction: trans }).then((users) => {
-                    return users;
-                })
-
                 trans.commit();
                 return callback(null, '创建成功。');
 
             } catch (error) {
                 trans.rollback();
 
-                logger.error(`----- companyOperate companyCreate second try catch error = ${error} -----`);
+                logger.error(`----- departmentOperate companyCreate second try catch error = ${error} -----`);
                 return callback('请求已被服务器拒绝');
             }
         }
     },
 
-    companyEdit: async (id, name, sort, remark, callback) => {
+    departmentEdit: async (id, name, sort, remark, callback) => {
         try {
-            const result = await Company.update(
+            const result = await Department.update(
                 {
                     name,
                     sort,
@@ -195,20 +158,20 @@ module.exports = {
 
             return callback(null, '更新成功');
         } catch (error) {
-            logger.error(`----- companyOperate companyEdit error = ${error} -----`);
+            logger.error(`----- departmentOperate departmentEdit error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
     },
 
-    companyDelete: async (id, callback) => {
+    departmentDelete: async (id, callback) => {
 
-        const deleteCompany = await Company.findOne({
+        const deleteItem = await Department.findOne({
             where: {
                 id
             }
         });
 
-        const parentId = deleteCompany.parentId;
+        const parentId = deleteItem.parentId;
 
         const trans = await conn.transaction({
             autocommit: false
@@ -217,16 +180,16 @@ module.exports = {
         })
 
         try {
-            await Company.destroy({
+            await Department.destroy({
                 where: {
                     id
                 },
                 transaction: trans,
-                force: false // 真删除标记,此处用软删除
+                force: true // 真删除标记,此处用软删除
             })
 
-            // 必须包含在事务中，如果不包含在事务中可以查询到删除的公司，因为事务没提交，还没真正提交，包含在事务内则查询不到
-            const children = await Company.findAll({
+            // 必须包含在事务中，如果不包含在事务中可以查询到删除的数据，因为事务没提交，还没真正提交，包含在事务内则查询不到
+            const children = await Department.findAll({
                 where: { parentId },
                 transaction: trans,
             }).then((result) => {
@@ -234,7 +197,7 @@ module.exports = {
             })
 
             if (children.length < 1) {
-                await Company.update(
+                await Department.update(
                     { isLeaf: true },
                     {
                         where: {
@@ -251,7 +214,7 @@ module.exports = {
         } catch (error) {
             trans.rollback();
 
-            logger.error(`----- companyOperate companyDelete try catch error = ${error} -----`);
+            logger.error(`----- departmentOperate departmentDelete try catch error = ${error} -----`);
             return callback('请求已被服务器拒绝');
         }
     }

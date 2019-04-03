@@ -1,9 +1,10 @@
 import React from 'react'
-import { message, Button, Modal, Form, Input, InputNumber, Tooltip, Icon, Select } from 'antd'
+import { message, Modal, Form, Input } from 'antd'
 import tools from '../../../utils/tools'
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { TextArea } = Input;
+
 message.config({
     top: 200,
 });
@@ -17,14 +18,14 @@ class page extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.option === 'edit') {
-            tools.post('/company/getCompanyById', (json) => {
+        if (this.props.roleId) {
+            tools.post('/role/getRoleById', (json) => {
                 if (json.success) {
                     this.setState({ data: json.success });
                 } else {
                     message.error(json.error);
                 }
-            }, { id: parseInt(this.props.id) })
+            }, { id: parseInt(this.props.roleId) })
         }
     }
 
@@ -32,27 +33,27 @@ class page extends React.Component {
 
         event.preventDefault();
 
-        const id = this.props.id;
+        const id = this.props.roleId;
 
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 if (this.state.data && this.state.data.id) {
 
-                    tools.post('/company/companyEdit', (json) => {
+                    tools.post('/role/roleEdit', (json) => {
                         if (json.success) {
                             this.props.onOk();
                         } else {
                             message.error(json.error);
                         }
-                    }, { id, name: values.name, sort: values.sort, remark: values.remark })
+                    }, { name: values.name, remark: values.remark, id })
                 } else {
-                    tools.post('/company/companyCreate', (json) => {
+                    tools.post('/role/roleCreate', (json) => {
                         if (json.success) {
                             this.props.onOk();
                         } else {
                             message.error(json.error);
                         }
-                    }, { name: values.name, parentId: id, sort: values.sort, remark: values.remark })
+                    }, { name: values.name, remark: values.remark })
                 }
             }
         })
@@ -74,40 +75,23 @@ class page extends React.Component {
             <Form>
                 <FormItem
                     {...formItemLayout}
-                    label="公司名称"
+                    label="角色名称"
                 >
                     {getFieldDecorator('name', {
                         initialValue: this.state.data.name,
-                        rules: [{ required: true, message: '请输入公司名称' }]
+                        rules: [{ required: true, message: '请输入角色名称' }]
                     })(
-                        <Input placeholder="请输入公司名称" />
+                        <Input placeholder="请输入角色名称" />
                     )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                    label="备注"
+                    label="角色描述"
                 >
                     {getFieldDecorator('remark', {
                         initialValue: this.state.data.remark,
                     })(
-                        <Input />
-                    )}
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={(
-                        <span>
-                            排序&nbsp;
-                            <Tooltip title="数字越小，排在越前面">
-                                <Icon type="question-circle-o" />
-                            </Tooltip>
-                        </span>
-                    )}
-                >
-                    {getFieldDecorator('sort', {
-                        initialValue: this.state.data.sort ? this.state.data.sort : 1,
-                    })(
-                        <InputNumber min={1} max={99} />
+                        <TextArea rows={3} placeholder="角色功能描述" />
                     )}
                 </FormItem>
             </Form>
@@ -117,7 +101,7 @@ class page extends React.Component {
     render() {
         return (
             <Modal
-                title={this.state.data.id ? '编辑' : '新增'}
+                title={this.state.data.id ? '编辑角色' : '新增角色'}
                 visible={this.props.visible}
                 key={this.props.modalKey}
                 onOk={this.handleOk.bind(this)}

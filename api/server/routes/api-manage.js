@@ -3,26 +3,28 @@ const path = require('path')
 const redisUtility = require('../../src/common/redisUtility');
 const file = require('../../src/common/file');
 
-const loginController = require('../../src/controllers/manage/user/loginController')
-const userController = require('../../src/controllers/manage/user/userController')
-const menuController = require('../../src/controllers/manage/system/menuController')
-const menuPermissionController = require('../../src/controllers/manage/system/menuPermissionController')
-const apiController = require('../../src/controllers/manage/system/apiController')
-const apiPermissionController = require('../../src/controllers/manage/system/apiPermissionController')
+const loginController = require('../../src/controllers/manage/system/user/loginController')
+const userController = require('../../src/controllers/manage/system/user/userController')
+const menuController = require('../../src/controllers/manage/system/menu/menuController')
+const menuPermissionController = require('../../src/controllers/manage/system/menu/menuPermissionController')
+const apiController = require('../../src/controllers/manage/system/apiManage/apiController')
+const apiPermissionController = require('../../src/controllers/manage/system/apiManage/apiPermissionController')
 
 const noticeController = require('../../src/controllers/manage/notice/noticeController')
 const noticeDetailController = require('../../src/controllers/manage/notice/noticeDetailController')
 // const tempFileController = require('../../src/controllers/file/tempFileController')
 
-const memberController = require('../../src/controllers/manage/user/memberController')
+const memberController = require('../../src/controllers/manage/system/member/memberController')
 
 const companyController = require('../../src/controllers/manage/system/companyController')
 
-const roleController = require('../../src/controllers/manage/role/roleController')
+const roleController = require('../../src/controllers/manage/system/roleController')
+
+const departmentController = require('../../src/controllers/manage/system/departmentController')
 
 const multipart = require('connect-multiparty')
 
-const Api = require('../../src/models/system/apiModel')
+const Api = require('../../src/models/system/apiManage/apiModel')
 
 module.exports = (router, app, config) => {
 
@@ -174,6 +176,13 @@ module.exports = (router, app, config) => {
         .post('/company/companyEdit', strongCheck, companyController.companyEdit)
         .delete('/company/companyDelete', strongCheck, companyController.companyDelete)
         .post('/company/getCompanyById', strongCheck, companyController.getCompanyById)
+
+    router
+        .get('/department/getDepartmentTree', strongCheck, departmentController.getDepartmentTree)
+        .post('/department/departmentCreate', strongCheck, departmentController.departmentCreate)
+        .post('/department/departmentEdit', strongCheck, departmentController.departmentEdit)
+        .delete('/department/departmentDelete', strongCheck, departmentController.departmentDelete)
+        .post('/department/getDepartmentById', strongCheck, departmentController.getDepartmentById)
 
     // router
     //     .post('/tempFile/baseUpload', multipartMiddleware, weakCheck, tempFileController.baseUpload)

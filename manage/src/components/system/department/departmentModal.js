@@ -18,7 +18,7 @@ class page extends React.Component {
 
     componentDidMount() {
         if (this.props.option === 'edit') {
-            tools.post('/company/getCompanyById', (json) => {
+            tools.post('/department/getDepartmentById', (json) => {
                 if (json.success) {
                     this.setState({ data: json.success });
                 } else {
@@ -38,7 +38,7 @@ class page extends React.Component {
             if (!err) {
                 if (this.state.data && this.state.data.id) {
 
-                    tools.post('/company/companyEdit', (json) => {
+                    tools.post('/department/departmentEdit', (json) => {
                         if (json.success) {
                             this.props.onOk();
                         } else {
@@ -46,7 +46,7 @@ class page extends React.Component {
                         }
                     }, { id, name: values.name, sort: values.sort, remark: values.remark })
                 } else {
-                    tools.post('/company/companyCreate', (json) => {
+                    tools.post('/department/departmentCreate', (json) => {
                         if (json.success) {
                             this.props.onOk();
                         } else {
@@ -74,13 +74,13 @@ class page extends React.Component {
             <Form>
                 <FormItem
                     {...formItemLayout}
-                    label="公司名称"
+                    label="部门名称"
                 >
                     {getFieldDecorator('name', {
                         initialValue: this.state.data.name,
-                        rules: [{ required: true, message: '请输入公司名称' }]
+                        rules: [{ required: true, message: '请输入部门名称' }]
                     })(
-                        <Input placeholder="请输入公司名称" />
+                        <Input placeholder="请输入部门名称" />
                     )}
                 </FormItem>
                 <FormItem

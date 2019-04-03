@@ -29,15 +29,15 @@ async function initData() {
 
         // 先创建一级菜单, 使用批量创建无法返回id。
         const userMenu = await Sys_Menu.create({ name: '用户管理', menuType: '1', menuTypeDesc: '导航路由', icon: 'usergroup-add', parentId: 0, treeId: '[0]', isLeaf: '0', sort: 1 }, { transaction: trans });
-        const roleMenu = await Sys_Menu.create({ name: '角色管理', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/role/home', icon: 'contacts', comPath: '/role/roleHome.js', parentId: 0, treeId: '[0]', isLeaf: '1', sort: 2 }, { transaction: trans });
+        const roleMenu = await Sys_Menu.create({ name: '角色管理', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/role/home', icon: 'contacts', comPath: '/system/role/roleHome.js', parentId: 0, treeId: '[0]', isLeaf: '1', sort: 2 }, { transaction: trans });
         const systemMenu = await Sys_Menu.create({ name: '系统配置', menuType: '3', menuTypeDesc: '导航路由', icon: 'setting', parentId: 0, treeId: '[0]', isLeaf: '0', sort: 3 }, { transaction: trans })
         const companyMenu = await Sys_Menu.create({ name: '企业管理', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/company/home', icon: 'home', comPath: '/system/company/companyHome.js', parentId: 0, treeId: `[0]`, isLeaf: '1', sort: 4 }, { transaction: trans });
         const noticeMenu = await Sys_Menu.create({ name: '消息管理', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/notice/home', icon: 'message', comPath: '/system/notice/noticeHome.js', parentId: 0, treeId: `[0]`, isLeaf: '1', sort: 5 }, { transaction: trans });
 
         // 创建二级菜单
-        const menu1 = await Sys_Menu.create({ name: '用户列表', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/user/list', comPath: '/user/userList.js', parentId: userMenu.id, treeId: `[0],[${userMenu.id}]`, isLeaf: '1', sort: 1 }, { transaction: trans });
-        const menu2 = await Sys_Menu.create({ name: '添加用户', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/user/add', comPath: '/user/userAdd.js', parentId: userMenu.id, treeId: `[0],[${userMenu.id}]`, isLeaf: '1', sort: 2 }, { transaction: trans });
-        const menu3 = await Sys_Menu.create({ name: '用户信息', menuType: '2', menuTypeDesc: '页面路由', menuLink: '/user/info/:id', comPath: '/user/userInfo.js', parentId: userMenu.id, treeId: `[0],[${userMenu.id}]`, isLeaf: '1', sort: 3 }, { transaction: trans });
+        const menu1 = await Sys_Menu.create({ name: '用户列表', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/user/list', comPath: '/system/user/userList.js', parentId: userMenu.id, treeId: `[0],[${userMenu.id}]`, isLeaf: '1', sort: 1 }, { transaction: trans });
+        const menu2 = await Sys_Menu.create({ name: '添加用户', menuType: '1', menuTypeDesc: '导航路由', menuLink: '/user/add', comPath: '/system/user/userAdd.js', parentId: userMenu.id, treeId: `[0],[${userMenu.id}]`, isLeaf: '1', sort: 2 }, { transaction: trans });
+        const menu3 = await Sys_Menu.create({ name: '用户信息', menuType: '2', menuTypeDesc: '页面路由', menuLink: '/user/info/:id', comPath: '/system/user/userInfo.js', parentId: userMenu.id, treeId: `[0],[${userMenu.id}]`, isLeaf: '1', sort: 3 }, { transaction: trans });
         const menu4 = await Sys_Menu.create({ name: '菜单管理', menuType: '3', menuTypeDesc: '导航路由', menuLink: '/systemSetting/menu/menuHome', comPath: '/system/menu/menuHome.js', parentId: systemMenu.id, treeId: `[0],[${systemMenu.id}]`, isLeaf: '1', sort: 1 }, { transaction: trans });
         const menu5 = await Sys_Menu.create({ name: 'api管理', menuType: '3', menuTypeDesc: '导航路由', menuLink: '/systemSetting/apiManage/apiManageHome', comPath: '/system/apiManage/apiManageHome.js', parentId: systemMenu.id, treeId: `[0],[${systemMenu.id}]`, isLeaf: '1', sort: 2 }, { transaction: trans });
 
