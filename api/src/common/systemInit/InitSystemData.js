@@ -4,11 +4,9 @@ const dbConn = require('../../common/dbConn')
 const conn = dbConn.getConn()
 
 const Company = require('../../models/system/sys_companyModel')
-const User = require('../../models/userModel')
-const Sys_Menu = require('../../models/system/menuModel')
-const Sys_Menu_Permission = require('../../models/system/sys_menu_permission')
-const Api = require('../../models/system/apiModel')
-const Sys_Api_Permission = require('../../models/system/sys_api_permission')
+const User = require('../../models/system/userModel')
+const Sys_Menu = require('../../models/system/menu/menuModel')
+const Api = require('../../models/system/apiManage/apiModel')
 
 
 async function initData() {

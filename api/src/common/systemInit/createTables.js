@@ -1,16 +1,17 @@
 const Company = require('../../models/system/sys_companyModel')
-const User = require('../../models/userModel')
-const Role = require('../../models/role/sys_roleModel')
-const Role_User = require('../../models/role/sys_role_userModel')
-const Role_Menu_Permission = require('../../models/role/sys_role_menu_permissionModel')
-const Role_Api_Permission = require('../../models/role/sys_role_api_permissionModel')
-const Sys_Menu = require('../../models/system/menuModel')
-const Sys_Menu_Permission = require('../../models/system/sys_menu_permission')
-const Api = require('../../models/system/apiModel')
-const Sys_Api_Permission = require('../../models/system/sys_api_permission')
-const Member = require('../../models/memberModel')
+const User = require('../../models/system/userModel')
+const Role = require('../../models/system/role/sys_roleModel')
+const Role_User = require('../../models/system/role/sys_role_userModel')
+const Role_Menu_Permission = require('../../models/system/role/sys_role_menu_permissionModel')
+const Role_Api_Permission = require('../../models/system/role/sys_role_api_permissionModel')
+const Sys_Menu = require('../../models/system/menu/menuModel')
+const Sys_Menu_Permission = require('../../models/system/menu/sys_menu_permission')
+const Api = require('../../models/system/apiManage/apiModel')
+const Sys_Api_Permission = require('../../models/system/apiManage/sys_api_permission')
+const Member = require('../../models/system/memberModel')
 const Notice = require('../../models/notice/noticeModel')
 const NoticeDetail = require('../../models/notice/noticeDetailModel')
+const Department = require('../../models/system/department/departmentModel')
 
 // ---------- 创建 企业表 表 ----------
 Company.sync({ force: true }).then(() => {
@@ -101,4 +102,11 @@ NoticeDetail.sync({ force: true }).then(() => {
   console.log(`----- 创建 NoticeDetail 表成功 -----`)
 }).catch((err) => {
   console.error(`----- NoticeDetail 表创建失败: ${err} -----`)
+})
+
+// ---------- 创建 部门 表 ----------
+Department.sync({ force: true }).then(() => {
+  console.log(`----- 创建 Department 表成功 -----`)
+}).catch((err) => {
+  console.error(`----- Department 表创建失败: ${err} -----`)
 })
