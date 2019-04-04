@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { message, TreeSelect, Input, Icon } from 'antd'
 import { withRouter } from 'react-router-dom'
 
-import auth from '../utils/auth' // 登录验证方法
-import tools from '../utils/tools'
+import auth from '../../utils/auth' // 登录验证方法
+import tools from '../../utils/tools'
 
 const iBase = {
 
@@ -41,7 +41,7 @@ class Login extends Component {
     componentDidMount() {
         tools.get('/login/getCompanyTree', (json) => {
             if (json.success) {
-                const companyId = window.localStorage.getItem('companyId') ? window.localStorage.getItem('companyId') : '1'
+                const companyId = window.localStorage.getItem('companyId') && window.localStorage.getItem('companyId') !== "null" ? window.localStorage.getItem('companyId') : '1'
                 this.setState({ companys: json.success, companyId }, () => {
                     // 实现淡入淡出切换效果
                     const one = document.getElementById("one")

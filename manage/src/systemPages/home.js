@@ -5,10 +5,11 @@ import {
     Redirect,
 } from 'react-router-dom'
 
-import Login from './login' // 登录页
+import Login from './login/login' // 登录页
 import auth from '../utils/auth' // 登录验证方法
 import BasicLayout from '../layouts/basicLayout'
 
+// 系统初始化页面
 class Home extends React.Component {
     constructor(props) {
         super(props)
