@@ -15,12 +15,16 @@ class UserInfo extends React.Component {
         }
 
         this.saveBtnClick = this.saveBtnClick.bind(this)
-        this.resetBtnClick = this.resetBtnClick.bind(this)
+        // this.resetBtnClick = this.resetBtnClick.bind(this)
     }
 
     componentWillMount() {
         const { id } = this.props.match.params
         this.getUserInfo(id);
+    }
+
+    checkboxSecure(event) {
+        this.setState({ secure: !event.target.checked })
     }
 
     getUserInfo(userId) {
@@ -36,9 +40,9 @@ class UserInfo extends React.Component {
         })
     }
 
-    resetBtnClick() {
-        this.props.history.push('/dashboard/user/add')
-    }
+    // resetBtnClick() {
+    //     this.props.history.push('/user/info/3')
+    // }
 
     saveBtnClick() {
         if (this.state.loading) {
@@ -138,7 +142,7 @@ class UserInfo extends React.Component {
                     label="显示密码">
                     <Checkbox
                         checked={!this.state.secure}
-                        onChange={this.checkboxSecure} />
+                        onChange={this.checkboxSecure.bind(this)} />
                 </Item>
 
                 <Item wrapperCol={{ offset: 3 }}>
@@ -147,11 +151,11 @@ class UserInfo extends React.Component {
                         onClick={this.saveBtnClick}
                         type="primary">
                         <Icon type="save" />确定
-          </Button>
+                    </Button>
                     &nbsp;&nbsp;&nbsp;
-          <Button type="ghost" onClick={this.resetBtnClick}>
+                    {/* <Button type="ghost" onClick={this.resetBtnClick}>
                         <Icon type="reload" />重置
-          </Button>
+                    </Button> */}
                 </Item>
             </Form>
         )

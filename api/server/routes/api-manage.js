@@ -29,9 +29,9 @@ const Api = require('../../src/models/system/apiManage/apiModel')
 module.exports = (router, app, config) => {
 
     // 需自己创建临时文件夹
-    file.mkdir(['tempFile']);
-    // 设置临时文件夹目录，multipart组件会自动将上传的文件存储在临时文件夹中，所以当文件转移到正式文件夹后记得删除临时文件夹的内容
-    const multipartMiddleware = multipart({ uploadDir: path.resolve(config.rootPath, '../file/tempFile') });
+    // file.mkdir(['tempFile']);
+    // // 设置临时文件夹目录，multipart组件会自动将上传的文件存储在临时文件夹中，所以当文件转移到正式文件夹后记得删除临时文件夹的内容
+    // const multipartMiddleware = multipart({ uploadDir: path.resolve(config.rootPath, '../file/tempFile') });
 
     // 获取需要校验权限的api
     let apiList = [];

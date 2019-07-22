@@ -21,6 +21,10 @@ class UserAdd extends React.Component {
 
     }
 
+    checkboxSecure(event) {
+        this.setState({ secure: !event.target.checked })
+    }
+
     resetBtnClick() {
         this.props.form.resetFields()
     }
@@ -132,7 +136,7 @@ class UserAdd extends React.Component {
                     label="显示密码">
                     <Checkbox
                         checked={!this.state.secure}
-                        onChange={this.checkboxSecure} />
+                        onChange={this.checkboxSecure.bind(this)} />
                 </Item>
 
                 <Item wrapperCol={{ offset: 3 }}>
@@ -141,11 +145,11 @@ class UserAdd extends React.Component {
                         onClick={this.saveBtnClick}
                         type="primary">
                         <Icon type="save" />确定
-          </Button>
+                    </Button>
                     &nbsp;&nbsp;&nbsp;
-          <Button type="ghost" onClick={this.resetBtnClick}>
+                    <Button type="ghost" onClick={this.resetBtnClick}>
                         <Icon type="reload" />重置
-          </Button>
+                    </Button>
                 </Item>
             </Form>
         )

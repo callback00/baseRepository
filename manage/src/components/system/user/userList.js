@@ -133,7 +133,7 @@ class UserList extends React.Component {
             render: (text, record) => {
                 return (
                     <span>
-                        <Link to={`/user/info/${record.userId}`}>查看</Link>
+                        <Link to={`/user/info/${record.userId}`}>编辑</Link>
                         &nbsp;&nbsp;&nbsp;
             <a onClick={this.menuPermissionModalShow.bind(this, record)} >菜单权限</a>
                         &nbsp;&nbsp;&nbsp;
